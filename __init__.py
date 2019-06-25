@@ -8,7 +8,8 @@ from discord.ext.commands import Bot
 
 from command_prefix import get_prefix
 
-from gbf.command.hello import hello
+from gbf.command.hello import call_hello
+from gbf.__init__ import init2
 from my_token import get_token
 
 g_bot: Bot = commands.Bot(command_prefix=get_prefix())
@@ -22,7 +23,9 @@ async def get_bot() -> Bot:
 
 @g_bot.command(name="hello")
 async def _hello(ctx):
-    await hello(ctx)
+    await call_hello(ctx)
+
+init2(g_bot)
 
 
 g_bot.run(get_token())

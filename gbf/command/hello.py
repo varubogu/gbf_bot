@@ -1,7 +1,7 @@
 #   encoding: utf-8
 
 
-async def hello(ctx):
+async def call_hello(ctx):
     await __hello(ctx)
 
 
