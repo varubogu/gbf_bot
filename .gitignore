@@ -1,0 +1,2 @@
+# トークンの誤コミットを防ぐため、my_token.pyをGit管理対象から除外
+my_token.py
