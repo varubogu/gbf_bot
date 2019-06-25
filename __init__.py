@@ -21,7 +21,7 @@ async def get_bot() -> Bot:
     return g_bot
 
 
-@g_bot.command(name="hello")
+@g_bot.command(name="hello3")
 async def _hello(ctx):
     await call_hello(ctx)
 
