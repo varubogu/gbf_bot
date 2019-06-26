@@ -1,14 +1,13 @@
 #   encoding: utf-8
 
-from gbf.command.hello import call_hello, init
+import gbf.command
+import gbf.times
 
 
-def init2(__bot):
-    print("init2 -> hello2作成")
-    init(__bot)
+def init(__bot):
 
-    @__bot.command(name="hello2")
-    async def _hello2(ctx):
-        await call_hello(ctx)
+    print("command.init -> hello作成")
+    command.init(__bot)
 
-
+    print("times.init -> ")
+    # times.init(__bot)
