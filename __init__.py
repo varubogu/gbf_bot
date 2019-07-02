@@ -2,16 +2,26 @@
 
 import os
 from discord.ext import commands
-from discord.ext.commands import Bot
 
 import gbf
 import prefix
+import logging
 
-# グローバル変数宣言
-# 各所でbotはこの変数のみを使用してください。
-g_bot: Bot = commands.Bot(command_prefix=prefix.get())
 
-# 子モジュールの初期化
-gbf.init(g_bot)
+def init():
+    """
+    discordのbotの初期化を行います。
+    この関数以外ではdiscordのインスタンスを生成しないでください。
+    また、複数回呼び出さないでください。
 
-g_bot.run(os.environ["GBF_BOT_TOKEN"])
+    """
+
+    bot = commands.Bot(command_prefix=prefix.get())
+
+    gbf.init(bot)
+
+    logging.debug("debug on")
+    bot.run(os.environ["GBF_BOT_TOKEN"])
+
+
+init()

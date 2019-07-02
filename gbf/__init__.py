@@ -1,13 +1,19 @@
 #   encoding: utf-8
 
-import gbf.command
-import gbf.times
+from gbf import commands, events
 
 
-def init(__bot):
+def init(bot):
+    """
+    グランブルーファンタジーBotの初期化を行う
 
-    print("command.init -> hello作成")
-    command.init(__bot)
+    :param bot: discordのBotオブジェクト
 
-    print("times.init -> ")
-    # times.init(__bot)
+    """
+    print("commands.init() s")
+    commands.init(bot)
+    print("commands.init() e")
+
+    print("events.init() s")
+    events.init(bot)
+    print("events.init() e")

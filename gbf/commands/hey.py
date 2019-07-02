@@ -3,9 +3,9 @@
 
 def init(bot):
 
-    @bot.command(name="hello")
-    async def hello(ctx):
+    @bot.command()
+    async def hey(ctx):
         name = ctx.message.author.name
-        msg = f"Hello! {name}\n"
+        msg = f"hey! {name}\n"
         await ctx.send(msg)
 
