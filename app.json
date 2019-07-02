@@ -1,0 +1,25 @@
+{
+  "addons": [
+
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "description": "guraburubot",
+  "env": {
+    "GBF_BOT_TOKEN": {
+      "required": true
+    }
+  },
+  "formation": {
+    "gbfdiscordbot": {
+      "quantity": 1
+    }
+  },
+  "name": "gbf_bot",
+  "scripts": {
+  },
+  "stack": "heroku-18"
+}
