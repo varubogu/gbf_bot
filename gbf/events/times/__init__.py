@@ -4,6 +4,7 @@ import asyncio
 
 from gbf.events.times.cycle5 import cycle5
 from gbf.events.times.cycle10 import cycle10
+from gbf.events.times.cycle15 import init
 
 
 def init(bot):
@@ -16,3 +17,4 @@ def init(bot):
         print("グラブル周期botを起動します")
         asyncio.ensure_future(cycle5(bot))
         asyncio.ensure_future(cycle10(bot))
+        cycle15.init(bot)

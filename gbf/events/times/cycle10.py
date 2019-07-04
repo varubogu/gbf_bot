@@ -1,7 +1,8 @@
 #   encoding: utf-8
+import os
 import asyncio
 
-ch_id = -1
+ch_id = int(os.environ["GBF_BOT_CYCLE_CH"])
 
 
 async def cycle10(bot):
