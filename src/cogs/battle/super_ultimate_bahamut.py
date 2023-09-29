@@ -13,11 +13,35 @@ class SuperUltimateBahamut(commands.Cog):
     async def super_ultimate_bahamut(self, interaction: discord.Interaction):
 
         await interaction.response.send_message(
-            'スパバハ参加者を募集します。参加する属性を選んでください。'
+            '@here スパバハ参加者を募集します。'
         )
 
-        interaction_message = await interaction.original_response()
-        await interaction_message.add_reaction('✅')
+        message = await interaction.original_response()
+        reactions = [
+            '✅'
+        ]
+        for reaction in reactions:
+            await message.add_reaction(reaction)
+
+    @app_commands.command(name="spbh6", description="スパバハ６属性募集")
+    async def super_ultimate_bahamut_six_element(
+            self, interaction: discord.Interaction):
+
+        await interaction.response.send_message(
+            "@here スパバハ参加者を募集します。\n"
+            "参加属性を選んでください"
+        )
+        message = await interaction.original_response()
+        reactions = [
+            '🔴',
+            '🔵',
+            '🟤',
+            '🟢',
+            '🟡',
+            '🟣',
+        ]
+        for reaction in reactions:
+            await message.add_reaction(reaction)
 
 
 async def setup(bot: commands.Bot):

@@ -10,10 +10,14 @@ class Beelzebub(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="bub", description="ベルゼバブ募集")
-    async def beelzebub(
-            self,
-            interaction: discord.Interaction):
+    async def beelzebub(self, interaction: discord.Interaction):
         await interaction.response.send_message("ベルゼバブ参加者を募集します。")
+        message = await interaction.original_response()
+        reactions = [
+            '✅'
+        ]
+        for reaction in reactions:
+            await message.add_reaction(reaction)
 
 
 async def setup(bot: commands.Bot):

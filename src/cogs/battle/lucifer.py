@@ -9,14 +9,36 @@ class Lucifer(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @app_commands.command(name="luci", description="ルシファー募集")
+    @app_commands.command(name="luci", description="ルシファーHard募集")
     async def lucifer(self, interaction: discord.Interaction):
 
         await interaction.response.send_message(
-            "ルシファー参加者を募集します。属性を選んでください。"
+            "ルシファーHard参加者を募集します。"
         )
-        interaction_message = await interaction.original_response()
-        await interaction_message.add_reaction('✅')
+        message = await interaction.original_response()
+        reactions = [
+            '✅'
+        ]
+        for reaction in reactions:
+            await message.add_reaction(reaction)
+
+    @app_commands.command(name="luci6", description="ルシファー６属性募集")
+    async def lucifer_six_element(self, interaction: discord.Interaction):
+        await interaction.response.send_message(
+            "ルシファーHard参加者を募集します。\n"
+            "参加属性を選んでください"
+        )
+        message = await interaction.original_response()
+        reactions = [
+            '🔴',
+            '🔵',
+            '🟤',
+            '🟢',
+            '🟡',
+            '🟣',
+        ]
+        for reaction in reactions:
+            await message.add_reaction(reaction)
 
 
 async def setup(bot: commands.Bot):
