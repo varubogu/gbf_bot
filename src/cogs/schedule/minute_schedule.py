@@ -22,7 +22,7 @@ class MinuteSchedule(commands.Cog):
             self.channel = await self.bot.fetch_channel(channel_id)
             print(f"「{self.channel.name}」に定期発言開始")
 
-        await self.channel.send('1分メッセージ')
+        # await self.channel.send('1分メッセージ')
 
 
 async def setup(bot: commands.Bot):
