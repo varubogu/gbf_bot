@@ -60,7 +60,8 @@
 				"DavidAnson.vscode-markdownlint",
 				"bierner.markdown-preview-github-styles",
 				"ms-ossdata.vscode-postgresql",
-				"ms-azuretools.vscode-docker"
+				"ms-azuretools.vscode-docker",
+				"eamodio.gitlens"
 			]
 		}
 	}
