@@ -1,2 +1,4 @@
 python-dotenv
 discord.py
+psycopg2-binary
+sqlalchemy

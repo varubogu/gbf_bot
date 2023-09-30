@@ -1,12 +1,16 @@
 import os
 
+import asyncio
+from dotenv import load_dotenv
 import discord
 from discord.ext import commands
 
-from dotenv import load_dotenv
+import models
 
 # 環境変数読み込み
 load_dotenv()
+
+import models
 
 # 自分の Bot のアクセストークン
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
@@ -50,5 +54,10 @@ class GbfBot(commands.Bot):
         await super().close()
 
 
-bot = GbfBot()
-bot.run(DISCORD_TOKEN)
+async def main():
+    models.init_db()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+    bot = GbfBot()
+    bot.run(DISCORD_TOKEN)
