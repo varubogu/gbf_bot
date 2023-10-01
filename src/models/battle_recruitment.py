@@ -2,7 +2,7 @@
 from datetime import datetime
 import uuid
 from sqlalchemy \
-    import UUID, Column, DateTime, BigInteger, String, UniqueConstraint
+    import UUID, Column, DateTime, BigInteger, Integer, UniqueConstraint
 from .base import Base, SessionLocal
 
 
@@ -17,7 +17,8 @@ class BattleRecruitment(Base):
     guild_id = Column(BigInteger, primary_key=True)
     channel_id = Column(BigInteger, primary_key=True)
     message_id = Column(BigInteger, primary_key=True)
-    battle_id = Column(String)
+    target_id = Column(Integer)
+    battle_type_id = Column(Integer)
     expiry_date = Column(DateTime, default=datetime.now)
 
     __table_args__ = (

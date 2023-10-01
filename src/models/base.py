@@ -10,7 +10,7 @@ DBHOST = os.environ['DBHOST']
 DBDATABASE = os.environ['DBDATABASE']
 
 DATABASE_URL = f'postgresql://{DBUSER}:{DBPASSWORD}@{DBHOST}/{DBDATABASE}'
-engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(DATABASE_URL, echo=False)
 SessionLocal = scoped_session(
     sessionmaker(
         bind=engine,

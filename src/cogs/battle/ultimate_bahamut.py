@@ -2,25 +2,18 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
+from cogs.battle.base_battle_recruiment_cog import BaseBattleRecruitmentCog
+from cogs.battle.target_enum import Target
 
 
-class UltimateBahamut(commands.Cog):
+class UltimateBahamut(BaseBattleRecruitmentCog):
 
     def __init__(self, bot: commands.Bot):
-        self.bot = bot
+        super().__init__(bot, Target.ULTIMATE_BAHAMUT)
 
-    @app_commands.command(name='ulbh', description='アルバハ募集')
-    async def ultimate_bahamut(self, interaction: discord.Interaction):
-
-        await interaction.response.send_message(
-            '@here アルバハ参加者を募集します。'
-        )
-        message = await interaction.original_response()
-        reactions = [
-            '✅'
-        ]
-        for reaction in reactions:
-            await message.add_reaction(reaction)
+    @app_commands.command(name="albh", description="アルバハH募集")
+    async def albh(self, interaction: discord.Interaction):
+        await super().recruitment(interaction)
 
 
 async def setup(bot: commands.Bot):

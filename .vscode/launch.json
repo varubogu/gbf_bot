@@ -9,7 +9,7 @@
             "type": "python",
             "request": "launch",
             "cwd": "${workspaceFolder}/src",
-            "module": "bot.py",
+            "module": "bot",
             "justMyCode": true
         }
     ]
