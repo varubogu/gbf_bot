@@ -1,5 +1,5 @@
-from .base import Base, engine, SessionLocal
-from .battle_recruitment import BattleRecruitment
+from models.base import Base, engine, SessionLocal
+from models.battle_recruitment import BattleRecruitment
 
 
 def init_db():
