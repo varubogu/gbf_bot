@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import uuid
 from sqlalchemy \
     import UUID, Column, DateTime, BigInteger, Integer, UniqueConstraint
-from .base import Base, SessionLocal
+from models.base import Base, SessionLocal
 
 
 def default_expiry_date():
