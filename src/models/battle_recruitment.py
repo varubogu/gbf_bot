@@ -18,9 +18,9 @@ class BattleRecruitment(Base):
     """
     __tablename__ = 'battle_recruitment'
     rowid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    guild_id = Column(BigInteger, primary_key=True)
-    channel_id = Column(BigInteger, primary_key=True)
-    message_id = Column(BigInteger, primary_key=True)
+    guild_id = Column(BigInteger)
+    channel_id = Column(BigInteger)
+    message_id = Column(BigInteger)
     target_id = Column(Integer)
     battle_type_id = Column(Integer)
     expiry_date = Column(DateTime, default=default_expiry_date)
