@@ -9,6 +9,13 @@
 		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {} //ホストのDockerを使用可能にする
 	},
 	"postCreateCommand": "pip install --no-cache-dir -r requirements.txt",
+	"containerEnv": {
+		// database environment
+		"DBHOST": "locahost",
+		"DBUSER": "gbf_bot",
+		"DBPASSWORD": "gbf_bot",
+		"DBDATABASE": "gbf_bot"
+	},
 	"customizations": {
 		"vscode": {
 			"settings": {
@@ -61,6 +68,7 @@
 				"bierner.markdown-preview-github-styles",
 				"ms-ossdata.vscode-postgresql",
 				"ms-azuretools.vscode-docker",
+				"ckolkman.vscode-postgres",
 				"eamodio.gitlens"
 			]
 		}

@@ -1,26 +1,19 @@
+
 import discord
 from discord import app_commands
 from discord.ext import commands
+from cogs.battle.base_battle_recruiment_cog import BaseBattleRecruitmentCog
+from cogs.battle.target_enum import Target
 
 
-class ProtoBahamutHL(commands.Cog):
+class ProtoBahamutHL(BaseBattleRecruitmentCog):
 
     def __init__(self, bot: commands.Bot):
-        self.bot = bot
+        super().__init__(bot, Target.PROTO_BAHAMUT_HL)
 
-    @app_commands.command(name='tuyobaha', description='つよバハ募集')
-    async def ultimate_bahamut(self, interaction: discord.Interaction):
-
-        await interaction.response.send_message(
-            '@here つよバハを募集します'
-        )
-        message = await interaction.original_response()
-        reaction_list = [
-            '✅'
-        ]
-        reactions = await self.bot.get_reactions(reaction_list)
-        for reaction in reactions:
-            await message.add_reaction(reaction)
+    @app_commands.command(name="tybh", description="つよバハ募集")
+    async def tybh(self, interaction: discord.Interaction):
+        await super().recruitment(interaction)
 
 
 async def setup(bot: commands.Bot):

@@ -2,22 +2,18 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
+from cogs.battle.base_battle_recruiment_cog import BaseBattleRecruitmentCog
+from cogs.battle.target_enum import Target
 
 
-class Beelzebub(commands.Cog):
+class Beelzebub(BaseBattleRecruitmentCog):
 
     def __init__(self, bot: commands.Bot):
-        self.bot = bot
+        super().__init__(bot, Target.BEELZEBUB)
 
     @app_commands.command(name="bub", description="ベルゼバブ募集")
-    async def beelzebub(self, interaction: discord.Interaction):
-        await interaction.response.send_message("ベルゼバブ参加者を募集します。")
-        message = await interaction.original_response()
-        reactions = [
-            '✅'
-        ]
-        for reaction in reactions:
-            await message.add_reaction(reaction)
+    async def bub(self, interaction: discord.Interaction):
+        await super().recruitment(interaction)
 
 
 async def setup(bot: commands.Bot):

@@ -1,9 +1,12 @@
 import os
 
+import asyncio
+from dotenv import load_dotenv
 import discord
+from discord import app_commands
 from discord.ext import commands
 
-from dotenv import load_dotenv
+import models
 
 # 環境変数読み込み
 load_dotenv()
@@ -24,6 +27,7 @@ class GbfBot(commands.Bot):
 
         self.INITIAL_EXTENSIONS = [
             'cogs.sample',
+            'cogs.battle.after_reaction',
             'cogs.battle.ultimate_bahamut',
             'cogs.battle.lucifer',
             'cogs.battle.beelzebub',
@@ -46,9 +50,28 @@ class GbfBot(commands.Bot):
         await self.load_cogs(self.INITIAL_EXTENSIONS)
         await self.tree.sync()
 
+    @app_commands.command(name='cog_reload', description='cogリロード')
+    @commands.is_owner()
+    async def reload(self, interaction: discord.Interaction, cog_name: str):
+        try:
+            await interaction.response.send_message(
+                f"cog {cog_name} reload...",
+                ephemeral=True
+            )
+            self.reload_extension(cog_name)
+            response = await interaction.original_response()
+            await response.edit(f"'{cog_name}' has been reloaded")
+        except Exception as e:
+            await response.edit(f"Could not reload extension: {e}")
+
     async def close(self):
         await super().close()
 
 
-bot = GbfBot()
-bot.run(DISCORD_TOKEN)
+async def main():
+    models.init_db()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+    bot = GbfBot()
+    bot.run(DISCORD_TOKEN)
