@@ -1,9 +1,13 @@
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import uuid
 from sqlalchemy \
     import UUID, Column, DateTime, BigInteger, Integer, UniqueConstraint
 from .base import Base, SessionLocal
+
+
+def default_expiry_date():
+    return datetime.now() + timedelta(days=1)
 
 
 class BattleRecruitment(Base):
@@ -19,7 +23,7 @@ class BattleRecruitment(Base):
     message_id = Column(BigInteger, primary_key=True)
     target_id = Column(Integer)
     battle_type_id = Column(Integer)
-    expiry_date = Column(DateTime, default=datetime.now)
+    expiry_date = Column(DateTime, default=default_expiry_date)
 
     __table_args__ = (
         UniqueConstraint(
