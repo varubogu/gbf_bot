@@ -2,16 +2,21 @@
 from datetime import datetime, timedelta
 import uuid
 from sqlalchemy \
-    import UUID, Column, DateTime, BigInteger, Integer, UniqueConstraint
-from models.base import Base, SessionLocal
+    import UUID, Column, DateTime, BigInteger, Integer, UniqueConstraint, and_
+from models.base import Base
 
 
 def default_expiry_date():
+    """有効期限の初期値
+
+    Returns:
+        datetime.datetime: 有効期限の初期値
+    """
     return datetime.now() + timedelta(days=1)
 
 
 class BattleRecruitment(Base):
-    """バトル募集情報
+    """マルチバトル募集情報
 
     Args:
         Base (_type_): _description_
@@ -34,13 +39,29 @@ class BattleRecruitment(Base):
         ),
     )
 
-    def create(self):
-        try:
-            SessionLocal.add(self)
-            SessionLocal.commit()
-        except Exception as e:
-            print(e)
+    def create(self, session):
+
+        session.add(self)
+        session.commit()
 
     @classmethod
-    def read(cls, message_id: int) -> 'BattleRecruitment':
-        SessionLocal.get(cls)
+    def select(cls, session, guild_id: int, channel_id: int, message_id: int) \
+            -> 'BattleRecruitment':
+        """マルチバトル募集情報を検索する
+        Args:
+            session (Session): DB接続
+            guild_id (int): 検索対象のサーバーID
+            channel_id (int): 検索対象のチャンネルID
+            message_id (int): 検索対象のメッセージID
+
+        Returns:
+            _type_: _description_
+        """
+
+        return session.query(cls).filter(
+                and_(
+                    cls.guild_id == guild_id,
+                    cls.channel_id == channel_id,
+                    cls.message_id == message_id
+                )
+            ).first()
