@@ -2,10 +2,9 @@
 import asyncio
 import discord
 from discord.ext import commands
-from sqlalchemy import and_
 from models.base import SessionLocal
 from models.battle_recruitment import BattleRecruitment
-from util.abort_process_exception import AbortProcessException
+from util.exception.abort_process_exception import AbortProcessException
 from cogs.battle.target_enum import Target
 from cogs.battle.battle_type import BattleTypeEnum
 
@@ -40,7 +39,7 @@ class AfterReaction(commands.Cog):
                 reaction_users.remove(self.bot.user)
 
             if len(reaction_users) == target.recruit_count:
-                mention = ''.join([f"{user.mention}" for user in reaction_users])
+                mention = ''.join(f"{user.mention}" for user in reaction_users)
                 await message.channel.send(
                     mention + '\nメンバーが揃いました。',
                     reference=message
@@ -57,13 +56,12 @@ class AfterReaction(commands.Cog):
     ) -> (BattleRecruitment, BattleTypeEnum, Target):
 
         with SessionLocal() as session:
-            recruitment = session.query(BattleRecruitment).filter(
-                and_(
-                    BattleRecruitment.guild_id == paylood.guild_id,
-                    BattleRecruitment.channel_id == paylood.channel_id,
-                    BattleRecruitment.message_id == paylood.message_id
-                )
-            ).first()
+            recruitment = BattleRecruitment.select(
+                session,
+                paylood.guild_id,
+                paylood.channel_id,
+                paylood.message_id
+            )
 
         if recruitment is None:
             raise AbortProcessException()
