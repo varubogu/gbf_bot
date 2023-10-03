@@ -34,6 +34,7 @@ class GbfBot(commands.Bot):
             'cogs.battle.belial',
             'cogs.battle.super_ultimate_bahamut',
             'cogs.schedule.minute_schedule',
+            'cogs.schedule.schedule_loader',
         ]
 
     async def on_ready(self):
