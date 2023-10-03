@@ -61,4 +61,3 @@ class BaseBattleRecruitmentCog(commands.Cog):
         with SessionLocal() as session:
             session.add(record)
             session.commit()
-            session.close()
