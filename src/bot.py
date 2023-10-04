@@ -3,7 +3,6 @@ import os
 import asyncio
 from dotenv import load_dotenv
 import discord
-from discord import app_commands
 from discord.ext import commands
 
 import models
@@ -33,8 +32,10 @@ class GbfBot(commands.Bot):
             'cogs.battle.beelzebub',
             'cogs.battle.belial',
             'cogs.battle.super_ultimate_bahamut',
+            'cogs.manager.reload_cog',
             'cogs.schedule.minute_schedule',
             'cogs.schedule.schedule_loader',
+            'cogs.sync.gspread_sync',
         ]
 
     async def on_ready(self):
@@ -50,20 +51,6 @@ class GbfBot(commands.Bot):
     async def setup_hook(self):
         await self.load_cogs(self.INITIAL_EXTENSIONS)
         await self.tree.sync()
-
-    @app_commands.command(name='cog_reload', description='cogリロード')
-    @commands.is_owner()
-    async def reload(self, interaction: discord.Interaction, cog_name: str):
-        try:
-            await interaction.response.send_message(
-                f"cog {cog_name} reload...",
-                ephemeral=True
-            )
-            self.reload_extension(cog_name)
-            response = await interaction.original_response()
-            await response.edit(f"'{cog_name}' has been reloaded")
-        except Exception as e:
-            await response.edit(f"Could not reload extension: {e}")
 
     async def close(self):
         await super().close()
