@@ -15,14 +15,14 @@ def default_expiry_date():
     return datetime.now() + timedelta(days=1)
 
 
-class BattleRecruitment(Base):
+class BattleRecruitments(Base):
     """マルチバトル募集情報
 
     Args:
         Base (_type_): _description_
     """
-    __tablename__ = 'battle_recruitment'
-    rowid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    __tablename__ = 'battle_recruitments'
+    row_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     guild_id = Column(BigInteger)
     channel_id = Column(BigInteger)
     message_id = Column(BigInteger)
@@ -46,7 +46,7 @@ class BattleRecruitment(Base):
 
     @classmethod
     def select(cls, session, guild_id: int, channel_id: int, message_id: int) \
-            -> 'BattleRecruitment':
+            -> 'BattleRecruitments':
         """マルチバトル募集情報を検索する
         Args:
             session (Session): DB接続

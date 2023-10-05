@@ -12,7 +12,7 @@ class EventSchedules(Base):
         Base (_type_): _description_
     """
     __tablename__ = 'event_schedules'
-    rowid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    row_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     event_type = Column(String)
     event_count = Column(BigInteger)
     profile = Column(String)

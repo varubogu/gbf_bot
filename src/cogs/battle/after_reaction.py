@@ -3,7 +3,7 @@ import asyncio
 import discord
 from discord.ext import commands
 from models.base import SessionLocal
-from models.battle_recruitment import BattleRecruitment
+from models.battle_recruitments import BattleRecruitments
 from util.exception.abort_process_exception import AbortProcessException
 from cogs.battle.target_enum import Target
 from cogs.battle.battle_type import BattleTypeEnum
@@ -53,10 +53,10 @@ class AfterReaction(commands.Cog):
     async def fetch_recruitment(
             self,
             paylood: discord.RawReactionActionEvent
-    ) -> (BattleRecruitment, BattleTypeEnum, Target):
+    ) -> (BattleRecruitments, BattleTypeEnum, Target):
 
         with SessionLocal() as session:
-            recruitment = BattleRecruitment.select(
+            recruitment = BattleRecruitments.select(
                 session,
                 paylood.guild_id,
                 paylood.channel_id,

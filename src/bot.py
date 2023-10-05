@@ -35,7 +35,9 @@ class GbfBot(commands.Bot):
             'cogs.manager.reload_cog',
             'cogs.schedule.minute_schedule',
             'cogs.schedule.schedule_loader',
-            'cogs.sync.gspread_sync',
+            'cogs.sync.gspread_load',
+            'cogs.sync.gspread_push',
+            # 'cogs.sync.gspread_sync',
         ]
 
     async def on_ready(self):

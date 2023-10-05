@@ -1,6 +1,6 @@
 from datetime import datetime
 import uuid
-from sqlalchemy import UUID, Column, DateTime, String, and_
+from sqlalchemy import UUID, BigInteger, Column, DateTime, String, and_
 from models.base import Base
 
 
@@ -14,9 +14,12 @@ class Schedules(Base):
     row_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     parent_schedule_id = Column(
         UUID(as_uuid=True), nullable=True, default=None)
-    schedule_time = Column(DateTime)
+    parent_schedule_detail_id = Column(
+        UUID(as_uuid=True), nullable=True, default=None)
+    schedule_datetime = Column(DateTime)
+    guild_id = Column(BigInteger)
+    channel_id = Column(BigInteger)
     message_id = Column(String)
-    channel_id = Column(String)
 
     def insert(self, session):
         session.add(self)
@@ -30,13 +33,23 @@ class Schedules(Base):
             schedule.insert(session)
 
     @classmethod
+    def truncate(cls, session):
+        session.execute('TRUNCATE schedules')
+        session.commit()
+
+    @classmethod
     def select_sinse_last_time(
             cls, session, last_time: datetime, now: datetime
     ) -> ['Schedules']:
         stmt = session.query(Schedules).filter(
             and_(
-                last_time < Schedules.schedule_time,
-                Schedules.schedule_time <= now
+                last_time < Schedules.schedule_datetime,
+                Schedules.schedule_datetime <= now
             )
         )
+        return stmt.all()
+
+    @classmethod
+    def select_all(cls, session) -> ['Schedules']:
+        stmt = session.query(Schedules)
         return stmt.all()

@@ -5,7 +5,7 @@ from discord import Interaction as Interaction
 from discord.ext import commands
 
 from models.base import SessionLocal
-from models.battle_recruitment import BattleRecruitment
+from models.battle_recruitments import BattleRecruitments
 from cogs.battle.target_enum import Target
 from cogs.battle.battle_type import BattleTypeEnum as BT
 
@@ -50,7 +50,7 @@ class BaseBattleRecruitmentCog(commands.Cog):
             await message.add_reaction(reaction)
 
     def _regist(self, message: discord.Message, battle_type: BT):
-        record = BattleRecruitment()
+        record = BattleRecruitments()
         record.guild_id = message.guild.id
         record.channel_id = message.channel.id
         record.message_id = message.id

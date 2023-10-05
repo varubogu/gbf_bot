@@ -7,7 +7,7 @@ from enums.last_process_type import LastProcessType
 from models.base import SessionLocal
 from models.messages import Messages
 from models.schedules import Schedules
-from models.last_process_time import LastProcessTime
+from models.last_process_times import LastProcessTimes
 
 
 class MinuteSchedule(commands.Cog):
@@ -31,7 +31,7 @@ class MinuteSchedule(commands.Cog):
         await self.channel.send('1分メッセージ')
 
         with SessionLocal() as session:
-            (last, now) = LastProcessTime.select_and_update(
+            (last, now) = LastProcessTimes.select_and_update(
                 session,
                 LastProcessType.SCHEDULE,
                 now

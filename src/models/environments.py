@@ -1,7 +1,6 @@
 
 from datetime import datetime, timedelta
-import uuid
-from sqlalchemy import UUID, Column, String, UniqueConstraint
+from sqlalchemy import Column, String
 from models.base import Base
 from util.exception.environment_notfound_exception \
     import EnvironmentNotFoundException
@@ -11,27 +10,19 @@ def default_expiry_date():
     return datetime.now() + timedelta(days=1)
 
 
-class Environment(Base):
+class Environments(Base):
     """環境変数
 
     Args:
         Base (_type_): _description_
     """
-    __tablename__ = 'environment'
-    rowid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    key = Column(String)
+    __tablename__ = 'environments'
+    key = Column(String, primary_key=True)
     value = Column(String)
     memo = Column(String)
 
-    __table_args__ = (
-        UniqueConstraint(
-            'key',
-            name='unique_environment'
-        ),
-    )
-
     @classmethod
-    def select_one(cls, session, key) -> 'Environment':
+    def select_one(cls, session, key) -> 'Environments':
         """
         環境変数を取得する
         Args:
@@ -48,7 +39,7 @@ class Environment(Base):
         return session.query(cls).filter(cls.key == key).first()
 
     @classmethod
-    def select_all(cls, session, keys) -> ['Environment']:
+    def select_all(cls, session, keys) -> ['Environments']:
         """
         環境変数を一括取得する
 

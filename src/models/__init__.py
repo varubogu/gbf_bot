@@ -1,14 +1,98 @@
-from models.base import Base, engine, SessionLocal
-from models.battle_recruitment import BattleRecruitment
-from models.battle_type import BattleType
-from models.environment import Environment
+from models.base import Base, engine
+
+# 全てのモデル定義を認識する
+from models.battle_recruitments import BattleRecruitments
+from models.battle_types import BattleTypes
+from models.channel_types import ChannelTypes
+from models.elements import Elements
+from models.environments import Environments
+from models.event_schedule_details import EventSchedulesDetails
 from models.event_schedules import EventSchedules
-from models.event_schedules_detail import EventSchedulesDetail
-from models.last_process_time import LastProcessTime
+from models.guild_channels import GuildChannels
+from models.guild_event_schedule_details import GuildEventSchedulesDetails
+from models.guild_last_process_times import GuildLastProcessTimes
+from models.last_process_times import LastProcessTimes
 from models.messages import Messages
-from models.quest import Quest
+from models.quests import Quests
 from models.schedules import Schedules
 
 
 def init_db():
+    # モデル定義に従ってテーブル作成
     Base.metadata.create_all(bind=engine)
+
+
+def get_metadata():
+    return Base.metadata
+
+class TableNameMapping:
+
+    __MAPPING__ = [
+        # order by table_name_en asc
+        {
+            'table_name_en': 'battle_recruitments',
+            'clsobj': BattleRecruitments
+        },
+        {
+            'table_name_en': 'battle_types',
+            'clsobj': BattleTypes
+        },
+        {
+            'table_name_en': 'channel_types',
+            'clsobj': ChannelTypes
+        },
+        {
+            'table_name_en': 'elements',
+            'clsobj': Elements
+        },
+        {
+            'table_name_en': 'environments',
+            'clsobj': Environments
+        },
+        {
+            'table_name_en': 'event_schedule_details',
+            'clsobj': EventSchedulesDetails
+        },
+        {
+            'table_name_en': 'event_schedules',
+            'clsobj': EventSchedules
+        },
+        {
+            'table_name_en': 'guild_channels',
+            'clsobj': GuildChannels
+        },
+        {
+            'table_name_en': 'guild_event_schedule_details',
+            'clsobj': GuildEventSchedulesDetails
+        },
+        {
+            'table_name_en': 'guild_last_process_times',
+            'clsobj': GuildLastProcessTimes
+        },
+        {
+            'table_name_en': 'last_process_times',
+            'clsobj': LastProcessTimes
+        },
+        {
+            'table_name_en': 'messages',
+            'clsobj': Messages
+        },
+        {
+            'table_name_en': 'quests',
+            'clsobj': Quests
+        },
+        {
+            'table_name_en': 'schedules',
+            'clsobj': Schedules
+        },
+    ]
+
+    @classmethod
+    def getClassObject(cls, table_name_en: str) -> Base:
+        """
+        get table model
+        """
+        for cls_info in cls.__MAPPING__:
+            if cls_info['table_name_en'] == table_name_en:
+                return cls_info['clsobj']
+        return None
