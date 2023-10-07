@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 import uuid
 
@@ -64,7 +65,7 @@ class GSpreadPush(GSpreadBase):
                         continue
                     cell = getattr(row, attribute)
                     index = column_names.index(attribute)
-                    if hasattr(cell, 'strftime'):
+                    if isinstance(cell, datetime):
                         cells[index] = cell.strftime('%Y-%m-%d %H:%M:%S')
                     elif isinstance(cell, uuid.UUID):
                         cells[index] = str(cell)
