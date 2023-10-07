@@ -1,6 +1,6 @@
 from datetime import datetime
 import uuid
-from sqlalchemy import UUID, BigInteger, Column, DateTime, String, and_
+from sqlalchemy import UUID, BigInteger, Column, DateTime, String, and_, text
 from models.base import Base
 
 
@@ -29,12 +29,12 @@ class Schedules(Base):
 
     @classmethod
     def bulk_insert(cls, session, schedules):
-        for schedule in schedules:
-            schedule.insert(session)
+
+        session.add_all(schedules)
 
     @classmethod
     def truncate(cls, session):
-        session.execute('TRUNCATE schedules')
+        session.execute(text('TRUNCATE schedules'))
         session.commit()
 
     @classmethod

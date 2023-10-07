@@ -3,6 +3,7 @@ from discord.ext import commands
 from discord import app_commands
 
 from models.base import SessionLocal
+from gbf.schedules.manager import ScheduleManager
 
 
 class ScheduleLoader(commands.Cog):
@@ -14,15 +15,21 @@ class ScheduleLoader(commands.Cog):
     @commands.has_role("Bot Control")
     async def schedule_reload(self, interaction: discord.Interaction):
 
-        with SessionLocal() as session:
-            self.schedule_delete(session)
-            self.schedule_create(session)
+        await interaction.response.defer()
+        await interaction.followup.send("スケジュール再読み込み中...")
 
-    async def schedule_delete(self, session):
-        pass
+        try:
 
-    async def schedule_create(self, session):
-        pass
+            with SessionLocal() as session:
+                register = ScheduleManager()
+                await register.event_schedule_clear(session)
+                await register.event_schedule_create(session)
+                session.commit()
+
+            await interaction.followup.send("スケジュール再読み込み完了")
+        except Exception as e:
+            await interaction.followup.send("スケジュール再読み込み失敗")
+            raise e
 
 
 async def setup(bot: commands.Bot):
