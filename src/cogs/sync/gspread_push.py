@@ -1,4 +1,5 @@
 import os
+import uuid
 
 import gspread
 import discord
@@ -65,6 +66,8 @@ class GSpreadPush(GSpreadBase):
                     index = column_names.index(attribute)
                     if hasattr(cell, 'strftime'):
                         cells[index] = cell.strftime('%Y-%m-%d %H:%M:%S')
+                    elif isinstance(cell, uuid.UUID):
+                        cells[index] = str(cell)
                     else:
                         cells[index] = cell
             rows.append(cells)
