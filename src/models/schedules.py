@@ -1,10 +1,10 @@
 from datetime import datetime
 import uuid
 from sqlalchemy import UUID, BigInteger, Column, DateTime, String, and_, text
-from models.base import Base
+from models.model_base import ModelBase
 
 
-class Schedules(Base):
+class Schedules(ModelBase):
     """スケジュール情報
 
     Args:

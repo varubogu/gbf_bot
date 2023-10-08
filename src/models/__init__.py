@@ -1,4 +1,4 @@
-from models.base import Base, engine
+from models.model_base import ModelBase, engine
 
 # 全てのモデル定義を認識する
 from models.battle_recruitments import BattleRecruitments
@@ -19,11 +19,11 @@ from models.schedules import Schedules
 
 def init_db():
     # モデル定義に従ってテーブル作成
-    Base.metadata.create_all(bind=engine)
+    ModelBase.metadata.create_all(bind=engine)
 
 
 def get_metadata():
-    return Base.metadata
+    return ModelBase.metadata
 
 class TableNameMapping:
 
@@ -88,7 +88,7 @@ class TableNameMapping:
     ]
 
     @classmethod
-    def getClassObject(cls, table_name_en: str) -> Base:
+    def getClassObject(cls, table_name_en: str) -> ModelBase:
         """
         get table model
         """

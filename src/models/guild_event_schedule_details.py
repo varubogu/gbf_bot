@@ -1,9 +1,9 @@
 import uuid
 from sqlalchemy import UUID, Column, String
-from models.base import Base
+from models.model_base import ModelBase
 
 
-class GuildEventSchedulesDetails(Base):
+class GuildEventSchedulesDetails(ModelBase):
     """イベント期間内詳細スケジュール
 
     Args:

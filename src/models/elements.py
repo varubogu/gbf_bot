@@ -1,8 +1,8 @@
 from sqlalchemy import Column, String, Integer
-from models.base import Base
+from models.model_base import ModelBase
 
 
-class Elements(Base):
+class Elements(ModelBase):
     """属性定義
 
     Args:

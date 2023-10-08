@@ -1,7 +1,7 @@
 
 from datetime import datetime, timedelta
 from sqlalchemy import Column, String
-from models.base import Base
+from models.model_base import ModelBase
 from util.exception.environment_notfound_exception \
     import EnvironmentNotFoundException
 
@@ -10,7 +10,7 @@ def default_expiry_date():
     return datetime.now() + timedelta(days=1)
 
 
-class Environments(Base):
+class Environments(ModelBase):
     """環境変数
 
     Args:

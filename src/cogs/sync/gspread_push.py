@@ -1,28 +1,19 @@
-from datetime import datetime
-import os
-import uuid
-
-import gspread
 import discord
 from discord.ext import commands
 from discord import app_commands
-from sqlalchemy import select
 
-from cogs.sync.gspread_base import GSpreadBase
+from gbf.sync.db.loader import DbLoader
+from gbf.sync.gspread.register import GSpreadRegister
+from models.model_base import SessionLocal
 
 
-class GSpreadPush(GSpreadBase):
+class GSpreadPush(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
-        self.base = super()
-        self.base.__init__(
-            bot,
-            book_url=os.environ.get('GSPREAD_BOOK_PUSH_URL'),
-            init_message="スプレッドシートにデータ書き込み中...",
-            complete_message="スプレッドシートにデータ書き込み完了",
-            error_message="スプレッドシートにデータ書き込み失敗",
-            table_io=['out']
-        )
+        self.bot = bot
+        self.init_message = "スプレッドシートにデータ書き込み中..."
+        self.complete_message = "スプレッドシートにデータ書き込み完了"
+        self.error_message = "スプレッドシートにデータ書き込み失敗"
 
     @app_commands.command(
             name="gspread_push",
@@ -30,50 +21,37 @@ class GSpreadPush(GSpreadBase):
     )
     @commands.has_role("Bot Control")
     async def command_execute(self, interaction: discord.Interaction):
-        await self.base.command_execute(interaction)
+        try:
+            await interaction.response.defer()
+            await interaction.followup.send(self.init_message)
+            await self.execute(interaction)
+            await interaction.followup.send(self.complete_message)
+        except Exception:
+            await interaction.followup.send(self.error_message)
+            raise
 
-    async def before_message(
-            self,
-            sheet_name: str
-    ) -> str:
-        return f"{sheet_name} push..."
+    async def execute(self, interaction: discord.Interaction):
+        loader = DbLoader()
 
-    async def do(
-            self,
-            session,
-            worksheet: gspread.Worksheet,
-            cls,
-            table_info
-    ):
+        register = GSpreadRegister()
+        await register.open()
 
-        worksheet.resize(rows=2)
+        with SessionLocal() as session:
+            for table_dif in register.core.table_difinition:
+                if table_dif.table_io != 'out':
+                    continue
 
-        result = session.execute(select(cls))
-        data = result.fetchall()
+                await interaction.followup.send(
+                    f'{table_dif.table_name_jp} push...'
+                )
 
-        if not data:
-            return
+                table_cls = table_dif.table_cls
+                data = await loader.load(session, table_cls)
+                if not data:
+                    continue
 
-        column_names = [column.name for column in cls.__table__.columns]
-
-        rows = []
-        for table in data:
-            cells = ["" for _ in range(len(column_names))]
-            for row in table:
-                for attribute in dir(row):
-                    if attribute not in column_names:
-                        continue
-                    cell = getattr(row, attribute)
-                    index = column_names.index(attribute)
-                    if isinstance(cell, datetime):
-                        cells[index] = cell.strftime('%Y-%m-%d %H:%M:%S')
-                    elif isinstance(cell, uuid.UUID):
-                        cells[index] = str(cell)
-                    else:
-                        cells[index] = cell
-            rows.append(cells)
-
-        worksheet.append_rows(rows)
+                sheet = register.core.book.worksheet(table_dif.table_name_jp)
+                await register.regist(sheet, data, table_cls)
 
 
 async def setup(bot: commands.Bot):

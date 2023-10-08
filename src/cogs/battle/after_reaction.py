@@ -2,7 +2,7 @@
 import asyncio
 import discord
 from discord.ext import commands
-from models.base import SessionLocal
+from models.model_base import SessionLocal
 from models.battle_recruitments import BattleRecruitments
 from util.exception.abort_process_exception import AbortProcessException
 from cogs.battle.target_enum import Target

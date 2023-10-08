@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 
-from models.base import SessionLocal
+from models.model_base import SessionLocal
 from gbf.schedules.manager import ScheduleManager
 
 

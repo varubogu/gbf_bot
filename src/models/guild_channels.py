@@ -1,9 +1,9 @@
 
 from sqlalchemy import Column, Integer, BigInteger
-from models.base import Base
+from models.model_base import ModelBase
 
 
-class GuildChannels(Base):
+class GuildChannels(ModelBase):
     """サーバーチャンネル
 
     Args:

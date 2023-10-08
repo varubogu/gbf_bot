@@ -2,10 +2,10 @@ from datetime import datetime, timedelta
 from enums.last_process_type import LastProcessType
 from sqlalchemy import Column, DateTime, Integer, String
 
-from models.base import Base
+from models.model_base import ModelBase
 
 
-class LastProcessTimes(Base):
+class LastProcessTimes(ModelBase):
     """最終実行日時
 
     Args:

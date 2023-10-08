@@ -1,8 +1,8 @@
 from sqlalchemy import Column, String
-from models.base import Base
+from models.model_base import ModelBase
 
 
-class Messages(Base):
+class Messages(ModelBase):
     """メッセージ定義
 
     Args:

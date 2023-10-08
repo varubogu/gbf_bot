@@ -22,4 +22,4 @@ SessionLocal = scoped_session(
 
 print("scope session create")
 
-Base = declarative_base()
+ModelBase = declarative_base()

@@ -1,10 +1,10 @@
 
 from sqlalchemy import Column, Integer
-from models.base import Base
+from models.model_base import ModelBase
 from sqlalchemy import String
 
 
-class ChannelTypes(Base):
+class ChannelTypes(ModelBase):
     """チャンネル種類
 
     Args:

@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import uuid
 from sqlalchemy \
     import UUID, Column, DateTime, BigInteger, Integer, UniqueConstraint, and_
-from models.base import Base
+from models.model_base import ModelBase
 
 
 def default_expiry_date():
@@ -15,7 +15,7 @@ def default_expiry_date():
     return datetime.now() + timedelta(days=1)
 
 
-class BattleRecruitments(Base):
+class BattleRecruitments(ModelBase):
     """マルチバトル募集情報
 
     Args:

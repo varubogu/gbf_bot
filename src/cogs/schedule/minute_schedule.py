@@ -4,7 +4,7 @@ from discord.ext import commands
 from discord.ext import tasks
 
 from enums.last_process_type import LastProcessType
-from models.base import SessionLocal
+from models.model_base import SessionLocal
 from models.messages import Messages
 from models.schedules import Schedules
 from models.last_process_times import LastProcessTimes

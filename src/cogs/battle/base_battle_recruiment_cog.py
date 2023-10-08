@@ -4,7 +4,7 @@ import discord
 from discord import Interaction as Interaction
 from discord.ext import commands
 
-from models.base import SessionLocal
+from models.model_base import SessionLocal
 from models.battle_recruitments import BattleRecruitments
 from cogs.battle.target_enum import Target
 from cogs.battle.battle_type import BattleTypeEnum as BT

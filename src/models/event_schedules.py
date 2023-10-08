@@ -2,10 +2,10 @@ import uuid
 from sqlalchemy \
     import UUID, Column, UniqueConstraint, \
     DateTime, BigInteger, Integer, String
-from models.base import Base
+from models.model_base import ModelBase
 
 
-class EventSchedules(Base):
+class EventSchedules(ModelBase):
     """イベントスケジュール情報
 
     Args:

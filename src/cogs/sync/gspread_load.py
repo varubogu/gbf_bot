@@ -1,25 +1,20 @@
-import os
-
-import gspread
 import discord
 from discord.ext import commands
 from discord import app_commands
 
-from cogs.sync.gspread_base import GSpreadBase
+from gbf.sync.db.register import DbRegister
+from gbf.sync.gspread.loader import GSpreadLoader
+from models.model_base import SessionLocal
+from models.util.get_column_names import get_column_names
 
 
-class GSpreadLoad(GSpreadBase):
+class GSpreadLoad(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
-        self.base = super()
-        self.base.__init__(
-            bot,
-            book_url=os.environ.get('GSPREAD_BOOK_PUSH_URL'),
-            init_message="スプレッドシートからデータ読み込み中...",
-            complete_message="スプレッドシートからデータ読み込み完了",
-            error_message="スプレッドシートからデータ読み込み失敗",
-            table_io=['in']
-        )
+        self.bot = bot
+        self.init_message = "スプレッドシートからデータ読み込み中..."
+        self.complete_message = "スプレッドシートからデータ読み込み完了"
+        self.error_message = "スプレッドシートからデータ読み込み失敗"
 
     @app_commands.command(
             name="gspread_load",
@@ -27,48 +22,38 @@ class GSpreadLoad(GSpreadBase):
     )
     @commands.has_role("Bot Control")
     async def command_execute(self, interaction: discord.Interaction):
-        await self.base.command_execute(interaction)
+        try:
+            await interaction.response.defer()
+            await interaction.followup.send(self.init_message)
+            await self.execute(interaction)
+            await interaction.followup.send(self.complete_message)
+        except Exception:
+            await interaction.followup.send(self.error_message)
+            raise
 
-    async def before_message(
-            self,
-            sheet_name: str
-    ) -> str:
-        return f"{sheet_name} load..."
+    async def execute(self, interaction: discord.Interaction):
+        loader = GSpreadLoader()
+        await loader.open()
 
-    async def do(
-            self,
-            session,
-            worksheet: gspread.Worksheet,
-            cls,
-            table_info
-    ):
-        data = worksheet.get_all_records()
+        register = DbRegister()
 
-        column_names = [column.name for column in cls.__table__.columns]
+        with SessionLocal() as session:
+            for table_dif in loader.core.table_difinition:
 
-        if not data:
-            return
+                if table_dif.table_io != 'in':
+                    continue
 
-        is_first_record = True
+                await interaction.followup.send(
+                    f'{table_dif.table_name_jp} load...'
+                )
 
-        for row in data:
-            # 1行目は日本語列名のため省略する
-            if (is_first_record):
-                is_first_record = False
-                continue
+                worksheet = loader.core.book.worksheet(table_dif.table_name_jp)
+                table_model = await loader.load(worksheet, table_dif)
 
-            r = {key: (row[key]) for key in row if key in column_names}
+                if len(table_model) == 0:
+                    continue
 
-            table = cls(**r)
-            # column_namesの先頭から1～n列目が主キーという想定のため、1列目が空欄かで判断
-            if not getattr(table, column_names[0]):
-                # 主キーが空の項目は弾く
-                continue
-
-            session.merge(table)
-
-        # テーブル単位コミット
-        session.commit()
+                await register.regist(session, table_model)
 
 
 async def setup(bot: commands.Bot):
