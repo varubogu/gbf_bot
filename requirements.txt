@@ -1,6 +1,16 @@
-python-dotenv
+# bot
 discord.py
+
+# env
+python-dotenv
+
+# db
 asyncpg
 sqlalchemy
+
+# google spreadsheet
 gspread
 oauth2client
+
+# test
+pytest
