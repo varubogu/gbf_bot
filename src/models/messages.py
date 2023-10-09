@@ -15,5 +15,9 @@ class Messages(ModelBase):
     memo = Column(String)
 
     @classmethod
-    def select(cls, session, message_id: str) -> 'Messages':
+    def select_one(cls, session, message_id: str) -> 'Messages':
         return session.query(cls).filter(cls.message_id == message_id).first()
+
+    @classmethod
+    def select_multi(cls, session, message_ids: [str]) -> ['Messages']:
+        return session.query(cls).filter(cls.message_id.in_(message_ids)).all()

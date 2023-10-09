@@ -1,13 +1,10 @@
-from datetime import datetime
 import os
-from discord.ext import commands
-from discord.ext import tasks
+from datetime import datetime
+from discord.ext import commands, tasks
 
-from enums.last_process_type import LastProcessType
-from models.model_base import SessionLocal
+from gbf.schedules.minute_executor import MinuteScheduleExecutor
 from models.messages import Messages
-from models.schedules import Schedules
-from models.last_process_times import LastProcessTimes
+from models.model_base import SessionLocal
 
 
 class MinuteSchedule(commands.Cog):
@@ -15,6 +12,7 @@ class MinuteSchedule(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.channel = None
+        self.executor = MinuteScheduleExecutor()
 
     def cog_load(self):
         self.loop.start()
@@ -31,17 +29,17 @@ class MinuteSchedule(commands.Cog):
         await self.channel.send('1分メッセージ')
 
         with SessionLocal() as session:
-            (last, now) = LastProcessTimes.select_and_update(
-                session,
-                LastProcessType.SCHEDULE,
-                now
-            )
-            session.commit()
 
-            schedules = Schedules.select_sinse_last_time(session, last, now)
+            schedules = await self.executor.fetch_schedules(session, now)
+            message_ids = [schedule.message_id for schedule in schedules]
+            db_messages = Messages.select_multi(session, message_ids)
 
             for schedule in schedules:
-                db_message = Messages.select(session, schedule.message_id)
+                db_message: Messages = next(
+                    (m for m in db_messages
+                        if m.message_id == schedule.message_id),
+                    None)
+
                 if db_message is None:
                     continue
 
