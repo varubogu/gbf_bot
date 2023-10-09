@@ -2,6 +2,7 @@ import uuid
 from sqlalchemy \
     import UUID, Column, UniqueConstraint, \
     DateTime, BigInteger, Integer, String
+from sqlalchemy.future import select
 from models.model_base import ModelBase
 
 
@@ -28,6 +29,11 @@ class EventSchedules(ModelBase):
         ),
     )
 
-    def create(self, session):
-        session.add(self)
-        session.commit()
+    async def create(self, session):
+        await session.add(self)
+        await session.commit()
+
+    @classmethod
+    async def select_all(cls, session):
+        result = await session.execute(select(cls))
+        return result.scalars().all()

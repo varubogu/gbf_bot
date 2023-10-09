@@ -20,7 +20,7 @@ class CogReload(commands.Cog):
             f"cog [{cog_name}] reload...",
             ephemeral=True
         )
-        self.bot.reload_extension(cog_name)
+        await self.bot.reload_extension(cog_name)
         response = await interaction.original_response()
         await response.edit(f"'{cog_name}' has been reloaded")
 

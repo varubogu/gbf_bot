@@ -4,7 +4,7 @@ import discord
 from discord import Interaction as Interaction
 from discord.ext import commands
 
-from models.model_base import SessionLocal
+from models.model_base import AsyncSessionLocal
 from models.battle_recruitments import BattleRecruitments
 from cogs.battle.target_enum import Target
 from cogs.battle.battle_type import BattleTypeEnum as BT
@@ -36,7 +36,7 @@ class BaseBattleRecruitmentCog(commands.Cog):
     ):
         message = await self._send_message(interaction, battle_type)
         await self._add_reaction(message, battle_type)
-        self._regist(message, battle_type)
+        await self._regist(message, battle_type)
 
     async def _send_message(self, interaction: Interaction, battle_type: BT):
         m = f"{self.target.quest_alias}の参加者を募集します。"
@@ -49,7 +49,7 @@ class BaseBattleRecruitmentCog(commands.Cog):
         for reaction in battle_type.reactions:
             await message.add_reaction(reaction)
 
-    def _regist(self, message: discord.Message, battle_type: BT):
+    async def _regist(self, message: discord.Message, battle_type: BT):
         record = BattleRecruitments()
         record.guild_id = message.guild.id
         record.channel_id = message.channel.id
@@ -58,6 +58,6 @@ class BaseBattleRecruitmentCog(commands.Cog):
         record.target_id = self.target.target_id
         record.battle_type_id = battle_type.type_value
 
-        with SessionLocal() as session:
+        async with AsyncSessionLocal() as session:
             session.add(record)
-            session.commit()
+            await session.commit()

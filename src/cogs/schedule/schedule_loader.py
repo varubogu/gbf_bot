@@ -1,8 +1,9 @@
+import traceback
 import discord
 from discord.ext import commands
 from discord import app_commands
 
-from models.model_base import SessionLocal
+from models.model_base import AsyncSessionLocal
 from gbf.schedules.manager import ScheduleManager
 
 
@@ -20,16 +21,22 @@ class ScheduleLoader(commands.Cog):
 
         try:
 
-            with SessionLocal() as session:
+            async with AsyncSessionLocal() as session:
                 register = ScheduleManager()
                 await register.event_schedule_clear(session)
                 await register.event_schedule_create(session)
-                session.commit()
+                await session.commit()
 
             await interaction.followup.send("スケジュール再読み込み完了")
         except Exception as e:
             await interaction.followup.send("スケジュール再読み込み失敗")
-            raise e
+            print(e)
+            print("Exception Type:", type(e))
+            print("Exception Message:", e)
+            print("Exception Args:", e.args)
+            print("Traceback:")
+            traceback.print_exc()
+            raise
 
 
 async def setup(bot: commands.Bot):

@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
-from enums.last_process_type import LastProcessType
-from sqlalchemy import BigInteger, Column, DateTime, Integer, String
+from sqlalchemy import BigInteger, Column, DateTime, Integer, String, and_
+from sqlalchemy.future import select
 
+from enums.last_process_type import LastProcessType
 from models.model_base import ModelBase
-from sqlalchemy import and_
 
 
 class GuildLastProcessTimes(ModelBase):
@@ -20,7 +20,7 @@ class GuildLastProcessTimes(ModelBase):
     memo = Column(String)
 
     @classmethod
-    def select_one(
+    async def select_one(
             cls,
             session,
             guild_id: int,
@@ -37,15 +37,19 @@ class GuildLastProcessTimes(ModelBase):
             last: 最終実行日時
         """
 
-        return session.query(GuildLastProcessTimes).filter(
+        result = session.execute(
+            select(GuildLastProcessTimes).filter(
                 and_(
                     GuildLastProcessTimes.guild_id == guild_id,
                     GuildLastProcessTimes.process_type == process_type.value
                 )
-            ).first()
+            )
+        )
+
+        return result.scalars().first()
 
     @classmethod
-    def select_and_update(
+    async def select_and_update(
             cls,
             session,
             guild_id: int,
@@ -68,7 +72,7 @@ class GuildLastProcessTimes(ModelBase):
         if now is None:
             now = datetime.now()
 
-        last_process_time = cls.select_or_create(
+        last_process_time = await cls.select_or_create(
             session, guild_id, process_type)
 
         last = last_process_time.execute_time
@@ -76,7 +80,7 @@ class GuildLastProcessTimes(ModelBase):
         return (last, now)
 
     @classmethod
-    def select_or_create(
+    async def select_or_create(
             cls,
             session,
             guild_id: int,
@@ -94,14 +98,14 @@ class GuildLastProcessTimes(ModelBase):
             LastProcessTime: LastProcessTimeオブジェクト
         """
 
-        last = cls.select_one(session, guild_id, process_type)
+        last = await cls.select_one(session, guild_id, process_type)
 
         if last is None:
-            last = cls.create(session, guild_id, process_type)
+            last = await cls.create(session, guild_id, process_type)
         return last
 
     @classmethod
-    def create(
+    async def create(
             cls,
             session,
             guild_id: int,
@@ -118,13 +122,13 @@ class GuildLastProcessTimes(ModelBase):
         Returns:
             LastProcessTime: LastProcessTimeオブジェクト
         """
-        last = cls.make(guild_id, process_type)
-        session.add(last)
+        last = await cls.make(guild_id, process_type)
+        await session.add(last)
 
         return last
 
     @classmethod
-    def make(
+    async def make(
             cls,
             guild_id: int,
             process_type: LastProcessType

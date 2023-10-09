@@ -59,9 +59,11 @@ class GbfBot(commands.Bot):
 
 
 async def main():
-    models.init_db()
+    await models.init_db()
+    bot = GbfBot()
+    await bot.start(DISCORD_TOKEN)
+
 
 if __name__ == "__main__":
-    asyncio.run(main())
-    bot = GbfBot()
-    bot.run(DISCORD_TOKEN)
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())

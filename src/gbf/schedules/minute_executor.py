@@ -6,11 +6,11 @@ from models.schedules import Schedules
 
 class MinuteScheduleExecutor:
     async def fetch_schedules(self, session, now: datetime) -> [Schedules]:
-        (last, _now) = LastProcessTimes.select_and_update(
+        (last, _now) = await LastProcessTimes.select_and_update(
             session,
             LastProcessType.SCHEDULE,
             now
         )
-        session.commit()
+        await session.commit()
 
-        return Schedules.select_sinse_last_time(session, last, _now)
+        return await Schedules.select_sinse_last_time(session, last, _now)

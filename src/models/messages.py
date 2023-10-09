@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String
+from sqlalchemy.future import select
 from models.model_base import ModelBase
 
 
@@ -15,9 +16,15 @@ class Messages(ModelBase):
     memo = Column(String)
 
     @classmethod
-    def select_one(cls, session, message_id: str) -> 'Messages':
-        return session.query(cls).filter(cls.message_id == message_id).first()
+    async def select_one(cls, session, message_id: str) -> 'Messages':
+        result = await session.execute(
+            select(cls).filter(cls.message_id == message_id)
+        )
+        return result.scalars().first()
 
     @classmethod
-    def select_multi(cls, session, message_ids: [str]) -> ['Messages']:
-        return session.query(cls).filter(cls.message_id.in_(message_ids)).all()
+    async def select_multi(cls, session, message_ids: [str]) -> ['Messages']:
+        result = await session.execute(
+            select(cls).filter(cls.message_id.in_(message_ids))
+        )
+        return result.scalars().all()

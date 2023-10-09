@@ -17,13 +17,15 @@ from models.quests import Quests
 from models.schedules import Schedules
 
 
-def init_db():
+async def init_db():
     # モデル定義に従ってテーブル作成
-    ModelBase.metadata.create_all(bind=engine)
+    async with engine.begin() as conn:
+        await conn.run_sync(ModelBase.metadata.create_all)
 
 
 def get_metadata():
     return ModelBase.metadata
+
 
 class TableNameMapping:
 

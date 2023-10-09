@@ -2,7 +2,7 @@ import re
 from datetime import datetime
 
 
-def convert_time(
+async def convert_time(
         time_str: str,
         from_day: datetime = None
 ) -> datetime:

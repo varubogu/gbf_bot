@@ -4,7 +4,7 @@ from discord import app_commands
 
 from gbf.sync.db.register import DbRegister
 from gbf.sync.gspread.loader import GSpreadLoader
-from models.model_base import SessionLocal
+from models.model_base import AsyncSessionLocal
 from models.util.get_column_names import get_column_names
 
 
@@ -27,8 +27,9 @@ class GSpreadLoad(commands.Cog):
             await interaction.followup.send(self.init_message)
             await self.execute(interaction)
             await interaction.followup.send(self.complete_message)
-        except Exception:
+        except Exception as e:
             await interaction.followup.send(self.error_message)
+            print(e)
             raise
 
     async def execute(self, interaction: discord.Interaction):
@@ -37,7 +38,7 @@ class GSpreadLoad(commands.Cog):
 
         register = DbRegister()
 
-        with SessionLocal() as session:
+        async with AsyncSessionLocal() as session:
             for table_dif in loader.core.table_difinition:
 
                 if table_dif.table_io != 'in':

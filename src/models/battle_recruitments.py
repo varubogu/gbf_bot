@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import uuid
 from sqlalchemy \
     import UUID, Column, DateTime, BigInteger, Integer, UniqueConstraint, and_
+from sqlalchemy.future import select
 from models.model_base import ModelBase
 
 
@@ -39,14 +40,19 @@ class BattleRecruitments(ModelBase):
         ),
     )
 
-    def create(self, session):
+    async def create(self, session):
 
-        session.add(self)
-        session.commit()
+        await session.add(self)
+        await session.commit()
 
     @classmethod
-    def select(cls, session, guild_id: int, channel_id: int, message_id: int) \
-            -> 'BattleRecruitments':
+    async def select_single(
+        cls,
+        session,
+        guild_id: int,
+        channel_id: int,
+        message_id: int
+    ) -> 'BattleRecruitments':
         """マルチバトル募集情報を検索する
         Args:
             session (Session): DB接続
@@ -57,11 +63,14 @@ class BattleRecruitments(ModelBase):
         Returns:
             _type_: _description_
         """
-
-        return session.query(cls).filter(
+        result = await session.execute(
+            select(cls).filter(
                 and_(
                     cls.guild_id == guild_id,
                     cls.channel_id == channel_id,
                     cls.message_id == message_id
                 )
-            ).first()
+            )
+        )
+
+        return result.scalars().first()

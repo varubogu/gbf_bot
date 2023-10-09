@@ -1,12 +1,13 @@
 
 from datetime import datetime, timedelta
 from sqlalchemy import Column, String
+from sqlalchemy.future import select
 from models.model_base import ModelBase
 from util.exception.environment_notfound_exception \
     import EnvironmentNotFoundException
 
 
-def default_expiry_date():
+async def default_expiry_date():
     return datetime.now() + timedelta(days=1)
 
 
@@ -22,7 +23,7 @@ class Environments(ModelBase):
     memo = Column(String)
 
     @classmethod
-    def select_one(cls, session, key) -> 'Environments':
+    async def select_one(cls, session, key) -> 'Environments':
         """
         環境変数を取得する
         Args:
@@ -33,15 +34,21 @@ class Environments(ModelBase):
         Raises:
             EnvironmentNotFound: 環境変数が存在しない場合に発生する例外
         """
-        environment = session.query(cls).filter(cls.key == key).first()
+        result = await session.execute(
+            select(cls).filter(cls.key == key)
+        )
+        environment = result.first()
         if environment is None:
             raise EnvironmentNotFoundException(key)
-        return session.query(cls).filter(cls.key == key).first()
+        return environment
 
     @classmethod
-    def select_all(cls, session, keys) -> ['Environments']:
+    async def select_all(cls, session, keys) -> ['Environments']:
         """
         環境変数を一括取得する
 
         """
-        return session.query(cls).filter(cls.key.in_(keys)).all()
+        result = await session.execute(
+            select(cls).filter(cls.key.in_(keys))
+        )
+        return result.scalars().all()

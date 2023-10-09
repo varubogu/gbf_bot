@@ -1,4 +1,5 @@
-from models.model_base import ModelBase, SessionLocal
+from sqlalchemy.ext.asyncio import AsyncSession
+from models.model_base import ModelBase
 from models.util.get_column_names import get_column_names
 
 
@@ -6,7 +7,7 @@ class DbRegister:
 
     async def regist(
             self,
-            session: SessionLocal,
+            session: AsyncSession,
             table: [ModelBase]
     ):
         if not table:
@@ -19,6 +20,6 @@ class DbRegister:
             # column_namesの1列目は必ず主キー
             if not getattr(row, column_names[0]):
                 continue
-            session.merge(row)
+            await session.merge(row)
 
-        session.commit()
+        await session.commit()

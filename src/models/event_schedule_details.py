@@ -1,5 +1,6 @@
 import uuid
-from sqlalchemy import UUID, Column, String
+from sqlalchemy import UUID, BigInteger, Column, String
+from sqlalchemy.future import select
 from models.model_base import ModelBase
 
 
@@ -16,10 +17,15 @@ class EventSchedulesDetails(ModelBase):
     time = Column(String)
     schedule_name = Column(String)
     message_id = Column(String)
-    guild_id = Column(String)
-    channel_id = Column(String)
+    guild_id = Column(BigInteger)
+    channel_id = Column(BigInteger)
     reactions = Column(String)
 
-    def create(self, session):
-        session.add(self)
-        session.commit()
+    async def create(self, session):
+        await session.add(self)
+        await session.commit()
+
+    @classmethod
+    async def select_all(cls, session):
+        result = await session.execute(select(cls))
+        return result.scalars().all()

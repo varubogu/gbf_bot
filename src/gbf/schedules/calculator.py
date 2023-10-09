@@ -124,7 +124,7 @@ class ScheduleCalculator():
             [datetime]: スケジュール日時リスト
         """
         # 開始日の日時を生成
-        start = convert_time(time, start_at)
+        start = await convert_time(time, start_at)
 
         # イベント期間の日数を計算
         diff_days = (end_at - start_at).days
@@ -154,7 +154,7 @@ class ScheduleCalculator():
             [datetime]: スケジュール日時リスト
         """
         # 開始日
-        return [convert_time(time, start_at)]
+        return [await convert_time(time, start_at)]
 
     async def end_day(
             self,
@@ -171,7 +171,7 @@ class ScheduleCalculator():
             [datetime]: スケジュール日時リスト
         """
         # 開始日
-        return [convert_time(time, end_at)]
+        return [await convert_time(time, end_at)]
 
     async def range_day(
             self,
@@ -192,7 +192,7 @@ class ScheduleCalculator():
         start_rel_day, end_rel_day = matched.groups()
 
         # 開始日時を生成
-        start = convert_time(time, start_at)
+        start = await convert_time(time, start_at)
 
         # イベント対象期間分の時間計算オブジェクトを生成
         results = [
@@ -219,7 +219,7 @@ class ScheduleCalculator():
         """
         relative_day = start_day_relative.strip()
 
-        start = convert_time(time, start_at)
+        start = await convert_time(time, start_at)
 
         delta = timedelta(days=int(relative_day))
 

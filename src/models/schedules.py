@@ -1,6 +1,7 @@
 from datetime import datetime
 import uuid
 from sqlalchemy import UUID, BigInteger, Column, DateTime, String, and_, text
+from sqlalchemy.future import select
 from models.model_base import ModelBase
 
 
@@ -21,35 +22,38 @@ class Schedules(ModelBase):
     channel_id = Column(BigInteger)
     message_id = Column(String)
 
-    def insert(self, session):
-        session.add(self)
+    async def insert(self, session):
+        await session.add(self)
 
-    def delete(self, session):
-        session.delete(self)
+    async def delete(self, session):
+        await session.delete(self)
 
     @classmethod
-    def bulk_insert(cls, session, schedules):
-
+    async def bulk_insert(cls, session, schedules):
         session.add_all(schedules)
 
     @classmethod
-    def truncate(cls, session):
-        session.execute(text('TRUNCATE schedules'))
-        session.commit()
+    async def truncate(cls, session):
+        await session.execute(text('TRUNCATE schedules'))
+        await session.commit()
 
     @classmethod
-    def select_sinse_last_time(
+    async def select_sinse_last_time(
             cls, session, last_time: datetime, now: datetime
     ) -> ['Schedules']:
-        stmt = session.query(Schedules).filter(
-            and_(
-                last_time < Schedules.schedule_datetime,
-                Schedules.schedule_datetime <= now
+        result = await session.execute(
+            select(Schedules).filter(
+                and_(
+                    last_time < Schedules.schedule_datetime,
+                    Schedules.schedule_datetime <= now
+                )
             )
         )
-        return stmt.all()
+        return result.scalars().all()
 
     @classmethod
-    def select_all(cls, session) -> ['Schedules']:
-        stmt = session.query(Schedules)
-        return stmt.all()
+    async def select_all(cls, session) -> ['Schedules']:
+        result = await session.execute(
+            select(Schedules)
+        )
+        return result.scalars().all()

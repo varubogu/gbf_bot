@@ -1,7 +1,11 @@
+from datetime import datetime
 import os
+
+from sqlalchemy import BigInteger, DateTime, Integer, String, Uuid
 from gbf.sync.gspread.core import GSpreadCore
 from models.model_base import ModelBase
 from models.util.get_column_names import get_column_names
+from util.convert_datetime import convert_datetime
 
 
 class GSpreadLoader():
@@ -30,7 +34,7 @@ class GSpreadLoader():
         data = worksheet.get_all_records()
 
         # テーブル定義から列情報取得
-        column_names = await get_column_names(table_meta.table_cls)
+        # column_names = await get_column_names(table_meta.table_cls)
 
         if not data:
             return
@@ -44,10 +48,34 @@ class GSpreadLoader():
                 is_first_record = False
                 continue
 
-            # 列名と同じキーの辞書を作成
-            r = {key: (row[key]) for key in row if key in column_names}
-
             # 辞書をもとにクラスオブジェクトを作成
-            rows.append(table_meta.table_cls(**r))
+            r = await self.convert_object(row, table_meta)
+            rows.append(r)
 
         return rows
+
+    async def convert_object(self, row, table_meta):
+
+        columns = table_meta.table_cls.__table__.columns
+        r = {}
+        for key in row:
+            column = [c for c in columns if c.name == key]
+            if not column:
+                continue
+            column = column[0]
+
+            if isinstance(column.type, Integer):
+                r[key] = int(row[key])
+            elif isinstance(column.type, BigInteger):
+                r[key] = int(row[key])
+            elif isinstance(column.type, String):
+                r[key] = str(row[key])
+            elif isinstance(column.type, Uuid):
+                r[key] = row[key]
+            elif isinstance(column.type, DateTime):
+                r[key] = await convert_datetime(str(row[key]))
+            else:
+                raise Exception("Invalid column type")
+
+        # 辞書をもとにクラスオブジェクトを作成
+        return table_meta.table_cls(**r)

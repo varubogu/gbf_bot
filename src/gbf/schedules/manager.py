@@ -18,7 +18,7 @@ class ScheduleManager:
         Args:
             session (Session): DB接続
         """
-        Schedules.truncate(session)
+        await Schedules.truncate(session)
 
     async def event_schedule_create(self, session):
         """スケジュール生成
@@ -28,21 +28,21 @@ class ScheduleManager:
         """
 
         # 必要なデータを全取得
-        schedules = session.query(EventSchedules).all()
-        details = session.query(EventSchedulesDetails).all()
-        guild_details = session.query(GuildEventSchedulesDetails).all()
-        notification_channels = session.query(GuildChannels).filter(
-            GuildChannels.channel_type == 3
-        ).all()
+        schedules = await EventSchedules.select_all(session)
+        details = await EventSchedulesDetails.select_all(session)
+        guild_details = await GuildEventSchedulesDetails.select_all(session)
+        notifications = await GuildChannels.select_where_channel_type(
+            session, 3
+        )
 
         registration_schedules = await self.calc_schedule(
             schedules,
             details,
             guild_details,
-            notification_channels
+            notifications
         )
 
-        Schedules.bulk_insert(session, registration_schedules)
+        await Schedules.bulk_insert(session, registration_schedules)
 
     async def calc_schedule(
             self,

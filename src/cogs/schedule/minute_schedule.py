@@ -4,7 +4,7 @@ from discord.ext import commands, tasks
 
 from gbf.schedules.minute_executor import MinuteScheduleExecutor
 from models.messages import Messages
-from models.model_base import SessionLocal
+from models.model_base import AsyncSessionLocal
 
 
 class MinuteSchedule(commands.Cog):
@@ -28,11 +28,11 @@ class MinuteSchedule(commands.Cog):
 
         await self.channel.send('1分メッセージ')
 
-        with SessionLocal() as session:
+        async with AsyncSessionLocal() as session:
 
             schedules = await self.executor.fetch_schedules(session, now)
             message_ids = [schedule.message_id for schedule in schedules]
-            db_messages = Messages.select_multi(session, message_ids)
+            db_messages = await Messages.select_multi(session, message_ids)
 
             for schedule in schedules:
                 db_message: Messages = next(

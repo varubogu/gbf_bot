@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
-from enums.last_process_type import LastProcessType
 from sqlalchemy import Column, DateTime, Integer, String
-
+from sqlalchemy.future import select
+from enums.last_process_type import LastProcessType
 from models.model_base import ModelBase
 
 
@@ -18,7 +18,7 @@ class LastProcessTimes(ModelBase):
     memo = Column(String)
 
     @classmethod
-    def select_one(
+    async def select_one(
             cls,
             session,
             process_type: LastProcessType
@@ -33,12 +33,15 @@ class LastProcessTimes(ModelBase):
             last: 最終実行日時
         """
 
-        return session.query(LastProcessTimes).filter(
+        result = await session.execute(
+            select(LastProcessTimes).filter(
                 LastProcessTimes.process_type == process_type.value
-            ).first()
+            )
+        )
+        return result.scalars().first()
 
     @classmethod
-    def select_and_update(
+    async def select_and_update(
             cls,
             session,
             process_type: LastProcessType,
@@ -59,13 +62,13 @@ class LastProcessTimes(ModelBase):
         if now is None:
             now = datetime.now()
 
-        last_process_time = cls.select_or_create(session, process_type)
+        last_process_time = await cls.select_or_create(session, process_type)
         last = last_process_time.execute_time
         last_process_time.execute_time = now
         return (last, now)
 
     @classmethod
-    def select_or_create(
+    async def select_or_create(
         cls,
         session,
         process_type: LastProcessType
@@ -81,14 +84,14 @@ class LastProcessTimes(ModelBase):
             LastProcessTime: LastProcessTimeオブジェクト
         """
 
-        last = cls.select_one(session, process_type)
+        last = await cls.select_one(session, process_type)
 
         if last is None:
-            last = cls.create(session, process_type)
+            last = await cls.create(session, process_type)
         return last
 
     @classmethod
-    def create(
+    async def create(
             cls, session, process_type: LastProcessType
     ) -> 'LastProcessTimes':
 
@@ -101,13 +104,13 @@ class LastProcessTimes(ModelBase):
         Returns:
             LastProcessTime: LastProcessTimeオブジェクト
         """
-        last = cls.make(process_type)
+        last = await cls.make(process_type)
         session.add(last)
 
         return last
 
     @classmethod
-    def make(cls, process_type: LastProcessType) -> 'LastProcessTimes':
+    async def make(cls, process_type: LastProcessType) -> 'LastProcessTimes':
 
         """データを作成する
 

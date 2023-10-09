@@ -1,5 +1,6 @@
 from sqlalchemy import Column, String, Integer
 from models.model_base import ModelBase
+from sqlalchemy.future import select
 
 
 class Elements(ModelBase):
@@ -15,5 +16,7 @@ class Elements(ModelBase):
     name_en = Column(String)
 
     @classmethod
-    def select(cls, session, element_id: int) -> 'Elements':
-        return session.query(cls).filter(cls.element_id == element_id).first()
+    async def select(cls, session, element_id: int) -> 'Elements':
+        result = await session.execute(
+            select(cls).filter(cls.element_id == element_id))
+        return result.scalars().first()
