@@ -8,4 +8,5 @@ class LastProcessType(Enum):
         Base (_type_): _description_
     """
     SCHEDULE = 1
-    SPREDSHEET_SYNC = 2
+    SPREDSHEET_LOAD = 2
+    SPREDSHEET_PUSH = 3
