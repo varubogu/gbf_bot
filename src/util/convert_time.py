@@ -29,4 +29,4 @@ async def convert_time(
             microsecond=0
         )
 
-    raise Exception("time_strが不正です")
+    raise ValueError("time_strが不正です")
