@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
+from gbf.environment.environment_singleton import EnvironmentSingleton
 
 from gbf.sync.db.register import DbRegister
 from gbf.sync.gspread.loader import GSpreadLoader
@@ -54,6 +55,9 @@ class GSpreadLoad(commands.Cog):
                     continue
 
                 await register.regist(session, table_model)
+
+            env = EnvironmentSingleton()
+            await env.load_db(session)
 
 
 async def setup(bot: commands.Bot):

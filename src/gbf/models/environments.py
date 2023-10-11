@@ -43,12 +43,23 @@ class Environments(ModelBase):
         return environment
 
     @classmethod
-    async def select_all(cls, session, keys) -> ['Environments']:
+    async def select_multi(cls, session, keys) -> ['Environments']:
         """
         環境変数を一括取得する
 
         """
         result = await session.execute(
             select(cls).filter(cls.key.in_(keys))
+        )
+        return result.scalars().all()
+
+    @classmethod
+    async def select_all(cls, session) -> ['Environments']:
+        """
+        環境変数を一括取得する
+
+        """
+        result = await session.execute(
+            select(cls)
         )
         return result.scalars().all()
