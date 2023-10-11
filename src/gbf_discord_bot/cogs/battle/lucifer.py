@@ -2,9 +2,10 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
-from cogs.battle.base_battle_recruiment_cog import BaseBattleRecruitmentCog
-from cogs.battle.target_enum import Target
-from cogs.battle.battle_type import BattleTypeEnum
+from gbf_discord_bot.cogs.battle.base_battle_recruiment_cog \
+    import BaseBattleRecruitmentCog
+from gbf_discord_bot.cogs.battle.target_enum import Target
+from gbf_discord_bot.cogs.battle.battle_type import BattleTypeEnum
 
 
 class Lucifer(BaseBattleRecruitmentCog):

@@ -5,8 +5,8 @@ from discord.ext import commands
 from gbf.models.model_base import AsyncSessionLocal
 from gbf.models.battle_recruitments import BattleRecruitments
 from gbf.utils.exception.abort_process_exception import AbortProcessException
-from cogs.battle.target_enum import Target
-from cogs.battle.battle_type import BattleTypeEnum
+from gbf_discord_bot.cogs.battle.target_enum import Target
+from gbf_discord_bot.cogs.battle.battle_type import BattleTypeEnum
 
 
 class AfterReaction(commands.Cog):

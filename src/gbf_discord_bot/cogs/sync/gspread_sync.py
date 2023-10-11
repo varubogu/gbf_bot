@@ -2,8 +2,8 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 
-from cogs.sync.gspread_load import GSpreadLoad
-from cogs.sync.gspread_push import GSpreadPush
+from gbf_discord_bot.cogs.sync.gspread_load import GSpreadLoad
+from gbf_discord_bot.cogs.sync.gspread_push import GSpreadPush
 
 
 class GSpreadSync(commands.Cog):

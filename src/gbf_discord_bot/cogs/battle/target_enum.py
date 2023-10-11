@@ -1,5 +1,5 @@
 from enum import Enum
-from cogs.battle.battle_type import BattleTypeEnum as BT
+from gbf_discord_bot.cogs.battle.battle_type import BattleTypeEnum as BT
 
 
 class Target(Enum):
