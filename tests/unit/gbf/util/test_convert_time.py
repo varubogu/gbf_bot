@@ -1,5 +1,5 @@
 from datetime import datetime
-from src.gbf.utils.convert_time import convert_time
+from gbf.utils.convert_time import convert_time
 import pytest
 
 

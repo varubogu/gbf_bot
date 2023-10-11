@@ -1,6 +1,6 @@
 from datetime import datetime
 import pytest
-from src.gbf.utils.convert_datetime import convert_datetime as cdt
+from gbf.utils.convert_datetime import convert_datetime as cdt
 
 
 @pytest.mark.asyncio
