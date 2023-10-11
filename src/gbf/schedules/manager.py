@@ -1,9 +1,9 @@
 from datetime import datetime
-from models.event_schedule_details import EventSchedulesDetails
-from models.event_schedules import EventSchedules
-from models.guild_channels import GuildChannels
-from models.guild_event_schedule_details import GuildEventSchedulesDetails
-from models.schedules import Schedules
+from gbf.models.event_schedule_details import EventSchedulesDetails
+from gbf.models.event_schedules import EventSchedules
+from gbf.models.guild_channels import GuildChannels
+from gbf.models.guild_event_schedule_details import GuildEventSchedulesDetails
+from gbf.models.schedules import Schedules
 from gbf.schedules.calculator import ScheduleCalculator
 
 

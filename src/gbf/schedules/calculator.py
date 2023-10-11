@@ -1,9 +1,9 @@
 import re
 from datetime import datetime, timedelta
-from models.event_schedules import EventSchedules
-from models.event_schedule_details import EventSchedulesDetails
-from models.guild_event_schedule_details import GuildEventSchedulesDetails
-from util.convert_time import convert_time
+from gbf.models.event_schedules import EventSchedules
+from gbf.models.event_schedule_details import EventSchedulesDetails
+from gbf.models.guild_event_schedule_details import GuildEventSchedulesDetails
+from gbf.utils.convert_time import convert_time
 
 
 class ScheduleCalculator():

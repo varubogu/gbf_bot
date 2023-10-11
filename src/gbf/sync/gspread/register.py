@@ -6,8 +6,8 @@ import uuid
 from sqlalchemy import Row
 
 from gbf.sync.gspread.core import GSpreadCore
-from models.model_base import ModelBase
-from models.util.get_column_names import get_column_names
+from gbf.models.model_base import ModelBase
+from gbf.models.utils.get_column_names import get_column_names
 import gspread
 
 

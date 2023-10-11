@@ -15,7 +15,9 @@
 		"DBHOST": "127.0.0.1",
 		"DBUSER": "gbf_bot",
 		"DBPASSWORD": "gbf_bot",
-		"DBDATABASE": "gbf_bot"
+		"DBDATABASE": "gbf_bot",
+		"PYTHONPATH": "${containerWorkspaceFolder}/src",
+		"CONFIG_FOLDER": "${containerWorkspaceFolder}/config"
 	},
 	"customizations": {
 		"vscode": {

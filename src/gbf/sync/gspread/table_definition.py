@@ -1,4 +1,4 @@
-from models import TableNameMapping
+from gbf.models import TableNameMapping
 
 
 class GSpreadTableDefinition:

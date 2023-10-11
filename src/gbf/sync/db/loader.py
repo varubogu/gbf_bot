@@ -1,6 +1,6 @@
 from sqlalchemy import Row, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from models.model_base import ModelBase
+from gbf.models.model_base import ModelBase
 
 
 class DbLoader():

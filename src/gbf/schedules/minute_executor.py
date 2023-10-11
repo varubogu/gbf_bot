@@ -1,7 +1,7 @@
 from datetime import datetime
-from enums.last_process_type import LastProcessType
-from models.last_process_times import LastProcessTimes
-from models.schedules import Schedules
+from gbf.enums.last_process_type import LastProcessType
+from gbf.models.last_process_times import LastProcessTimes
+from gbf.models.schedules import Schedules
 
 
 class MinuteScheduleExecutor:

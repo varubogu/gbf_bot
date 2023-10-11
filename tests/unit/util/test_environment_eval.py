@@ -1,5 +1,5 @@
 import pytest
-from src.util.environment_eval import environment_eval
+from src.gbf.utils.environment_eval import environment_eval
 
 
 @pytest.mark.asyncio

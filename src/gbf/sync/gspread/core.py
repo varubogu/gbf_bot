@@ -27,7 +27,10 @@ class GSpreadCore():
             'https://spreadsheets.google.com/feeds',
             'https://www.googleapis.com/auth/drive'
         ]
-        credentials_path = '../gcp-credentials.json'
+        credentials_path = os.path.join(
+            os.environ['CONFIG_FOLDER'],
+            'gcp-credentials.json'
+        )
         credentials = ServiceAccountCredentials.from_json_keyfile_name(
             credentials_path,
             scope

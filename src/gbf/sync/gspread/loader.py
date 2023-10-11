@@ -1,11 +1,9 @@
-from datetime import datetime
 import os
 
 from sqlalchemy import BigInteger, DateTime, Integer, String, Uuid
 from gbf.sync.gspread.core import GSpreadCore
-from models.model_base import ModelBase
-from models.util.get_column_names import get_column_names
-from util.convert_datetime import convert_datetime
+from gbf.models.model_base import ModelBase
+from gbf.utils.convert_datetime import convert_datetime
 
 
 class GSpreadLoader():
