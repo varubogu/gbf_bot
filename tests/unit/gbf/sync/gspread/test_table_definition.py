@@ -2,7 +2,7 @@ from gbf.sync.gspread.table_definition import GSpreadTableDefinition
 import pytest
 
 
-class TestTableDefinition:
+class TestGSpreadTableDefinition:
 
     def test_table_definition(self):
         table_definition = GSpreadTableDefinition(
