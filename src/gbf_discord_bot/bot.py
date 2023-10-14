@@ -6,10 +6,11 @@ import discord
 from discord.ext import commands
 
 from gbf import models
+from gbf.models.session import engine
 
 # 環境変数読み込み
 dotenv_filepath = os.path.join(os.environ['CONFIG_FOLDER'], '.env')
-load_dotenv(dotenv_filepath)
+load_dotenv(override=True, dotenv_path=dotenv_filepath)
 
 # 自分の Bot のアクセストークン
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
@@ -61,7 +62,8 @@ class GbfBot(commands.Bot):
 
 
 async def main():
-    await models.init_db()
+    async with engine.begin() as conn:
+        await models.init_db(conn)
     bot = GbfBot()
     await bot.start(DISCORD_TOKEN)
 

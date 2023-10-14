@@ -1,4 +1,3 @@
-from gbf.models.session import engine
 from gbf.models.model_base import ModelBase
 
 # 全てのモデル定義を認識する
@@ -18,10 +17,9 @@ from gbf.models.quests import Quests
 from gbf.models.schedules import Schedules
 
 
-async def init_db():
+async def init_db(conn):
     # モデル定義に従ってテーブル作成
-    async with engine.begin() as conn:
-        await conn.run_sync(ModelBase.metadata.create_all)
+    await conn.run_sync(ModelBase.metadata.create_all)
 
 
 def get_metadata():

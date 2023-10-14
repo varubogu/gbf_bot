@@ -10,6 +10,7 @@ __pycache__/
 
 # environment
 .env
+.env.test
 
 # GCP API Credential
 gcp-credentials.json

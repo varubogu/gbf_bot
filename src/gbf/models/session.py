@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 import os
 from sqlalchemy.orm import sessionmaker
 
+
 DBUSER = os.environ['DBUSER']
 DBPASSWORD = os.environ['DBPASSWORD']
 DBHOST = os.environ['DBHOST']

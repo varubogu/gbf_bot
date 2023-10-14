@@ -1,6 +1,6 @@
 
 from datetime import datetime, timedelta
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String, text
 from sqlalchemy.future import select
 from gbf.models.model_base import ModelBase
 from gbf.utils.exception.environment_notfound_exception \
@@ -63,3 +63,12 @@ class Environments(ModelBase):
             select(cls)
         )
         return result.scalars().all()
+
+    @classmethod
+    async def truncate(cls, session) -> None:
+        """
+        環境変数を全て削除する
+
+        """
+        await session.execute(text(f'TRUNCATE {cls.__tablename__}'))
+        await session.commit()
