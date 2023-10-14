@@ -18,8 +18,6 @@ class GSpreadLoader():
     async def open(self):
         await self.core.open()
 
-
-
     async def convert_table(
             self,
             data: list[dict[str, Any]],
