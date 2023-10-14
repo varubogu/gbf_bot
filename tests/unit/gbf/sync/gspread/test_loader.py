@@ -2,7 +2,6 @@ from datetime import datetime
 import uuid
 import pytest
 from gbf.sync.gspread.loader import GSpreadLoader
-from gbf.sync.gspread.table_definition import GSpreadTableDefinition
 from sqlalchemy import Column, Integer, BigInteger, String, DateTime, Uuid
 
 
@@ -11,12 +10,6 @@ class TestGSpreadLoader():
     @pytest.fixture()
     def loader(self) -> GSpreadLoader:
         return GSpreadLoader()
-
-    async def test_convert_table(self):
-        pass
-
-    async def test_convert_row(self):
-        pass
 
     @pytest.mark.asyncio
     async def test_convert_value_int(self, loader):
