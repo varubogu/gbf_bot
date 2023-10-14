@@ -41,7 +41,7 @@ class GSpreadLoader():
         rows = []
 
         table_cls = table_difinition.table_cls
-        columns = {c.name: c for c in table_cls.__table__.columns}
+        columns = self.get_columns_dict(table_cls)
 
         for row in data:
             # 1行目は日本語列名のため省略する
@@ -116,3 +116,17 @@ class GSpreadLoader():
             return await convert_datetime(cell_value)
         else:
             raise ValueError("Invalid column type")
+
+    async def get_columns_dict(
+            self,
+            table_cls: type
+    ) -> dict[str, Column]:
+        """テーブルカラム情報の辞書を作成する
+
+        Args:
+            table_cls (type): テーブルクラス
+
+        Returns:
+            dict[str, Column]: key: テーブル列名 value:テーブルクラスのカラム情報
+        """
+        return {c.name: c for c in table_cls.__table__.columns}
