@@ -41,7 +41,7 @@ class GSpreadLoader():
         rows = []
 
         table_cls = table_difinition.table_cls
-        columns = self.get_columns_dict(table_cls)
+        columns = await self.get_columns_dict(table_cls)
 
         for row in data:
             # 1行目は日本語列名のため省略する
