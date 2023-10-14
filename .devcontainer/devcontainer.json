@@ -72,7 +72,8 @@
 				"ms-ossdata.vscode-postgresql",
 				"ms-azuretools.vscode-docker",
 				"ckolkman.vscode-postgres",
-				"eamodio.gitlens"
+				"eamodio.gitlens",
+				"streetsidesoftware.code-spell-checker",
 			]
 		}
 	}
