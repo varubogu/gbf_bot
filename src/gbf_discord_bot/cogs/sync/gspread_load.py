@@ -49,7 +49,8 @@ class GSpreadLoad(commands.Cog):
                 )
 
                 worksheet = loader.core.book.worksheet(table_dif.table_name_jp)
-                table_model = await loader.load(worksheet, table_dif)
+                data = worksheet.get_all_records()
+                table_model = await loader.convert_table(data, table_dif)
 
                 if len(table_model) == 0:
                     continue
