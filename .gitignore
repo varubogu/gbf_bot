@@ -8,7 +8,7 @@ __pycache__/
 *.egg
 *.venv/
 
-
+# environment
 .env
 
 # GCP API Credential
