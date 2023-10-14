@@ -3,7 +3,7 @@ from gbf.sync.gspread.table_definition import GSpreadTableDefinition
 import pytest
 
 
-class TestGSpreadTableDefinition:
+class TestUnitGSpreadTableDefinition:
 
     def test_table_definition(self):
         table_definition = GSpreadTableDefinition(

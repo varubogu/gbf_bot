@@ -5,7 +5,7 @@ from gbf.sync.gspread.loader import GSpreadLoader
 from sqlalchemy import Column, Integer, BigInteger, String, DateTime, Uuid
 
 
-class TestGSpreadLoader():
+class TestUnitGSpreadLoader():
 
     @pytest.fixture()
     def loader(self) -> GSpreadLoader:

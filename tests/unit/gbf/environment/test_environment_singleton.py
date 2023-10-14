@@ -2,7 +2,7 @@ import pytest
 from gbf.environment.environment_singleton import EnvironmentSingleton
 
 
-class TestEnvironmentSingleton:
+class TestUnitEnvironmentSingleton:
 
     @pytest.mark.asyncio
     async def test_singleton(self):

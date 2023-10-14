@@ -4,7 +4,7 @@ import pytest
 from gbf.sync.gspread.register import GSpreadRegister
 
 
-class TestGspreadRegister:
+class TestUnitGspreadRegister:
 
     @pytest.mark.asyncio
     async def test_convert_cell_int(self):
