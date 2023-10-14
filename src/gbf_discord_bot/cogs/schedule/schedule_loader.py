@@ -3,7 +3,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 
-from gbf.models.model_base import AsyncSessionLocal
+from gbf.models.session import AsyncSessionLocal
 from gbf.schedules.manager import ScheduleManager
 
 

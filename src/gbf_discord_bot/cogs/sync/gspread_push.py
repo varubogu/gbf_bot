@@ -4,7 +4,7 @@ from discord import app_commands
 
 from gbf.sync.db.loader import DbLoader
 from gbf.sync.gspread.register import GSpreadRegister
-from gbf.models.model_base import AsyncSessionLocal
+from gbf.models.session import AsyncSessionLocal
 
 
 class GSpreadPush(commands.Cog):

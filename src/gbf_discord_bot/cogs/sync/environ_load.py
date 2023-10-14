@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from gbf.environment.environment_singleton import EnvironmentSingleton
-from gbf.models.model_base import AsyncSessionLocal
+from gbf.models.session import AsyncSessionLocal
 
 
 class EnvironLoad(commands.Cog):

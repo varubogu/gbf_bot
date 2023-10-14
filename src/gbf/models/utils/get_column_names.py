@@ -1,4 +1,4 @@
-from gbf.models import ModelBase
+from gbf.models.model_base import ModelBase
 from sqlalchemy import Column
 
 

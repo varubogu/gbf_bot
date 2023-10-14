@@ -5,7 +5,7 @@ from gbf.environment.environment_singleton import EnvironmentSingleton
 
 from gbf.sync.db.register import DbRegister
 from gbf.sync.gspread.loader import GSpreadLoader
-from gbf.models.model_base import AsyncSessionLocal
+from gbf.models.session import AsyncSessionLocal
 
 
 class GSpreadLoad(commands.Cog):

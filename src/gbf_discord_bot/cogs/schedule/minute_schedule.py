@@ -4,7 +4,7 @@ from discord.ext import commands, tasks
 
 from gbf.schedules.minute_executor import MinuteScheduleExecutor
 from gbf.models.messages import Messages
-from gbf.models.model_base import AsyncSessionLocal
+from gbf.models.session import AsyncSessionLocal
 
 
 class MinuteSchedule(commands.Cog):

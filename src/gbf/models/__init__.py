@@ -1,4 +1,5 @@
-from gbf.models.model_base import ModelBase, engine
+from gbf.models.session import engine
+from gbf.models.model_base import ModelBase
 
 # 全てのモデル定義を認識する
 from gbf.models.battle_recruitments import BattleRecruitments
