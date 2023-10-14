@@ -44,9 +44,10 @@ class GSpreadLoader():
         columns = await self.get_columns_dict(table_cls)
 
         for row in data:
-            # 1行目は日本語列名のため省略する
+            # 1行目は日本語列名のためスルーする
             if is_first_record:
                 is_first_record = False
+                await self.check_column_to_logs(row, columns, table_cls)
                 continue
 
             # 辞書をもとにクラスオブジェクトを作成
@@ -54,6 +55,28 @@ class GSpreadLoader():
             rows.append(r)
 
         return rows
+
+    async def check_column_to_logs(
+            self,
+            row: dict[str, Any],
+            columns_dict: dict[str, Column],
+            table_cls: type
+    ) -> None:
+        """スプレッドシートのデータとテーブル定義を比較し、
+        スプレッドシート側のみ存在する列名のログを出力する
+
+        Args:
+            row (dict[str, Any]): スプレッドシートの行情報
+            columns_dict (dict[str, Column]): 列名と列定義の辞書
+            table_difinition (GSpreadTableDefinition): テーブル定義情報
+        """
+
+        invalid_columns = [
+            col_name for col_name in row if col_name not in columns_dict
+        ]
+
+        for c in invalid_columns:
+            print(f'invalid column name: {table_cls.__name__}.{c}')
 
     async def convert_row(
             self,
@@ -76,7 +99,6 @@ class GSpreadLoader():
 
             column = columns_dict.get(col_name)
             if column is None:
-                print(f'Invalid column name. "{col_name}"')
                 continue
 
             value = row[col_name]
