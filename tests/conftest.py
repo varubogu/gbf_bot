@@ -38,7 +38,6 @@ def load_test_env():
     loop.run_until_complete(init_db())
 
 
-
 @pytest.fixture(scope="session")
 async def async_db_session():
     async with AsyncTestDbSession() as session:
