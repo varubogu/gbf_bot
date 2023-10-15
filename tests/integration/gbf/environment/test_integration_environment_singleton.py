@@ -1,26 +1,28 @@
 import pytest
+import pytest_asyncio
+from sqlalchemy.ext.asyncio.session import AsyncSession
 from gbf.environment.environment_singleton import EnvironmentSingleton
 from gbf.models.environments import Environments
+# from tests.conftest import AsyncTestDbSession
 
 
 class TestIntegrationEnvironmentSingleton:
 
-    @pytest.fixture
-    async def setup(self):
-        pass
+    @pytest_asyncio.fixture
+    async def env_singleton(self):
+        return EnvironmentSingleton()
 
     @pytest.mark.asyncio
-    async def test_environment_eval(self, async_db_session):
-        env_singleton = EnvironmentSingleton()
-        await env_singleton.clear()
-
-        session = await anext(async_db_session)
-
-        await Environments.truncate(session)
-        session.add(Environments(key='TEST1', value='1'))
-        session.add(Environments(key='TEST2', value='2'))
-        await session.commit()
-        await env_singleton.load_db(session)
+    async def test_environment_eval(
+            self,
+            env_singleton: EnvironmentSingleton,
+            async_db_session: AsyncSession
+    ):
+        await Environments.truncate(async_db_session)
+        async_db_session.add(Environments(key='TEST1', value='1'))
+        async_db_session.add(Environments(key='TEST2', value='2'))
+        await async_db_session.commit()
+        await env_singleton.load_db(async_db_session)
 
         actual = await env_singleton.replace_env_eval('abc')
         assert actual == 'abc'
