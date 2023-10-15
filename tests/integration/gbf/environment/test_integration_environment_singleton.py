@@ -3,7 +3,6 @@ import pytest_asyncio
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from gbf.environment.environment_singleton import EnvironmentSingleton
 from gbf.models.environments import Environments
-# from tests.conftest import AsyncTestDbSession
 
 
 class TestIntegrationEnvironmentSingleton:
