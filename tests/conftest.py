@@ -12,10 +12,18 @@ AsyncTestDbSession = None
 
 
 @pytest.fixture(scope="session", autouse=True)
-def load_test_env():
+def test_init():
+    load_env()
+    init_db()
+
+
+def load_env():
     env_path = os.path.join(os.environ['CONFIG_FOLDER'], '.env.test')
     load_dotenv(override=True, dotenv_path=env_path)
 
+
+def init_db():
+    # db init
     DBUSER = os.environ['DBTESTUSER']
     DBPASSWORD = os.environ['DBTESTPASSWORD']
     DBHOST = os.environ['DBTESTHOST']
@@ -32,16 +40,14 @@ def load_test_env():
         class_=AsyncSession
     )
 
-    async def init_db():
+    async def init_db_async():
         async with engine.begin() as conn:
             await models.init_db(conn)
 
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(init_db())
+    loop.run_until_complete(init_db_async())
 
 
-# pytest-asyncioのevent_loopを上書きする
-# 変更点：関数スコープ→テストセッションスコープ）
 @pytest.fixture(scope='session')
 def event_loop():
     """pytest-asyncioで使用するasyncio.event_loop
@@ -65,7 +71,7 @@ async def async_db_session() -> AsyncSession:
     """pytestの時に使用するDBセッション
 
     Yields:
-        AsyncSession: _description_
+        AsyncSession: DB接続
     """
     async with AsyncTestDbSession() as session:
         yield session
