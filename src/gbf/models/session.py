@@ -22,4 +22,3 @@ AsyncSessionLocal = scoped_session(
         class_=AsyncSession
     )
 )
-
