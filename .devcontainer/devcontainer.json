@@ -8,7 +8,7 @@
 	"features": {
 		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {} //ホストのDockerを使用可能にする
 	},
-	"postCreateCommand": "pip install --no-cache-dir -r requirements.txt",
+	"postCreateCommand": "pip install --no-cache-dir -r requirements.test.txt",
 	"containerEnv": {
 		"TZ": "Asia/Tokyo",
 		// database environment
