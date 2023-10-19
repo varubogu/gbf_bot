@@ -12,6 +12,6 @@ sqlalchemy
 gspread
 oauth2client
 
-# # test
-# pytest
-# pytest-asyncio
+# test
+pytest
+pytest-asyncio
