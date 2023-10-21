@@ -5,9 +5,6 @@ from dotenv import load_dotenv
 import discord
 from discord.ext import commands
 
-from gbf import models
-from gbf.models.session import engine
-
 # 環境変数読み込み
 dotenv_filepath = os.path.join(os.environ['CONFIG_FOLDER'], '.env')
 load_dotenv(override=True, dotenv_path=dotenv_filepath)
@@ -62,6 +59,9 @@ class GbfBot(commands.Bot):
 
 
 async def main():
+    from gbf import models
+    from gbf.models.session import engine
+
     async with engine.begin() as conn:
         await models.init_db(conn)
     bot = GbfBot()

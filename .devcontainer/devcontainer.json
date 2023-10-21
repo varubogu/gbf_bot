@@ -11,13 +11,13 @@
 	"postCreateCommand": "pip install --no-cache-dir -r requirements.test.txt",
 	"containerEnv": {
 		"TZ": "Asia/Tokyo",
-		// database environment
+		"PYTHONPATH": "${containerWorkspaceFolder}/src",
+		"SOURCE_FOLDER": "${containerWorkspaceFolder}/src",
+		"CONFIG_FOLDER": "${containerWorkspaceFolder}/config",
 		"DBHOST": "127.0.0.1",
 		"DBUSER": "gbf_bot",
 		"DBPASSWORD": "gbf_bot",
-		"DBDATABASE": "gbf_bot",
-		"PYTHONPATH": "${containerWorkspaceFolder}/src",
-		"CONFIG_FOLDER": "${containerWorkspaceFolder}/config"
+		"DBDATABASE": "gbf_bot"
 	},
 	"customizations": {
 		"vscode": {

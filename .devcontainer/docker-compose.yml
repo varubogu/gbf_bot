@@ -6,6 +6,8 @@ services:
       context: ..
       dockerfile: .devcontainer/Dockerfile
 
+    env_file:
+      - ../config/.env
     volumes:
       - ../..:/workspaces:cached
 

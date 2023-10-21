@@ -18,16 +18,16 @@ def test_init():
 
 
 def load_env():
-    env_path = os.path.join(os.environ['CONFIG_FOLDER'], '.env.test')
+    env_path = os.path.join(os.environ['CONFIG_FOLDER'], '.env.testing')
     load_dotenv(override=True, dotenv_path=env_path)
 
 
 def init_db():
     # db init
-    DBUSER = os.environ['DBTESTUSER']
-    DBPASSWORD = os.environ['DBTESTPASSWORD']
-    DBHOST = os.environ['DBTESTHOST']
-    DBDATABASE = os.environ['DBTESTDATABASE']
+    DBUSER = os.environ['TEST_DBUSER']
+    DBPASSWORD = os.environ['TEST_DBPASSWORD']
+    DBHOST = os.environ['TEST_DBHOST']
+    DBDATABASE = os.environ['TEST_DBDATABASE']
 
     URL = f'postgresql+asyncpg://{DBUSER}:{DBPASSWORD}@{DBHOST}/{DBDATABASE}'
     engine = create_async_engine(URL, echo=False)
