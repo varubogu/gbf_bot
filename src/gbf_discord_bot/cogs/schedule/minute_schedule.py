@@ -26,7 +26,8 @@ class MinuteSchedule(commands.Cog):
         if self.channel is None:
             await self.init()
 
-        await self.channel.send('1分メッセージ')
+        if self.bot.is_ready():
+            return
 
         async with AsyncSessionLocal() as session:
 
@@ -51,7 +52,7 @@ class MinuteSchedule(commands.Cog):
                             await message.add_reaction(reaction)
 
     async def init(self):
-        channel_id = os.environ['SCHEDULE_CHANNEL_ID']
+        channel_id = os.environ.get('SCHEDULE_CHANNEL_ID', None)
         self.channel = await self.bot.fetch_channel(channel_id)
         print(f"「{self.channel.name}」に定期発言開始")
 
