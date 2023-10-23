@@ -31,6 +31,7 @@ class GbfBot(commands.Bot):
             'cogs.battle.beelzebub',
             'cogs.battle.belial',
             'cogs.battle.super_ultimate_bahamut',
+            'cogs.battle.reason6',
             'cogs.manager.reload_cog',
             'cogs.schedule.minute_schedule',
             'cogs.schedule.schedule_loader',

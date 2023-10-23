@@ -9,6 +9,7 @@ class Target(Enum):
     BEELZEBUB = (4, 6, "バース・オブ・ニューキング", "ベルゼバブ", [BT.DEFAULT, BT.SYSTEM])
     BELIAL = (5, 6, "狡智の堕天使", "ベリアル", [BT.DEFAULT, BT.ALL_ELEMENT])
     SUPER_ULTIMATE_BAHAMUT = (6, 6, "進撃せし蒼き究極の竜", "スパバハ", [BT.DEFAULT, BT.ALL_ELEMENT, BT.SYSTEM])
+    REASON6 = (7, 6, "天元たる六色の理", "六色の理", [BT.ALL_ELEMENT])
 
     def __init__(
             self,
