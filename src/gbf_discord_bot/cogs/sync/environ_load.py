@@ -17,7 +17,7 @@ class EnvironLoad(commands.Cog):
             name="environ_load",
             description="環境変数読み込み"
     )
-    @commands.has_role("Bot Control")
+    @app_commands.checks.has_role("gbf_bot_control")
     async def command_execute(self, interaction: discord.Interaction):
         try:
             await interaction.response.defer()
@@ -32,11 +32,11 @@ class EnvironLoad(commands.Cog):
     async def execute(self, interaction: discord.Interaction):
         env = EnvironmentSingleton()
         v1 = await env.get("ROLL_LEADER")
-        print(v1)
+        print(f"environ_load.ROLL_LEADER:{v1}")
         async with AsyncSessionLocal() as session:
             await env.load_db(session)
         v1 = await env.get("ROLL_LEADER")
-        print(v1)
+        print(f"environ_load.ROLL_LEADER:{v1}")
 
 
 async def setup(bot: commands.Bot):

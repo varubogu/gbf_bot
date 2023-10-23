@@ -20,7 +20,7 @@ class GSpreadLoad(commands.Cog):
             name="gspread_load",
             description="スプレッドシートからデータ読み込み"
     )
-    @commands.has_role("Bot Control")
+    @app_commands.checks.has_role("gbf_bot_control")
     async def command_execute(self, interaction: discord.Interaction):
         try:
             await interaction.response.defer()

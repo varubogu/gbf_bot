@@ -10,6 +10,7 @@ class CogReload(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="reload_cog", description="cogリロード")
+    @app_commands.checks.has_role("gbf_bot_control")
     async def reload_cog(
             self,
             interaction: discord.Interaction,

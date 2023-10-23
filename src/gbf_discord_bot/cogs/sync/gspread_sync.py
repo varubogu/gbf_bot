@@ -15,7 +15,7 @@ class GSpreadSync(commands.Cog):
             name="gspread_sync",
             description="スプレッドシートとデータ同期（load & push)"
     )
-    @commands.has_role("Bot Control")
+    @app_commands.checks.has_role("gbf_bot_control")
     async def gspread_sync(self, interaction: discord.Interaction):
 
         await interaction.response.defer()

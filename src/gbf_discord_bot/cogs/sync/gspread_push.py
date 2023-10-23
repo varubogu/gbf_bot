@@ -19,7 +19,7 @@ class GSpreadPush(commands.Cog):
             name="gspread_push",
             description="スプレッドシートへデータ書き込み"
     )
-    @commands.has_role("Bot Control")
+    @app_commands.checks.has_role("gbf_bot_control")
     async def command_execute(self, interaction: discord.Interaction):
         try:
             await interaction.response.defer()

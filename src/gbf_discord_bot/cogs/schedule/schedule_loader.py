@@ -13,7 +13,7 @@ class ScheduleLoader(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="schedule_reload", description="スケジュール再読み込み")
-    @commands.has_role("Bot Control")
+    @app_commands.checks.has_role("gbf_bot_control")
     async def schedule_reload(self, interaction: discord.Interaction):
 
         await interaction.response.defer()
