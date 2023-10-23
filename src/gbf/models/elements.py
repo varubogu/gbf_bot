@@ -11,7 +11,7 @@ class Elements(ModelBase):
     """
     __tablename__ = 'elements'
     element_id = Column(Integer, primary_key=True)
-    stamp = Column
+    stamp = Column(String)
     name_jp = Column(String)
     name_en = Column(String)
 

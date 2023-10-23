@@ -15,4 +15,5 @@ class Quests(ModelBase):
     recruit_count = Column(Integer)
     quest_name = Column(String)
     quest_alias = Column(String)
+    command = Column(String)
     use_battle_type = Column(String)

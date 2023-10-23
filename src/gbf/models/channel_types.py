@@ -13,3 +13,4 @@ class ChannelTypes(ModelBase):
     __tablename__ = 'channel_types'
     channel_type = Column(Integer, primary_key=True)
     channel_type_name = Column(String)
+    memo = Column(String)
