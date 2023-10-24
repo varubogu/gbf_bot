@@ -23,7 +23,7 @@ class Environments(ModelBase):
     memo = Column(String)
 
     @classmethod
-    async def select_one(cls, session, key) -> 'Environments':
+    async def select_one(cls, session, key: str) -> 'Environments':
         """
         環境変数を取得する
         Args:
@@ -43,7 +43,7 @@ class Environments(ModelBase):
         return environment
 
     @classmethod
-    async def select_multi(cls, session, keys) -> ['Environments']:
+    async def select_multi(cls, session, keys: [str]) -> ['Environments']:
         """
         環境変数を一括取得する
 
