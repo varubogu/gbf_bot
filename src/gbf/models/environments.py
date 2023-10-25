@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import Column, String, text
 from sqlalchemy.future import select
 from gbf.models.model_base import ModelBase
+from gbf.models.table_types import TableType
 from gbf.utils.exception.environment_notfound_exception \
     import EnvironmentNotFoundException
 
@@ -18,6 +19,7 @@ class Environments(ModelBase):
         Base (_type_): _description_
     """
     __tablename__ = 'environments'
+    __tabletype__ = TableType.Reference
     key = Column(String, primary_key=True)
     value = Column(String)
     memo = Column(String)

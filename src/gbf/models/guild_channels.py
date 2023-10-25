@@ -2,6 +2,7 @@
 from sqlalchemy import Column, Integer, BigInteger
 from sqlalchemy.future import select
 from gbf.models.model_base import ModelBase
+from gbf.models.table_types import TableType
 
 
 class GuildChannels(ModelBase):
@@ -11,6 +12,7 @@ class GuildChannels(ModelBase):
         Base (_type_): _description_
     """
     __tablename__ = 'guild_channels'
+    __tabletype__ = TableType.Reference
     guild_id = Column(BigInteger, primary_key=True)
     channel_id = Column(BigInteger, primary_key=True)
     channel_type = Column(Integer)

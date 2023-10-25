@@ -4,6 +4,7 @@ from sqlalchemy \
     DateTime, BigInteger, Integer, String
 from sqlalchemy.future import select
 from gbf.models.model_base import ModelBase
+from gbf.models.table_types import TableType
 
 
 class EventSchedules(ModelBase):
@@ -13,6 +14,7 @@ class EventSchedules(ModelBase):
         Base (_type_): _description_
     """
     __tablename__ = 'event_schedules'
+    __tabletype__ = TableType.Reference
     row_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     event_type = Column(String)
     event_count = Column(BigInteger)

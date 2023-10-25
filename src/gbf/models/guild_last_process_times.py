@@ -4,6 +4,7 @@ from sqlalchemy.future import select
 
 from gbf.enums.last_process_type import LastProcessType
 from gbf.models.model_base import ModelBase
+from gbf.models.table_types import TableType
 
 
 class GuildLastProcessTimes(ModelBase):
@@ -13,6 +14,7 @@ class GuildLastProcessTimes(ModelBase):
         Base (_type_): _description_
     """
     __tablename__ = 'guild_last_process_times'
+    __tabletype__ = TableType.History
 
     guild_id = Column(BigInteger, primary_key=True)
     process_type = Column(Integer, primary_key=True)

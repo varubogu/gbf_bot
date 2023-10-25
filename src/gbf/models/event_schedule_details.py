@@ -2,6 +2,7 @@ import uuid
 from sqlalchemy import UUID, BigInteger, Column, String
 from sqlalchemy.future import select
 from gbf.models.model_base import ModelBase
+from gbf.models.table_types import TableType
 
 
 class EventSchedulesDetails(ModelBase):
@@ -11,6 +12,7 @@ class EventSchedulesDetails(ModelBase):
         Base (_type_): _description_
     """
     __tablename__ = 'event_schedules_details'
+    __tabletype__ = TableType.Reference
     row_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     profile = Column(String)
     start_day_relative = Column(String)
