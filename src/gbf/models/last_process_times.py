@@ -3,6 +3,7 @@ from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.future import select
 from gbf.enums.last_process_type import LastProcessType
 from gbf.models.model_base import ModelBase
+from gbf.models.table_scopes import TableScopes
 from gbf.models.table_types import TableType
 
 
@@ -14,6 +15,7 @@ class LastProcessTimes(ModelBase):
     """
     __tablename__ = 'last_process_times'
     __tabletype__ = TableType.History
+    __tablescope__ = TableScopes.All
 
     process_type = Column(Integer, primary_key=True)
     execute_time = Column(DateTime, nullable=True)

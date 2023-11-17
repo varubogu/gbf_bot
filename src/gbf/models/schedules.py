@@ -3,6 +3,7 @@ import uuid
 from sqlalchemy import UUID, BigInteger, Column, DateTime, String, and_, text
 from sqlalchemy.future import select
 from gbf.models.model_base import ModelBase
+from gbf.models.table_scopes import TableScopes
 from gbf.models.table_types import TableType
 
 
@@ -14,6 +15,7 @@ class Schedules(ModelBase):
     """
     __tablename__ = 'schedules'
     __tabletype__ = TableType.Transaction
+    __tablescope__ = TableScopes.All
     row_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     parent_schedule_id = Column(
         UUID(as_uuid=True), nullable=True, default=None)

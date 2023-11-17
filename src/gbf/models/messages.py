@@ -1,6 +1,7 @@
 from sqlalchemy import Column, String
 from sqlalchemy.future import select
 from gbf.models.model_base import ModelBase
+from gbf.models.table_scopes import TableScopes
 from gbf.models.table_types import TableType
 
 
@@ -12,6 +13,7 @@ class Messages(ModelBase):
     """
     __tablename__ = 'messages'
     __tabletype__ = TableType.Reference
+    __tablescope__ = TableScopes.All
     message_id = Column(String, primary_key=True)
     message_jp = Column(String)
     reactions = Column(String)

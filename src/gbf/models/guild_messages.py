@@ -1,6 +1,7 @@
 from sqlalchemy import BigInteger, Column, String, and_
 from sqlalchemy.future import select
 from gbf.models.model_base import ModelBase
+from gbf.models.table_scopes import TableScopes
 from gbf.models.table_types import TableType
 
 
@@ -12,6 +13,7 @@ class GuildMessages(ModelBase):
     """
     __tablename__ = 'messages'
     __tabletype__ = TableType.Reference
+    __tablescope__ = TableScopes.Guild
     guild_id = Column(BigInteger, primary_key=True)
     message_id = Column(String, primary_key=True)
     message_jp = Column(String)

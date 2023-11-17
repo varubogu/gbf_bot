@@ -1,6 +1,7 @@
 from sqlalchemy import Column, String, Integer
 from gbf.models.model_base import ModelBase
 from sqlalchemy.future import select
+from gbf.models.table_scopes import TableScopes
 
 from gbf.models.table_types import TableType
 
@@ -13,6 +14,7 @@ class Elements(ModelBase):
     """
     __tablename__ = 'elements'
     __tabletype__ = TableType.Reference
+    __tablescope__ = TableScopes.All
     element_id = Column(Integer, primary_key=True)
     stamp = Column(String)
     name_jp = Column(String)

@@ -6,6 +6,7 @@ from sqlalchemy \
 from sqlalchemy.future import select
 from gbf.models.model_base import ModelBase
 from gbf.models.table_types import TableType
+from gbf.models.table_scopes import TableScopes
 
 
 def default_expiry_date():
@@ -25,6 +26,7 @@ class BattleRecruitments(ModelBase):
     """
     __tablename__ = 'battle_recruitments'
     __tabletype__ = TableType.Transaction
+    __tablescope__ = TableScopes.Community
     row_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     guild_id = Column(BigInteger)
     channel_id = Column(BigInteger)
