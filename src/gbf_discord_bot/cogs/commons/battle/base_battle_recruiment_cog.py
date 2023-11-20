@@ -40,7 +40,7 @@ class BaseBattleRecruitmentCog(commands.Cog):
         await self._regist(message, battle_type)
 
     async def _send_message(self, interaction: Interaction, battle_type: BT):
-        m = f"{self.target.quest_alias}の参加者を募集します。"
+        m = f"{self.target.quest_name}の参加者を募集します。"
         if battle_type == BT.ALL_ELEMENT:
             m += '\n参加属性を選んでください'
         await interaction.response.send_message(m)

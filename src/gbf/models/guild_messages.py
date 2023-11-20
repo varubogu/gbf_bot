@@ -11,7 +11,7 @@ class GuildMessages(ModelBase):
     Args:
         Base (_type_): _description_
     """
-    __tablename__ = 'messages'
+    __tablename__ = 'guild_messages'
     __tabletype__ = TableType.Reference
     __tablescope__ = TableScopes.Guild
     guild_id = Column(BigInteger, primary_key=True)

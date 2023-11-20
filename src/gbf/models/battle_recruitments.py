@@ -2,7 +2,8 @@
 from datetime import datetime, timedelta
 import uuid
 from sqlalchemy \
-    import UUID, Column, DateTime, BigInteger, Integer, UniqueConstraint, and_
+    import UUID, Column, DateTime, BigInteger, Integer, \
+    String, UniqueConstraint, and_
 from sqlalchemy.future import select
 from gbf.models.model_base import ModelBase
 from gbf.models.table_types import TableType
@@ -33,6 +34,7 @@ class BattleRecruitments(ModelBase):
     message_id = Column(BigInteger)
     target_id = Column(Integer)
     battle_type_id = Column(Integer)
+    room_id = Column(String)
     expiry_date = Column(DateTime, default=default_expiry_date)
 
     __table_args__ = (

@@ -16,12 +16,12 @@ class GuildEventSchedulesDetails(ModelBase):
     __tabletype__ = TableType.Reference
     __tablescope__ = TableScopes.Guild
     row_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    guild_id = Column(BigInteger, primary_key=True)
     profile = Column(String)
     start_day_relative = Column(String)
     time = Column(String)
     schedule_name = Column(String)
     message_id = Column(String)
-    guild_id = Column(BigInteger)
     channel_id = Column(BigInteger)
     reactions = Column(String)
 

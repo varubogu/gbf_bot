@@ -14,11 +14,11 @@ class GuildEventSchedules(ModelBase):
     Args:
         Base (_type_): _description_
     """
-    __tablename__ = 'event_schedules'
+    __tablename__ = 'guild_event_schedules'
     __tabletype__ = TableType.Reference
     __tablescope__ = TableScopes.Guild
     row_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    guild_id = Column(BigInteger)
+    guild_id = Column(BigInteger, primary_key=True)
     event_type = Column(String)
     event_count = Column(BigInteger)
     profile = Column(String)
@@ -30,7 +30,8 @@ class GuildEventSchedules(ModelBase):
         UniqueConstraint(
             'event_type',
             'event_count',
-            name='unique_event'
+            'guild_id',
+            name='unique_guild_event'
         ),
     )
 
