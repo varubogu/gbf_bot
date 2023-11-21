@@ -36,4 +36,4 @@ class BattleTypeEnum(Enum):
         for item in cls:
             if item.__type_value == type_value:
                 return item
-        return None
+        raise ValueError(f'Invalid type value: {type_value}')

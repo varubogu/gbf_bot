@@ -32,6 +32,7 @@ class GbfBot(commands.Bot):
             'cogs.commons.battle.belial',
             'cogs.commons.battle.super_ultimate_bahamut',
             'cogs.commons.battle.reason6',
+            'cogs.commons.battle.battle_recruitment',
             'cogs.commons.manager.reload_cog',
             'cogs.commons.schedule.minute_schedule',
             'cogs.commons.schedule.schedule_loader',

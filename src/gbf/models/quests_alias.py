@@ -1,5 +1,5 @@
 
-from sqlalchemy import Column, Integer, String, select
+from sqlalchemy import Column, Integer, String, UniqueConstraint, select
 from gbf.models.model_base import ModelBase
 from gbf.models.table_scopes import TableScopes
 
@@ -19,6 +19,13 @@ class QuestsAlias(ModelBase):
     target_alias_id = Column(Integer, primary_key=True)
     alias = Column(String)
     alias_kana_small = Column(String)
+
+    __table_args__ = (
+        UniqueConstraint(
+            'alias',
+            name='unique_quests_alias'
+        ),
+    )
 
     @classmethod
     async def select_all(
