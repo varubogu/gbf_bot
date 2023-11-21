@@ -20,7 +20,7 @@ class Messages(ModelBase):
     memo = Column(String)
 
     @classmethod
-    async def select_one(cls, session, message_id: str) -> 'Messages':
+    async def select_single(cls, session, message_id: str) -> 'Messages':
         result = await session.execute(
             select(cls).filter(cls.message_id == message_id)
         )
