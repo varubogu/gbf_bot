@@ -22,7 +22,7 @@ class LastProcessTimes(ModelBase):
     memo = Column(String)
 
     @classmethod
-    async def select_one(
+    async def select_single(
             cls,
             session,
             process_type: LastProcessType
@@ -88,7 +88,7 @@ class LastProcessTimes(ModelBase):
             LastProcessTime: LastProcessTimeオブジェクト
         """
 
-        last = await cls.select_one(session, process_type)
+        last = await cls.select_single(session, process_type)
 
         if last is None:
             last = await cls.create(session, process_type)

@@ -27,7 +27,7 @@ class Environments(ModelBase):
     memo = Column(String)
 
     @classmethod
-    async def select_one(cls, session, key: str) -> 'Environments':
+    async def select_single(cls, session, key: str) -> 'Environments':
         """
         環境変数を取得する
         Args:
@@ -41,7 +41,7 @@ class Environments(ModelBase):
         result = await session.execute(
             select(cls).filter(cls.key == key)
         )
-        environment = result.first()
+        environment = result.scalars().first()
         if environment is None:
             raise EnvironmentNotFoundException(key)
         return environment

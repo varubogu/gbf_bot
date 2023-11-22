@@ -24,7 +24,7 @@ class GuildLastProcessTimes(ModelBase):
     memo = Column(String)
 
     @classmethod
-    async def select_one(
+    async def select_single(
             cls,
             session,
             guild_id: int,
@@ -102,7 +102,7 @@ class GuildLastProcessTimes(ModelBase):
             LastProcessTime: LastProcessTimeオブジェクト
         """
 
-        last = await cls.select_one(session, guild_id, process_type)
+        last = await cls.select_single(session, guild_id, process_type)
 
         if last is None:
             last = await cls.create(session, guild_id, process_type)

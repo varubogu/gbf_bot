@@ -28,7 +28,7 @@ class GuildEnvironments(ModelBase):
     memo = Column(String)
 
     @classmethod
-    async def select_one(
+    async def select_single(
         cls,
         session,
         guild_id: int,
