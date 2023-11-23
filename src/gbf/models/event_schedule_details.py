@@ -26,7 +26,7 @@ class EventSchedulesDetails(ModelBase):
     reactions = Column(String)
 
     async def create(self, session):
-        await session.add(self)
+        session.add(self)
         await session.commit()
 
     @classmethod
