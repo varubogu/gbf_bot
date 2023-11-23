@@ -27,7 +27,7 @@ class Schedules(ModelBase):
     message_id = Column(String)
 
     async def insert(self, session):
-        await session.add(self)
+        session.add(self)
 
     async def delete(self, session):
         await session.delete(self)

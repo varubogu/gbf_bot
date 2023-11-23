@@ -127,7 +127,7 @@ class GuildLastProcessTimes(ModelBase):
             LastProcessTime: LastProcessTimeオブジェクト
         """
         last = await cls.make(guild_id, process_type)
-        await session.add(last)
+        session.add(last)
 
         return last
 

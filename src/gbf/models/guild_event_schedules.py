@@ -36,7 +36,7 @@ class GuildEventSchedules(ModelBase):
     )
 
     async def create(self, session):
-        await session.add(self)
+        session.add(self)
         await session.commit()
 
     @classmethod
