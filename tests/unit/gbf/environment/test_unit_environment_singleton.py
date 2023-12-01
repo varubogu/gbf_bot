@@ -6,7 +6,7 @@ from gbf.environment.environment_singleton import EnvironmentSingleton
 class TestUnitEnvironmentSingleton:
 
     @pytest_asyncio.fixture
-    async def env_singleton(self):
+    async def env_singleton(self) -> EnvironmentSingleton:
         env_singleton = EnvironmentSingleton()
         await env_singleton.clear()
         await env_singleton.set('TEST1', '1')
