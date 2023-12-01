@@ -41,7 +41,7 @@ class GuildLastProcessTimes(ModelBase):
             last: 最終実行日時
         """
 
-        result = session.execute(
+        result = await session.execute(
             select(GuildLastProcessTimes).filter(
                 and_(
                     GuildLastProcessTimes.guild_id == guild_id,
