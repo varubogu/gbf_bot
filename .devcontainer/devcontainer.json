@@ -74,6 +74,7 @@
 				"ckolkman.vscode-postgres",
 				"eamodio.gitlens",
 				"streetsidesoftware.code-spell-checker",
+				"ms-python.black-formatter"
 			]
 		}
 	}
