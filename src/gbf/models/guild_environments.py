@@ -1,6 +1,6 @@
 
 from datetime import datetime, timedelta
-from sqlalchemy import BigInteger, Column, String, and_, text
+from sqlalchemy import BigInteger, Column, String, and_, delete, text
 from sqlalchemy.future import select
 from gbf.models.model_base import ModelBase
 from gbf.models.table_scopes import TableScopes
@@ -51,7 +51,7 @@ class GuildEnvironments(ModelBase):
                 cls.guild_id == guild_id
             ))
         )
-        environment = result.first()
+        environment = result.scalars().first()
         if environment is None:
             raise EnvironmentNotFoundException(key)
         return environment
@@ -98,10 +98,12 @@ class GuildEnvironments(ModelBase):
         return result.scalars().all()
 
     @classmethod
-    async def truncate(cls, session, guild_id: int) -> None:
+    async def delete_all(cls, session, guild_id: int) -> None:
         """
         環境変数を全て削除する
 
         """
-        await session.execute(text(f'TRUNCATE {cls.__tablename__}'))
+        await session.execute(
+            delete(cls).where(cls.guild_id == guild_id)
+        )
         await session.commit()
