@@ -1,4 +1,3 @@
-# FILEPATH: /workspaces/gbf_bot/tests/test_environments.py
 import pytest
 import pytest_asyncio
 from sqlalchemy import delete

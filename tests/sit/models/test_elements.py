@@ -1,4 +1,3 @@
-# FILEPATH: /workspaces/gbf_bot/tests/test_elements.py
 import pytest
 import pytest_asyncio
 

@@ -1,4 +1,3 @@
-# FILEPATH: /workspaces/gbf_bot/tests/test_battle_recruitments.py
 import pytest
 import pytest_asyncio
 import uuid
