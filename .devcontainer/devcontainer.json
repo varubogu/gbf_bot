@@ -30,6 +30,10 @@
 						"!Module"
 					],
 					"editor.formatOnType": true,
+					"editor.codeActionsOnSave": {
+						"source.fixAll.ruff": true,
+						"source.organizeImports.ruff": true
+					},
 					"editor.wordBasedSuggestions": false,
 					"bracketLens.mode": "manual"
 				},
@@ -57,14 +61,14 @@
 			"extensions": [
 				"njpwerner.autodocstring",
 				"kevinglasson.cornflakes-linter",
-				"ms-python.flake8",
+				//"ms-python.flake8",
 				"donjayamanne.githistory",
 				"github.vscode-github-actions",
 				"mhutchie.git-graph",
 				"GitHub.vscode-pull-request-github",
 				"codezombiech.gitignore",
 				"oderwat.indent-rainbow",
-				"ms-python.isort",
+				//"ms-python.isort",
 				"magicstack.MagicPython",
 				"yzhang.markdown-all-in-one",
 				"DavidAnson.vscode-markdownlint",
@@ -74,7 +78,8 @@
 				"ckolkman.vscode-postgres",
 				"eamodio.gitlens",
 				"streetsidesoftware.code-spell-checker",
-				"ms-python.black-formatter"
+				"ms-python.black-formatter",
+				"charliermarsh.ruff"
 			]
 		}
 	}
