@@ -8,6 +8,8 @@ __pycache__/
 *.egg
 *.venv/
 
+.pytest_cache/
+
 # environment
 config/*
 !config/*.example
