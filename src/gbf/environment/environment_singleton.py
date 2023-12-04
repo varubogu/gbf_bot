@@ -69,7 +69,23 @@ class EnvironmentSingleton:
         return text
 
     async def find_env_keys(self, text: str):
+        """文字列の中から埋め込み変数を探し、リストを返す
+
+        Args:
+            text (str): 対象文字列 aaa${variable1}bbb${variable2}
+
+        Returns:
+            _type_: ["${variable1}", "${variable2}"]
+        """
         return re.findall(r'\$\{\w+\}', text)
 
-    async def substr_env_key(self, matched_str: str):
-        return matched_str[2:-1]
+    async def substr_env_key(self, variable_str: str) -> str:
+        """変数文字列からkeyを取得する
+
+        Args:
+            variable_str (str): 対象文字列 例: ${abc}
+
+        Returns:
+            str: 変数書式を取り除いたkey 例: abc
+        """
+        return variable_str[2:-1]
