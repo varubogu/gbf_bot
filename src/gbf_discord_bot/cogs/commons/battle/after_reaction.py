@@ -4,6 +4,7 @@ import discord
 from discord.ext import commands
 from gbf.models.session import AsyncSessionLocal
 from gbf.models.battle_recruitments import BattleRecruitments
+from gbf.models.quests import Quests
 from gbf.utils.exception.abort_process_exception import AbortProcessException
 from gbf_discord_bot.cogs.commons.battle.target_enum import Target
 from gbf_discord_bot.cogs.commons.battle.battle_type import BattleTypeEnum
@@ -25,12 +26,15 @@ class AfterReaction(commands.Cog):
         try:
 
             (
-                (recruitment, battle_type, target),
+                (recruitment, battle_type),
                 message
             ) = await asyncio.gather(
                 self.fetch_recruitment(paylood),
                 self.fetch_reaction_message(paylood)
             )
+
+            async with AsyncSessionLocal() as session:
+                quest = await Quests.select_single(session, recruitment.target_id)
 
             reaction_users = await self.get_reaction_users(
                 message, battle_type.reactions)
@@ -38,7 +42,7 @@ class AfterReaction(commands.Cog):
             if self.bot.user in reaction_users:
                 reaction_users.remove(self.bot.user)
 
-            if len(reaction_users) == target.recruit_count:
+            if len(reaction_users) == quest.recruit_count:
                 mention = ''.join(f"{user.mention}" for user in reaction_users)
                 await message.channel.send(
                     mention + '\nメンバーが揃いました。',
@@ -53,7 +57,7 @@ class AfterReaction(commands.Cog):
     async def fetch_recruitment(
             self,
             paylood: discord.RawReactionActionEvent
-    ) -> (BattleRecruitments, BattleTypeEnum, Target):
+    ) -> (BattleRecruitments, BattleTypeEnum):
 
         async with AsyncSessionLocal() as session:
             recruitment = await BattleRecruitments.select_single(
@@ -64,14 +68,12 @@ class AfterReaction(commands.Cog):
             )
 
         if recruitment is None:
+            # クエスト募集以外のメッセージは正常終了
             raise AbortProcessException()
         battle_type = BattleTypeEnum.find(
             recruitment.battle_type_id)
 
-        target = Target.find_target(recruitment.target_id)
-        if target is None:
-            raise Exception('Target is none')
-        return recruitment, battle_type, target
+        return recruitment, battle_type
 
     async def fetch_reaction_message(
             self,

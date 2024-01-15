@@ -23,6 +23,18 @@ class Quests(ModelBase):
     default_battle_type = Column(String)
 
     @classmethod
+    async def select_single(
+        cls,
+        session,
+        target_id
+    ) -> ['Quests']:
+        result = await session.execute(
+            select(cls).filter(Quests.target_id == target_id)
+        )
+        return result.scalars().first()
+
+
+    @classmethod
     async def select_all(
         cls,
         session
