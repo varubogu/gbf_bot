@@ -59,16 +59,15 @@
 				}
 			},
 			"extensions": [
+				"amazonwebservices.aws-toolkit-vscode",
 				"njpwerner.autodocstring",
 				"kevinglasson.cornflakes-linter",
-				//"ms-python.flake8",
 				"donjayamanne.githistory",
 				"github.vscode-github-actions",
 				"mhutchie.git-graph",
 				"GitHub.vscode-pull-request-github",
 				"codezombiech.gitignore",
 				"oderwat.indent-rainbow",
-				//"ms-python.isort",
 				"magicstack.MagicPython",
 				"yzhang.markdown-all-in-one",
 				"DavidAnson.vscode-markdownlint",
