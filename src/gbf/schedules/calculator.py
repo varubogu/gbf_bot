@@ -1,8 +1,9 @@
 import re
 from datetime import datetime, timedelta
+
+from gbf.models.event_schedule_details import EventScheduleDetails
 from gbf.models.event_schedules import EventSchedules
-from gbf.models.event_schedule_details import EventSchedulesDetails
-from gbf.models.guild_event_schedule_details import GuildEventSchedulesDetails
+from gbf.models.guild_event_schedule_details import GuildEventScheduleDetails
 from gbf.utils.convert_time import convert_time
 
 
@@ -13,8 +14,8 @@ class ScheduleCalculator():
     def __init__(
             self,
             schedule: EventSchedules,
-            detail: EventSchedulesDetails = None,
-            guild_detail: GuildEventSchedulesDetails = None,
+            detail: EventScheduleDetails = None,
+            guild_detail: GuildEventScheduleDetails = None,
     ):
         """スケジュール日時計算初期化
         計算に使う値を格納する

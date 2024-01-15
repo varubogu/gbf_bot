@@ -1,8 +1,8 @@
 import pytest
 import pytest_asyncio
+from gbf.models.guild_event_schedule_details import GuildEventScheduleDetails
 from sqlalchemy import and_, delete, select
 from sqlalchemy.ext.asyncio.session import AsyncSession
-from gbf.models.guild_event_schedule_details import GuildEventSchedulesDetails
 
 
 class TestGuildEventSchedulesDetails:
@@ -10,13 +10,13 @@ class TestGuildEventSchedulesDetails:
     @pytest_asyncio.fixture
     async def db_clear(self, async_db_session: AsyncSession):
         await async_db_session.execute(
-            delete(GuildEventSchedulesDetails)
+            delete(GuildEventScheduleDetails)
         )
         await async_db_session.commit()
 
     @pytest_asyncio.fixture(scope='function', autouse=True)
-    async def test_data1(self) -> GuildEventSchedulesDetails:
-        return GuildEventSchedulesDetails(
+    async def test_data1(self) -> GuildEventScheduleDetails:
+        return GuildEventScheduleDetails(
             row_id="93dafb02-0e26-41ba-b909-26f560088517",
             guild_id=1234567890,
             profile="TestGuildEventSchedulesDetails1",
@@ -30,8 +30,8 @@ class TestGuildEventSchedulesDetails:
         )
 
     @pytest_asyncio.fixture(scope='function', autouse=True)
-    async def test_data2(self) -> GuildEventSchedulesDetails:
-        return GuildEventSchedulesDetails(
+    async def test_data2(self) -> GuildEventScheduleDetails:
+        return GuildEventScheduleDetails(
             row_id="22560927-4566-4a3c-abbf-1e2de14bb147",
             guild_id=1234567890,
             profile="TestGuildEventSchedulesDetails2",
@@ -49,7 +49,7 @@ class TestGuildEventSchedulesDetails:
         self,
         db_clear,
         async_db_session: AsyncSession,
-        test_data1: GuildEventSchedulesDetails
+        test_data1: GuildEventScheduleDetails
     ):
 
         # テスト対象のメソッドの呼び出し
@@ -57,9 +57,9 @@ class TestGuildEventSchedulesDetails:
 
         # 結果の検証
         result_data = await async_db_session.execute(
-            select(GuildEventSchedulesDetails).filter(and_(
-                GuildEventSchedulesDetails.row_id == test_data1.row_id,
-                GuildEventSchedulesDetails.guild_id == test_data1.guild_id
+            select(GuildEventScheduleDetails).filter(and_(
+                GuildEventScheduleDetails.row_id == test_data1.row_id,
+                GuildEventScheduleDetails.guild_id == test_data1.guild_id
             ))
         )
 
@@ -81,8 +81,8 @@ class TestGuildEventSchedulesDetails:
         self,
         db_clear,
         async_db_session: AsyncSession,
-        test_data1: GuildEventSchedulesDetails,
-        test_data2: GuildEventSchedulesDetails
+        test_data1: GuildEventScheduleDetails,
+        test_data2: GuildEventScheduleDetails
     ):
         # データの作成
         async_db_session.add(test_data1)
@@ -90,7 +90,7 @@ class TestGuildEventSchedulesDetails:
         await async_db_session.commit()
 
         # select_all メソッドのテスト
-        results = await GuildEventSchedulesDetails.select_all(async_db_session)
+        results = await GuildEventScheduleDetails.select_all(async_db_session)
         assert len(results) == 2
         for r in results:
 

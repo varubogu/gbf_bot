@@ -6,11 +6,11 @@ from gbf.models.battle_types import BattleTypes
 from gbf.models.channel_types import ChannelTypes
 from gbf.models.elements import Elements
 from gbf.models.environments import Environments
-from gbf.models.event_schedule_details import EventSchedulesDetails
+from gbf.models.event_schedule_details import EventScheduleDetails
 from gbf.models.event_schedules import EventSchedules
 from gbf.models.guild_channels import GuildChannels
 from gbf.models.guild_environments import GuildEnvironments
-from gbf.models.guild_event_schedule_details import GuildEventSchedulesDetails
+from gbf.models.guild_event_schedule_details import GuildEventScheduleDetails
 from gbf.models.guild_event_schedules import GuildEventSchedules
 from gbf.models.guild_last_process_times import GuildLastProcessTimes
 from gbf.models.guild_messages import GuildMessages
@@ -52,11 +52,11 @@ class TableNameMapping:
             ChannelTypes,
             Elements,
             Environments,
-            EventSchedulesDetails,
+            EventScheduleDetails,
             EventSchedules,
             GuildChannels,
             GuildEnvironments,
-            GuildEventSchedulesDetails,
+            GuildEventScheduleDetails,
             GuildEventSchedules,
             GuildLastProcessTimes,
             GuildMessages,

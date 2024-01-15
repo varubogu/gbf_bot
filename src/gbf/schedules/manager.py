@@ -1,8 +1,9 @@
 from datetime import datetime
-from gbf.models.event_schedule_details import EventSchedulesDetails
+
+from gbf.models.event_schedule_details import EventScheduleDetails
 from gbf.models.event_schedules import EventSchedules
 from gbf.models.guild_channels import GuildChannels
-from gbf.models.guild_event_schedule_details import GuildEventSchedulesDetails
+from gbf.models.guild_event_schedule_details import GuildEventScheduleDetails
 from gbf.models.schedules import Schedules
 from gbf.schedules.calculator import ScheduleCalculator
 
@@ -29,8 +30,8 @@ class ScheduleManager:
 
         # 必要なデータを全取得
         schedules = await EventSchedules.select_all(session)
-        details = await EventSchedulesDetails.select_all(session)
-        guild_details = await GuildEventSchedulesDetails.select_all(session)
+        details = await EventScheduleDetails.select_all(session)
+        guild_details = await GuildEventScheduleDetails.select_all(session)
         notifications = await GuildChannels.select_where_channel_type(
             session, 3
         )
@@ -47,8 +48,8 @@ class ScheduleManager:
     async def calc_schedule(
             self,
             all_schedules: [EventSchedules],
-            all_details: [EventSchedulesDetails],
-            all_guild_details: [GuildEventSchedulesDetails],
+            all_details: [EventScheduleDetails],
+            all_guild_details: [GuildEventScheduleDetails],
             notification_channels: [GuildChannels]
     ) -> [Schedules]:
         """スケジュール計算
@@ -92,14 +93,14 @@ class ScheduleManager:
     async def filter_details(
             self,
             schedule: EventSchedules,
-            details: [EventSchedulesDetails]
+            details: [EventScheduleDetails]
     ):
         return [d for d in details if d.profile == schedule.profile]
 
     async def filter_guild_details(
             self,
             schedule: EventSchedules,
-            details: [GuildEventSchedulesDetails]
+            details: [GuildEventScheduleDetails]
     ):
         return [d for d in details if d.profile == schedule.profile]
 
@@ -140,7 +141,7 @@ class ScheduleManager:
     async def guild_details(
             self,
             schedule: EventSchedules,
-            guild_details: GuildEventSchedulesDetails
+            guild_details: GuildEventScheduleDetails
     ) -> [Schedules]:
         """イベントスケジュールに紐づくギルド毎のスケジュール詳細を作成する
 
@@ -169,7 +170,7 @@ class ScheduleManager:
     async def create_common_schedule(
             self,
             schedule: EventSchedules,
-            detail: EventSchedulesDetails,
+            detail: EventScheduleDetails,
             time: datetime,
             notify_channel: GuildChannels
     ):
@@ -196,7 +197,7 @@ class ScheduleManager:
     async def create_guild_schedule(
             self,
             schedule: EventSchedules,
-            detail: GuildEventSchedulesDetails,
+            detail: GuildEventScheduleDetails,
             time: datetime
     ):
         """サーバーのスケジュールを作成する

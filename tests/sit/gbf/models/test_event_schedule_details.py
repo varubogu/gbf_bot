@@ -1,8 +1,8 @@
 import pytest
 import pytest_asyncio
+from gbf.models.event_schedule_details import EventScheduleDetails
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio.session import AsyncSession
-from gbf.models.event_schedule_details import EventSchedulesDetails
 
 
 class TestEventSchedulesDetails:
@@ -10,13 +10,13 @@ class TestEventSchedulesDetails:
     @pytest_asyncio.fixture
     async def db_clear(self, async_db_session: AsyncSession):
         await async_db_session.execute(
-            delete(EventSchedulesDetails)
+            delete(EventScheduleDetails)
         )
         await async_db_session.commit()
 
     @pytest_asyncio.fixture(scope='function', autouse=True)
-    async def test_data1(self) -> EventSchedulesDetails:
-        return EventSchedulesDetails(
+    async def test_data1(self) -> EventScheduleDetails:
+        return EventScheduleDetails(
             row_id="93dafb02-0e26-41ba-b909-26f560088517",
             profile="TestEventSchedulesDetails1",
             start_day_relative="0",
@@ -30,8 +30,8 @@ class TestEventSchedulesDetails:
         )
 
     @pytest_asyncio.fixture(scope='function', autouse=True)
-    async def test_data2(self) -> EventSchedulesDetails:
-        return EventSchedulesDetails(
+    async def test_data2(self) -> EventScheduleDetails:
+        return EventScheduleDetails(
             row_id="22560927-4566-4a3c-abbf-1e2de14bb147",
             profile="TestEventSchedulesDetails2",
             start_day_relative="0-7",
@@ -49,7 +49,7 @@ class TestEventSchedulesDetails:
         self,
         db_clear,
         async_db_session: AsyncSession,
-        test_data1: EventSchedulesDetails
+        test_data1: EventScheduleDetails
     ):
 
         # テスト対象のメソッドの呼び出し
@@ -57,8 +57,8 @@ class TestEventSchedulesDetails:
 
         # 結果の検証
         result_data = await async_db_session.execute(
-            select(EventSchedulesDetails).filter(
-                EventSchedulesDetails.row_id == test_data1.row_id
+            select(EventScheduleDetails).filter(
+                EventScheduleDetails.row_id == test_data1.row_id
             )
         )
 
@@ -80,8 +80,8 @@ class TestEventSchedulesDetails:
         self,
         db_clear,
         async_db_session: AsyncSession,
-        test_data1: EventSchedulesDetails,
-        test_data2: EventSchedulesDetails
+        test_data1: EventScheduleDetails,
+        test_data2: EventScheduleDetails
     ):
         # データの作成
         async_db_session.add(test_data1)
@@ -89,7 +89,7 @@ class TestEventSchedulesDetails:
         await async_db_session.commit()
 
         # select_all メソッドのテスト
-        results = await EventSchedulesDetails.select_all(async_db_session)
+        results = await EventScheduleDetails.select_all(async_db_session)
         assert len(results) == 2
         for r in results:
 
