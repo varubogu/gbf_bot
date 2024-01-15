@@ -31,80 +31,32 @@ def get_metadata():
 
 class TableNameMapping:
 
+    __CLASSES__ = [
+            BattleRecruitments,
+            BattleTypes,
+            ChannelTypes,
+            Elements,
+            Environments,
+            EventSchedulesDetails,
+            EventSchedules,
+            GuildChannels,
+            GuildEnvironments,
+            GuildEventSchedulesDetails,
+            GuildEventSchedules,
+            GuildLastProcessTimes,
+            GuildMessages,
+            LastProcessTimes,
+            Messages,
+            Quests,
+            QuestsAlias,
+            Schedules
+    ]
+
     __MAPPING__ = [
-        # order by table_name_en asc
-        {
-            'table_name_en': 'battle_recruitments',
-            'clsobj': BattleRecruitments
-        },
-        {
-            'table_name_en': 'battle_types',
-            'clsobj': BattleTypes
-        },
-        {
-            'table_name_en': 'channel_types',
-            'clsobj': ChannelTypes
-        },
-        {
-            'table_name_en': 'elements',
-            'clsobj': Elements
-        },
-        {
-            'table_name_en': 'environments',
-            'clsobj': Environments
-        },
-        {
-            'table_name_en': 'event_schedule_details',
-            'clsobj': EventSchedulesDetails
-        },
-        {
-            'table_name_en': 'event_schedules',
-            'clsobj': EventSchedules
-        },
-        {
-            'table_name_en': 'guild_channels',
-            'clsobj': GuildChannels
-        },
-        {
-            'table_name_en': 'guild_environments',
-            'clsobj': GuildEnvironments
-        },
-        {
-            'table_name_en': 'guild_event_schedule_details',
-            'clsobj': GuildEventSchedulesDetails
-        },
-        {
-            'table_name_en': 'guild_event_schedules',
-            'clsobj': GuildEventSchedules
-        },
-        {
-            'table_name_en': 'guild_last_process_times',
-            'clsobj': GuildLastProcessTimes
-        },
-        {
-            'table_name_en': 'guild_messages',
-            'clsobj': GuildMessages
-        },
-        {
-            'table_name_en': 'last_process_times',
-            'clsobj': LastProcessTimes
-        },
-        {
-            'table_name_en': 'messages',
-            'clsobj': Messages
-        },
-        {
-            'table_name_en': 'quests_alias',
-            'clsobj': QuestsAlias
-        },
-        {
-            'table_name_en': 'quests',
-            'clsobj': Quests
-        },
-        {
-            'table_name_en': 'schedules',
-            'clsobj': Schedules
-        },
+            {
+                'table_name_en': table_class.__tablename__,
+                'clsobj': table_class
+            } for table_class in __CLASSES__
     ]
 
     @classmethod
