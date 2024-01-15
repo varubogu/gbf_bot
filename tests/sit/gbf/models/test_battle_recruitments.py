@@ -1,10 +1,9 @@
-import pytest
-import pytest_asyncio
 import uuid
 from datetime import datetime
 
-from sqlalchemy import delete
+import pytest
 from sqlalchemy.future import select
+
 from gbf.models.battle_recruitments import BattleRecruitments
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
@@ -13,17 +12,8 @@ class TestBattleRecruitments:
 
     TEST_GUILD_ID = -1234567890
 
-    @pytest_asyncio.fixture
-    async def db_clear(self, async_db_session: AsyncSession):
-        await async_db_session.execute(
-            delete(BattleRecruitments).where(
-                BattleRecruitments.guild_id == self.TEST_GUILD_ID
-            )
-        )
-        await async_db_session.commit()
-
-    @pytest_asyncio.fixture(scope='function', autouse=True)
-    async def test_data1(self) -> BattleRecruitments:
+    @pytest.fixture(scope='function', autouse=True)
+    def test_data1(self) -> BattleRecruitments:
         return BattleRecruitments(
             row_id=uuid.uuid4(),
             guild_id=self.TEST_GUILD_ID,
@@ -35,8 +25,8 @@ class TestBattleRecruitments:
             expiry_date=None
         )
 
-    @pytest_asyncio.fixture(scope='function', autouse=True)
-    async def test_data2(self) -> BattleRecruitments:
+    @pytest.fixture(scope='function', autouse=True)
+    def test_data2(self) -> BattleRecruitments:
         return BattleRecruitments(
             row_id=uuid.uuid4(),
             guild_id=self.TEST_GUILD_ID,
@@ -45,19 +35,19 @@ class TestBattleRecruitments:
             target_id=0,
             battle_type_id=0,
             room_id="BBBBBB",
-            expiry_date=datetime.now()
+            expiry_date=datetime(2024, 12, 31, 23, 59, 59)
         )
 
     @pytest.mark.asyncio
     async def test_create(
         self,
-        db_clear,
         async_db_session: AsyncSession,
         test_data1: BattleRecruitments
     ):
 
         # テスト対象のメソッドの呼び出し
         await test_data1.create(async_db_session)
+        await async_db_session.refresh(test_data1)
 
         # 結果の検証
         result_data = await async_db_session.execute(
@@ -80,7 +70,6 @@ class TestBattleRecruitments:
     @pytest.mark.asyncio
     async def test_select_single(
         self,
-        db_clear,
         async_db_session: AsyncSession,
         test_data2: BattleRecruitments
     ):
@@ -88,6 +77,7 @@ class TestBattleRecruitments:
         # テストデータの作成
         async_db_session.add(test_data2)
         await async_db_session.commit()
+        await async_db_session.refresh(test_data2)
 
         # テスト対象のメソッドの呼び出し
         result = await BattleRecruitments.select_single(
