@@ -3,5 +3,15 @@
         "./"
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.pytestEnabled": true,
+    "cSpell.words": [
+        "clsobj",
+        "dotenv",
+        "gspread",
+        "paylood",
+        "recruitments",
+        "sqlalchemy",
+        "tablescope",
+        "tabletype"
+    ]
 }
