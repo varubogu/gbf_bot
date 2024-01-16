@@ -6,7 +6,6 @@ from gbf.models.session import AsyncSessionLocal
 from gbf.models.battle_recruitments import BattleRecruitments
 from gbf.models.quests import Quests
 from gbf.utils.exception.abort_process_exception import AbortProcessException
-from gbf_discord_bot.cogs.commons.battle.target_enum import Target
 from gbf_discord_bot.cogs.commons.battle.battle_type import BattleTypeEnum
 
 
