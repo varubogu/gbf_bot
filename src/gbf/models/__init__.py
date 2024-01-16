@@ -1,6 +1,7 @@
 # モデル定義をimportすることでModelBase.metadata内に反映され、自動でテーブル作成処理が実行される
 from sqlalchemy.ext.asyncio import AsyncEngine
-from gbf.models.model_base import ModelBase
+from sqlalchemy.ext.asyncio import AsyncConnection
+
 from gbf.models.battle_recruitments import BattleRecruitments
 from gbf.models.battle_types import BattleTypes
 from gbf.models.channel_types import ChannelTypes
@@ -16,17 +17,18 @@ from gbf.models.guild_last_process_times import GuildLastProcessTimes
 from gbf.models.guild_messages import GuildMessages
 from gbf.models.last_process_times import LastProcessTimes
 from gbf.models.messages import Messages
+from gbf.models.model_base import ModelBase
 from gbf.models.quests import Quests
 from gbf.models.quests_alias import QuestsAlias
 from gbf.models.schedules import Schedules
 
 
-async def init_db(conn):
+async def init_db(conn: AsyncConnection):
     # モデル定義に従ってテーブル作成
     await conn.run_sync(ModelBase.metadata.create_all)
 
 
-async def drop_db(conn):
+async def drop_db(conn: AsyncConnection):
     await conn.run_sync(ModelBase.metadata.drop_all)
 
 
