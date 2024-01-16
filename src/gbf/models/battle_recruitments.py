@@ -36,6 +36,7 @@ class BattleRecruitments(ModelBase):
     battle_type_id = Column(Integer)
     room_id = Column(String)
     expiry_date = Column(DateTime, default=default_expiry_date)
+    recruit_end_message_id = Column(BigInteger)
 
     __table_args__ = (
         UniqueConstraint(
@@ -80,3 +81,34 @@ class BattleRecruitments(ModelBase):
         )
 
         return result.scalars().first()
+
+    @classmethod
+    async def select_single_row_lock(
+        cls,
+        session,
+        guild_id: int,
+        channel_id: int,
+        message_id: int
+    ) -> 'BattleRecruitments':
+        """マルチバトル募集情報を検索する
+        Args:
+            session (Session): DB接続
+            guild_id (int): 検索対象のサーバーID
+            channel_id (int): 検索対象のチャンネルID
+            message_id (int): 検索対象のメッセージID
+
+        Returns:
+            _type_: _description_
+        """
+        result = await session.execute(
+            select(cls).filter(
+                and_(
+                    cls.guild_id == guild_id,
+                    cls.channel_id == channel_id,
+                    cls.message_id == message_id
+                )
+            ).with_for_update()
+        )
+
+        return result.scalars().first()
+

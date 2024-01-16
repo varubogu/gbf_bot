@@ -1,6 +1,7 @@
 
 import asyncio
 import discord
+from sqlalchemy.ext.asyncio import AsyncSession
 from discord.ext import commands
 from gbf.models.session import AsyncSessionLocal
 from gbf.models.battle_recruitments import BattleRecruitments
@@ -24,29 +25,35 @@ class AfterReaction(commands.Cog):
 
         try:
 
-            (
-                (recruitment, battle_type),
-                message
-            ) = await asyncio.gather(
-                self.fetch_recruitment(paylood),
-                self.fetch_reaction_message(paylood)
-            )
-
             async with AsyncSessionLocal() as session:
+                (
+                    (recruitment, battle_type),
+                    message
+                ) = await asyncio.gather(
+                    self.fetch_recruitment(session, paylood),
+                    self.fetch_reaction_message(paylood)
+                )
+
+                if recruitment.recruit_end_message_id is not None:
+                    return
+
                 quest = await Quests.select_single(session, recruitment.target_id)
 
-            reaction_users = await self.get_reaction_users(
-                message, battle_type.reactions)
+                reaction_users = await self.get_reaction_users(
+                    message, battle_type.reactions)
 
-            if self.bot.user in reaction_users:
-                reaction_users.remove(self.bot.user)
+                if self.bot.user in reaction_users:
+                    reaction_users.remove(self.bot.user)
 
-            if len(reaction_users) == quest.recruit_count:
-                mention = ''.join(f"{user.mention}" for user in reaction_users)
-                await message.channel.send(
-                    mention + '\nメンバーが揃いました。',
-                    reference=message
-                )
+                if len(reaction_users) == quest.recruit_count:
+                    mention = ''.join(f"{user.mention}" for user in reaction_users)
+                    end_message = await message.channel.send(
+                        mention + '\nメンバーが揃いました。',
+                        reference=message
+                    )
+                    recruitment.recruit_end_message_id = end_message.id
+                    session.add(recruitment)
+                    await session.commit()
         except AbortProcessException:
             # 処理対象外のため正常終了
             pass
@@ -55,16 +62,16 @@ class AfterReaction(commands.Cog):
 
     async def fetch_recruitment(
             self,
+            session: AsyncSession,
             paylood: discord.RawReactionActionEvent
     ) -> (BattleRecruitments, BattleTypeEnum):
 
-        async with AsyncSessionLocal() as session:
-            recruitment = await BattleRecruitments.select_single(
-                session,
-                paylood.guild_id,
-                paylood.channel_id,
-                paylood.message_id
-            )
+        recruitment = await BattleRecruitments.select_single_row_lock(
+            session,
+            paylood.guild_id,
+            paylood.channel_id,
+            paylood.message_id
+        )
 
         if recruitment is None:
             # クエスト募集以外のメッセージは正常終了
