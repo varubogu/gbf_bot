@@ -2,19 +2,11 @@ import pytest
 import pytest_asyncio
 from datetime import datetime, timedelta
 from sqlalchemy.future import select
-from sqlalchemy import delete
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from gbf.models.event_schedules import EventSchedules
 
 
 class TestEventSchedules:
-
-    @pytest_asyncio.fixture
-    async def db_clear(self, async_db_session: AsyncSession):
-        await async_db_session.execute(
-            delete(EventSchedules)
-        )
-        await async_db_session.commit()
 
     @pytest_asyncio.fixture(scope='function', autouse=True)
     async def test_data1(self) -> EventSchedules:
@@ -46,13 +38,13 @@ class TestEventSchedules:
     @pytest.mark.asyncio
     async def test_create(
         self,
-        db_clear,
         async_db_session: AsyncSession,
         test_data1: EventSchedules
     ):
 
         # テスト対象のメソッドの呼び出し
         await test_data1.create(async_db_session)
+        await async_db_session.refresh(test_data1)
 
         # 結果の検証
         result_data = await async_db_session.execute(
@@ -64,7 +56,7 @@ class TestEventSchedules:
         result = result_data.scalars().first()
 
         assert result is not None
-        assert str(result.row_id) == test_data1.row_id
+        assert result.row_id == test_data1.row_id
         assert result.event_type == test_data1.event_type
         assert result.event_count == test_data1.event_count
         assert result.profile == test_data1.profile
@@ -72,10 +64,11 @@ class TestEventSchedules:
         assert result.start_at == test_data1.start_at
         assert result.end_at == test_data1.end_at
 
+        await async_db_session.rollback()
+
     @pytest.mark.asyncio
     async def test_select_all(
         self,
-        db_clear,
         async_db_session: AsyncSession,
         test_data1: EventSchedules,
         test_data2: EventSchedules
@@ -84,25 +77,29 @@ class TestEventSchedules:
         async_db_session.add(test_data1)
         async_db_session.add(test_data2)
         await async_db_session.commit()
+        await async_db_session.refresh(test_data1)
+        await async_db_session.refresh(test_data2)
 
         # select_all メソッドのテスト
         results = await EventSchedules.select_all(async_db_session)
         assert len(results) == 2
         for r in results:
 
-            row_id_str = str(r.row_id)
+            row_id = r.row_id
 
-            if row_id_str == test_data1.row_id:
+            if row_id == test_data1.row_id:
                 expect = test_data1
-            elif row_id_str == test_data2.row_id:
+            elif row_id == test_data2.row_id:
                 expect = test_data2
             else:
                 assert False
 
-            assert row_id_str == expect.row_id
+            assert row_id == expect.row_id
             assert r.event_type == expect.event_type
             assert r.event_count == expect.event_count
             assert r.profile == expect.profile
             assert r.weak_attribute == expect.weak_attribute
             assert r.start_at == expect.start_at
             assert r.end_at == expect.end_at
+
+        await async_db_session.rollback()

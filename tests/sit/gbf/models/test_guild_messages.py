@@ -1,18 +1,10 @@
 import pytest
 import pytest_asyncio
-from sqlalchemy import delete
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from gbf.models.guild_messages import GuildMessages
 
 
 class TestGuildMessages:
-
-    @pytest_asyncio.fixture
-    async def db_clear(self, async_db_session: AsyncSession):
-        await async_db_session.execute(
-            delete(GuildMessages)
-        )
-        await async_db_session.commit()
 
     @pytest_asyncio.fixture(scope='function', autouse=True)
     async def test_data1(self) -> GuildMessages:
@@ -47,13 +39,13 @@ class TestGuildMessages:
     @pytest.mark.asyncio
     async def test_select_single(
         self,
-        db_clear,
         async_db_session: AsyncSession,
         test_data1: GuildMessages
     ):
 
         async_db_session.add(test_data1)
         await async_db_session.commit()
+        await async_db_session.refresh(test_data1)
 
         # テスト対象のメソッドの呼び出し
         result = await test_data1.select_single(
@@ -69,10 +61,11 @@ class TestGuildMessages:
         assert result.reactions == test_data1.reactions
         assert result.memo == test_data1.memo
 
+        await async_db_session.rollback()
+
     @pytest.mark.asyncio
     async def test_select_all(
         self,
-        db_clear,
         async_db_session: AsyncSession,
         test_data1: GuildMessages,
         test_data2: GuildMessages,
@@ -85,6 +78,9 @@ class TestGuildMessages:
         async_db_session.add(test_data2)
         async_db_session.add(test_data3_other_guild)
         await async_db_session.commit()
+        await async_db_session.refresh(test_data1)
+        await async_db_session.refresh(test_data2)
+        await async_db_session.refresh(test_data3_other_guild)
 
         # select_all メソッドのテスト
         results = await GuildMessages.select_multi(
@@ -109,3 +105,4 @@ class TestGuildMessages:
             assert r.message_jp == expect.message_jp
             assert r.reactions == expect.reactions
             assert r.memo == expect.memo
+        await async_db_session.rollback()

@@ -1,18 +1,10 @@
 import pytest
 import pytest_asyncio
-from sqlalchemy import delete
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from gbf.models.quests import Quests
 
 
 class TestQuests:
-
-    @pytest_asyncio.fixture
-    async def db_clear(self, async_db_session: AsyncSession):
-        await async_db_session.execute(
-            delete(Quests)
-        )
-        await async_db_session.commit()
 
     @pytest_asyncio.fixture(scope='function', autouse=True)
     async def test_data1(self) -> Quests:
@@ -47,7 +39,6 @@ class TestQuests:
     @pytest.mark.asyncio
     async def test_select_all(
         self,
-        db_clear,
         async_db_session: AsyncSession,
         test_data1: Quests,
         test_data2: Quests,
@@ -58,6 +49,9 @@ class TestQuests:
         async_db_session.add(test_data2)
         async_db_session.add(test_data3)
         await async_db_session.commit()
+        await async_db_session.refresh(test_data1)
+        await async_db_session.refresh(test_data2)
+        await async_db_session.refresh(test_data3)
 
         # select_all メソッドのテスト
         results = await Quests.select_all(
@@ -83,4 +77,5 @@ class TestQuests:
             assert r.quest_name == expect.quest_name
             assert r.use_battle_type == expect.use_battle_type
             assert r.default_battle_type == expect.default_battle_type
+        await async_db_session.rollback()
 

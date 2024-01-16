@@ -1,7 +1,6 @@
 # FILEPATH: /workspaces/gbf_bot/tests/test_environments.py
 import pytest
 import pytest_asyncio
-from sqlalchemy import delete
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from gbf.models.guild_environments import GuildEnvironments
 
@@ -9,13 +8,6 @@ from gbf.models.guild_environments import GuildEnvironments
 class TestGuildEnvironments:
 
     TEST_KEY_PREFIX = "TestGuildEnvironments"
-
-    @pytest_asyncio.fixture
-    async def db_clear(self, async_db_session: AsyncSession):
-        await async_db_session.execute(
-            delete(GuildEnvironments)
-        )
-        await async_db_session.commit()
 
     @pytest_asyncio.fixture(scope='function', autouse=True)
     async def data1(self) -> GuildEnvironments:
@@ -52,7 +44,6 @@ class TestGuildEnvironments:
     @pytest.mark.asyncio
     async def test_select_single(
         self,
-        db_clear,
         async_db_session: AsyncSession,
         data1: GuildEnvironments
     ):
@@ -60,6 +51,7 @@ class TestGuildEnvironments:
         # テストデータの作成
         async_db_session.add(data1)
         await async_db_session.commit()
+        await async_db_session.refresh(data1)
 
         result = await GuildEnvironments.select_single(
             async_db_session,
@@ -74,10 +66,11 @@ class TestGuildEnvironments:
         assert result.value == data1.value
         assert result.memo == data1.memo
 
+        await async_db_session.rollback()
+
     @pytest.mark.asyncio
     async def test_select_multi(
         self,
-        db_clear,
         async_db_session: AsyncSession,
         data1: GuildEnvironments,
         data2_list: list[GuildEnvironments]
@@ -89,6 +82,8 @@ class TestGuildEnvironments:
         for actual in all_list:
             async_db_session.add(actual)
         await async_db_session.commit()
+        for actual in all_list:
+            await async_db_session.refresh(actual)
 
         # 検証用データ抽出
         expected_list = [
@@ -118,11 +113,11 @@ class TestGuildEnvironments:
             assert actual.value == expect.value
             assert actual.memo == expect.memo
         assert len([a for a in results if a.key == data1.key]) == 0
+        await async_db_session.rollback()
 
     @pytest.mark.asyncio
     async def test_select_all(
         self,
-        db_clear,
         async_db_session: AsyncSession,
         data1: GuildEnvironments,
         data2_list: list[GuildEnvironments]
@@ -134,6 +129,8 @@ class TestGuildEnvironments:
         for actual in expect_list:
             async_db_session.add(actual)
         await async_db_session.commit()
+        for actual in expect_list:
+            await async_db_session.refresh(actual)
 
         # テスト対象のメソッドの呼び出し
         results = await GuildEnvironments.select_all(
@@ -154,11 +151,11 @@ class TestGuildEnvironments:
             assert actual.key == expect.key
             assert actual.value == expect.value
             assert actual.memo == expect.memo
+        await async_db_session.rollback()
 
     @pytest.mark.asyncio
     async def test_delete_all(
         self,
-        db_clear,
         async_db_session: AsyncSession,
         data2_list: list[GuildEnvironments]
     ):
@@ -173,6 +170,8 @@ class TestGuildEnvironments:
         for actual in data2_list:
             async_db_session.add(actual)
         await async_db_session.commit()
+        for actual in data2_list:
+            async_db_session.refresh(actual)
 
         results = await GuildEnvironments.select_all(
             async_db_session,
@@ -200,3 +199,5 @@ class TestGuildEnvironments:
             other_guild_id
         )
         assert len(results) >= 0
+
+        await async_db_session.rollback()

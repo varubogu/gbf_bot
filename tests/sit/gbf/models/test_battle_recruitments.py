@@ -67,6 +67,8 @@ class TestBattleRecruitments:
         assert result.room_id == test_data1.room_id
         assert result.expiry_date == test_data1.expiry_date
 
+        await async_db_session.rollback()
+
     @pytest.mark.asyncio
     async def test_select_single(
         self,
@@ -96,3 +98,5 @@ class TestBattleRecruitments:
         assert result.battle_type_id == test_data2.battle_type_id
         assert result.room_id == test_data2.room_id
         assert result.expiry_date == test_data2.expiry_date
+
+        await async_db_session.rollback()

@@ -1,17 +1,10 @@
 import pytest
 import pytest_asyncio
-from sqlalchemy import delete
 from gbf.models.guild_channels import GuildChannels
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 
 class TestGuildChannels:
-    @pytest_asyncio.fixture
-    async def db_clear(self, async_db_session: AsyncSession):
-        await async_db_session.execute(
-            delete(GuildChannels)
-        )
-        await async_db_session.commit()
 
     @pytest_asyncio.fixture(scope='function', autouse=True)
     async def test_data1(self) -> GuildChannels:
@@ -32,7 +25,6 @@ class TestGuildChannels:
     @pytest.mark.asyncio
     async def test_select_where_channel_type(
         self,
-        db_clear,
         async_db_session: AsyncSession,
         test_data1: GuildChannels,
         test_data2: GuildChannels,
@@ -41,6 +33,8 @@ class TestGuildChannels:
         async_db_session.add(test_data1)
         async_db_session.add(test_data2)
         await async_db_session.commit()
+        await async_db_session.refresh(test_data1)
+        await async_db_session.refresh(test_data2)
 
         # select_all メソッドのテスト
         results1 = await GuildChannels.select_where_channel_type(
@@ -56,6 +50,8 @@ class TestGuildChannels:
         )
         assert len(results2) == 1
         await self.equals_test_data(results2[0], test_data2)
+
+        await async_db_session.rollback()
 
     async def equals_test_data(
             self,
