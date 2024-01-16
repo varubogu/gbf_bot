@@ -1,6 +1,6 @@
 
 from datetime import datetime, timedelta
-from sqlalchemy import BigInteger, Column, String, and_, delete, text
+from sqlalchemy import BigInteger, Column, String, and_, delete
 from sqlalchemy.future import select
 from gbf.models.model_base import ModelBase
 from gbf.models.table_scopes import TableScopes
