@@ -57,32 +57,32 @@ class TestGuildEventSchedules:
         async_db_session: AsyncSession,
         test_data1: GuildEventSchedules
     ):
+        try:
+            # テスト対象のメソッドの呼び出し
+            await test_data1.create(async_db_session)
+            await async_db_session.refresh(test_data1)
 
-        # テスト対象のメソッドの呼び出し
-        await test_data1.create(async_db_session)
-        await async_db_session.refresh(test_data1)
+            # 結果の検証
+            result_data = await async_db_session.execute(
+                select(GuildEventSchedules).filter(and_(
+                    GuildEventSchedules.row_id == test_data1.row_id,
+                    GuildEventSchedules.guild_id == test_data1.guild_id
+                ))
+            )
 
-        # 結果の検証
-        result_data = await async_db_session.execute(
-            select(GuildEventSchedules).filter(and_(
-                GuildEventSchedules.row_id == test_data1.row_id,
-                GuildEventSchedules.guild_id == test_data1.guild_id
-            ))
-        )
+            result = result_data.scalars().first()
 
-        result = result_data.scalars().first()
-
-        assert result is not None
-        assert result.row_id == test_data1.row_id
-        assert result.guild_id == test_data1.guild_id
-        assert result.event_type == test_data1.event_type
-        assert result.event_count == test_data1.event_count
-        assert result.profile == test_data1.profile
-        assert result.weak_attribute == test_data1.weak_attribute
-        assert result.start_at == test_data1.start_at
-        assert result.end_at == test_data1.end_at
-
-        await async_db_session.rollback()
+            assert result is not None
+            assert result.row_id == test_data1.row_id
+            assert result.guild_id == test_data1.guild_id
+            assert result.event_type == test_data1.event_type
+            assert result.event_count == test_data1.event_count
+            assert result.profile == test_data1.profile
+            assert result.weak_attribute == test_data1.weak_attribute
+            assert result.start_at == test_data1.start_at
+            assert result.end_at == test_data1.end_at
+        finally:
+            await async_db_session.rollback()
 
     @pytest.mark.asyncio
     async def test_select_all(
@@ -92,40 +92,42 @@ class TestGuildEventSchedules:
         test_data2: GuildEventSchedules,
         test_data3: GuildEventSchedules
     ):
-        # テスト対象サーバーID
-        target_guild_id = test_data1.guild_id
-        # データの作成
-        async_db_session.add(test_data1)
-        async_db_session.add(test_data2)
-        async_db_session.add(test_data3)
-        await async_db_session.commit()
-        await async_db_session.refresh(test_data1)
-        await async_db_session.refresh(test_data2)
-        await async_db_session.refresh(test_data3)
+        try:
+            # テスト対象サーバーID
+            target_guild_id = test_data1.guild_id
+            # データの作成
+            async_db_session.add(test_data1)
+            async_db_session.add(test_data2)
+            async_db_session.add(test_data3)
+            await async_db_session.commit()
+            await async_db_session.refresh(test_data1)
+            await async_db_session.refresh(test_data2)
+            await async_db_session.refresh(test_data3)
 
-        # select_all メソッドのテスト
-        results = await GuildEventSchedules.select_all(
-            async_db_session,
-            target_guild_id
-        )
-        assert len(results) == 2
-        for r in results:
+            # select_all メソッドのテスト
+            results = await GuildEventSchedules.select_all(
+                async_db_session,
+                target_guild_id
+            )
+            assert len(results) == 2
+            for r in results:
 
-            row_id_str = r.row_id
+                row_id_str = r.row_id
 
-            if row_id_str == test_data1.row_id:
-                expect = test_data1
-            elif row_id_str == test_data2.row_id:
-                expect = test_data2
-            else:
-                assert False
+                if row_id_str == test_data1.row_id:
+                    expect = test_data1
+                elif row_id_str == test_data2.row_id:
+                    expect = test_data2
+                else:
+                    assert False
 
-            assert row_id_str == expect.row_id
-            assert r.guild_id == expect.guild_id
-            assert r.event_type == expect.event_type
-            assert r.event_count == expect.event_count
-            assert r.profile == expect.profile
-            assert r.weak_attribute == expect.weak_attribute
-            assert r.start_at == expect.start_at
-            assert r.end_at == expect.end_at
-        await async_db_session.rollback()
+                assert row_id_str == expect.row_id
+                assert r.guild_id == expect.guild_id
+                assert r.event_type == expect.event_type
+                assert r.event_count == expect.event_count
+                assert r.profile == expect.profile
+                assert r.weak_attribute == expect.weak_attribute
+                assert r.start_at == expect.start_at
+                assert r.end_at == expect.end_at
+        finally:
+            await async_db_session.rollback()

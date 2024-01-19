@@ -25,21 +25,21 @@ class TestElements:
         async_db_session: AsyncSession,
         test_data1: Elements
     ):
+        try:
+            # テストデータの作成
+            async_db_session.add(test_data1)
+            await async_db_session.commit()
+            await async_db_session.refresh(test_data1)
 
-        # テストデータの作成
-        async_db_session.add(test_data1)
-        await async_db_session.commit()
-        await async_db_session.refresh(test_data1)
-
-        # 結果の検証
-        result = await Elements.select(
-            async_db_session,
-            test_data1.element_id
-        )
-        assert result is not None
-        assert result.element_id == test_data1.element_id
-        assert result.stamp == test_data1.stamp
-        assert result.name_jp == test_data1.name_jp
-        assert result.name_en == test_data1.name_en
-
-        await async_db_session.rollback()
+            # 結果の検証
+            result = await Elements.select(
+                async_db_session,
+                test_data1.element_id
+            )
+            assert result is not None
+            assert result.element_id == test_data1.element_id
+            assert result.stamp == test_data1.stamp
+            assert result.name_jp == test_data1.name_jp
+            assert result.name_en == test_data1.name_en
+        finally:
+            await async_db_session.rollback()

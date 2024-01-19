@@ -42,24 +42,24 @@ class TestEnvironments:
         async_db_session: AsyncSession,
         data1: Environments
     ):
+        try:
+            # テストデータの作成
+            async_db_session.add(data1)
+            await async_db_session.commit()
+            await async_db_session.refresh(data1)
 
-        # テストデータの作成
-        async_db_session.add(data1)
-        await async_db_session.commit()
-        await async_db_session.refresh(data1)
+            result = await Environments.select_single(
+                async_db_session,
+                data1.key
+            )
 
-        result = await Environments.select_single(
-            async_db_session,
-            data1.key
-        )
-
-        # 結果の検証
-        assert result is not None
-        assert result.key == data1.key
-        assert result.value == data1.value
-        assert result.memo == data1.memo
-
-        await async_db_session.rollback()
+            # 結果の検証
+            assert result is not None
+            assert result.key == data1.key
+            assert result.value == data1.value
+            assert result.memo == data1.memo
+        finally:
+            await async_db_session.rollback()
 
     @pytest.mark.asyncio
     async def test_select_multi(
@@ -68,36 +68,36 @@ class TestEnvironments:
         data1: Environments,
         data2_list: list[Environments]
     ):
+        try:
+            all_list = [data1] + data2_list
 
-        all_list = [data1] + data2_list
+            # テストデータの作成
+            for actual in all_list:
+                async_db_session.add(actual)
+            await async_db_session.commit()
+            for actual in all_list:
+                await async_db_session.refresh(actual)
 
-        # テストデータの作成
-        for actual in all_list:
-            async_db_session.add(actual)
-        await async_db_session.commit()
-        for actual in all_list:
-            await async_db_session.refresh(actual)
+            # テスト対象のメソッドの呼び出し
+            results = await Environments.select_multi(
+                async_db_session,
+                [d.key for d in data2_list]
+            )
 
-        # テスト対象のメソッドの呼び出し
-        results = await Environments.select_multi(
-            async_db_session,
-            [d.key for d in data2_list]
-        )
-
-        # 結果の検証
-        assert results is not None
-        assert len(results) == len(data2_list)
-        for actual in results:
-            expect = [
-                expect_single for expect_single in data2_list
-                if actual.key == expect_single.key
-            ][0]
-            assert actual.key == expect.key
-            assert actual.value == expect.value
-            assert actual.memo == expect.memo
-        assert len([a for a in results if a.key == data1.key]) == 0
-
-        await async_db_session.rollback()
+            # 結果の検証
+            assert results is not None
+            assert len(results) == len(data2_list)
+            for actual in results:
+                expect = [
+                    expect_single for expect_single in data2_list
+                    if actual.key == expect_single.key
+                ][0]
+                assert actual.key == expect.key
+                assert actual.value == expect.value
+                assert actual.memo == expect.memo
+            assert len([a for a in results if a.key == data1.key]) == 0
+        finally:
+            await async_db_session.rollback()
 
     @pytest.mark.asyncio
     async def test_select_all(
@@ -106,33 +106,33 @@ class TestEnvironments:
         data1: Environments,
         data2_list: list[Environments]
     ):
-        # テストデータの作成
+        try:
+            # テストデータの作成
+            all_list = [data1] + data2_list
 
-        all_list = [data1] + data2_list
+            for actual in all_list:
+                async_db_session.add(actual)
+            await async_db_session.commit()
+            for actual in all_list:
+                await async_db_session.refresh(actual)
 
-        for actual in all_list:
-            async_db_session.add(actual)
-        await async_db_session.commit()
-        for actual in all_list:
-            await async_db_session.refresh(actual)
+            # テスト対象のメソッドの呼び出し
+            results = await Environments.select_all(
+                async_db_session
+            )
 
-        # テスト対象のメソッドの呼び出し
-        results = await Environments.select_all(
-            async_db_session
-        )
-
-        # 結果の検証
-        assert len(results) == len(all_list)
-        for actual in results:
-            expect = [
-                expect_single for expect_single in all_list
-                if actual.key == expect_single.key
-            ][0]
-            assert actual.key == expect.key
-            assert actual.value == expect.value
-            assert actual.memo == expect.memo
-
-        await async_db_session.rollback()
+            # 結果の検証
+            assert len(results) == len(all_list)
+            for actual in results:
+                expect = [
+                    expect_single for expect_single in all_list
+                    if actual.key == expect_single.key
+                ][0]
+                assert actual.key == expect.key
+                assert actual.value == expect.value
+                assert actual.memo == expect.memo
+        finally:
+            await async_db_session.rollback()
 
     @pytest.mark.asyncio
     async def test_truncate(
@@ -140,22 +140,22 @@ class TestEnvironments:
         async_db_session: AsyncSession,
         data2_list: list[Environments]
     ):
+        try:
+            # テストデータの作成
+            for actual in data2_list:
+                async_db_session.add(actual)
+            await async_db_session.commit()
+            for actual in data2_list:
+                await async_db_session.refresh(actual)
 
-        # テストデータの作成
-        for actual in data2_list:
-            async_db_session.add(actual)
-        await async_db_session.commit()
-        for actual in data2_list:
-            await async_db_session.refresh(actual)
+            results = await Environments.select_all(async_db_session)
+            assert len(results) == len(data2_list)
 
-        results = await Environments.select_all(async_db_session)
-        assert len(results) == len(data2_list)
+            # テスト対象のメソッドの呼び出し
+            await Environments.truncate(async_db_session)
 
-        # テスト対象のメソッドの呼び出し
-        await Environments.truncate(async_db_session)
-
-        # 結果の検証
-        results = await Environments.select_all(async_db_session)
-        assert len(results) == 0
-
-        await async_db_session.rollback()
+            # 結果の検証
+            results = await Environments.select_all(async_db_session)
+            assert len(results) == 0
+        finally:
+            await async_db_session.rollback()

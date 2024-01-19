@@ -29,29 +29,30 @@ class TestGuildChannels:
         test_data1: GuildChannels,
         test_data2: GuildChannels,
     ):
-        # データの作成
-        async_db_session.add(test_data1)
-        async_db_session.add(test_data2)
-        await async_db_session.commit()
-        await async_db_session.refresh(test_data1)
-        await async_db_session.refresh(test_data2)
+        try:
+            # データの作成
+            async_db_session.add(test_data1)
+            async_db_session.add(test_data2)
+            await async_db_session.commit()
+            await async_db_session.refresh(test_data1)
+            await async_db_session.refresh(test_data2)
 
-        # select_all メソッドのテスト
-        results1 = await GuildChannels.select_where_channel_type(
-            async_db_session,
-            test_data1.channel_type
-        )
-        assert len(results1) == 1
-        await self.equals_test_data(results1[0], test_data1)
+            # select_all メソッドのテスト
+            results1 = await GuildChannels.select_where_channel_type(
+                async_db_session,
+                test_data1.channel_type
+            )
+            assert len(results1) == 1
+            await self.equals_test_data(results1[0], test_data1)
 
-        results2 = await GuildChannels.select_where_channel_type(
-            async_db_session,
-            test_data2.channel_type
-        )
-        assert len(results2) == 1
-        await self.equals_test_data(results2[0], test_data2)
-
-        await async_db_session.rollback()
+            results2 = await GuildChannels.select_where_channel_type(
+                async_db_session,
+                test_data2.channel_type
+            )
+            assert len(results2) == 1
+            await self.equals_test_data(results2[0], test_data2)
+        finally:
+            await async_db_session.rollback()
 
     async def equals_test_data(
             self,

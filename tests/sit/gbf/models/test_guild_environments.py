@@ -47,26 +47,26 @@ class TestGuildEnvironments:
         async_db_session: AsyncSession,
         data1: GuildEnvironments
     ):
+        try:
+            # テストデータの作成
+            async_db_session.add(data1)
+            await async_db_session.commit()
+            await async_db_session.refresh(data1)
 
-        # テストデータの作成
-        async_db_session.add(data1)
-        await async_db_session.commit()
-        await async_db_session.refresh(data1)
+            result = await GuildEnvironments.select_single(
+                async_db_session,
+                data1.guild_id,
+                data1.key
+            )
 
-        result = await GuildEnvironments.select_single(
-            async_db_session,
-            data1.guild_id,
-            data1.key
-        )
-
-        # 結果の検証
-        assert result is not None
-        assert result.guild_id == data1.guild_id
-        assert result.key == data1.key
-        assert result.value == data1.value
-        assert result.memo == data1.memo
-
-        await async_db_session.rollback()
+            # 結果の検証
+            assert result is not None
+            assert result.guild_id == data1.guild_id
+            assert result.key == data1.key
+            assert result.value == data1.value
+            assert result.memo == data1.memo
+        finally:
+            await async_db_session.rollback()
 
     @pytest.mark.asyncio
     async def test_select_multi(
@@ -75,45 +75,46 @@ class TestGuildEnvironments:
         data1: GuildEnvironments,
         data2_list: list[GuildEnvironments]
     ):
+        try:
+            all_list = [data1] + data2_list
 
-        all_list = [data1] + data2_list
+            # テストデータの作成
+            for actual in all_list:
+                async_db_session.add(actual)
+            await async_db_session.commit()
+            for actual in all_list:
+                await async_db_session.refresh(actual)
 
-        # テストデータの作成
-        for actual in all_list:
-            async_db_session.add(actual)
-        await async_db_session.commit()
-        for actual in all_list:
-            await async_db_session.refresh(actual)
+            # 検証用データ抽出
+            expected_list = [
+                d for d in data2_list
+                if d.guild_id == data2_list[1].guild_id and
+                d.key in [data2_list[1].key, data2_list[2].key]
+            ]
 
-        # 検証用データ抽出
-        expected_list = [
-            d for d in data2_list
-            if d.guild_id == data2_list[1].guild_id and
-            d.key in [data2_list[1].key, data2_list[2].key]
-        ]
+            # テスト対象のメソッドの呼び出し
+            results = await GuildEnvironments.select_multi(
+                async_db_session,
+                data1.guild_id,
+                [d.key for d in expected_list]
+            )
 
-        # テスト対象のメソッドの呼び出し
-        results = await GuildEnvironments.select_multi(
-            async_db_session,
-            data1.guild_id,
-            [d.key for d in expected_list]
-        )
+            # 結果の検証
+            assert results is not None
+            assert len(results) == len(expected_list)
+            for actual in results:
+                expect = [
+                    d for d in expected_list
+                    if actual.key == d.key
+                ][0]
 
-        # 結果の検証
-        assert results is not None
-        assert len(results) == len(expected_list)
-        for actual in results:
-            expect = [
-                d for d in expected_list
-                if actual.key == d.key
-            ][0]
-
-            assert actual.guild_id == expect.guild_id
-            assert actual.key == expect.key
-            assert actual.value == expect.value
-            assert actual.memo == expect.memo
-        assert len([a for a in results if a.key == data1.key]) == 0
-        await async_db_session.rollback()
+                assert actual.guild_id == expect.guild_id
+                assert actual.key == expect.key
+                assert actual.value == expect.value
+                assert actual.memo == expect.memo
+            assert len([a for a in results if a.key == data1.key]) == 0
+        finally:
+            await async_db_session.rollback()
 
     @pytest.mark.asyncio
     async def test_select_all(
@@ -122,36 +123,37 @@ class TestGuildEnvironments:
         data1: GuildEnvironments,
         data2_list: list[GuildEnvironments]
     ):
-        # テストデータの作成
+        try:
+            # テストデータの作成
+            expect_list = [data1] + data2_list
 
-        expect_list = [data1] + data2_list
+            for actual in expect_list:
+                async_db_session.add(actual)
+            await async_db_session.commit()
+            for actual in expect_list:
+                await async_db_session.refresh(actual)
 
-        for actual in expect_list:
-            async_db_session.add(actual)
-        await async_db_session.commit()
-        for actual in expect_list:
-            await async_db_session.refresh(actual)
+            # テスト対象のメソッドの呼び出し
+            results = await GuildEnvironments.select_all(
+                async_db_session,
+                expect_list[0].guild_id
+            )
 
-        # テスト対象のメソッドの呼び出し
-        results = await GuildEnvironments.select_all(
-            async_db_session,
-            expect_list[0].guild_id
-        )
-
-        # 結果の検証
-        expect_count = len(
-            [d for d in expect_list if d.guild_id == expect_list[0].guild_id]
-        )
-        assert len(results) == expect_count
-        for actual in results:
-            expect = [
-                d for d in expect_list
-                if actual.key == d.key
-            ][0]
-            assert actual.key == expect.key
-            assert actual.value == expect.value
-            assert actual.memo == expect.memo
-        await async_db_session.rollback()
+            # 結果の検証
+            expect_count = len(
+                [d for d in expect_list if d.guild_id == expect_list[0].guild_id]
+            )
+            assert len(results) == expect_count
+            for actual in results:
+                expect = [
+                    d for d in expect_list
+                    if actual.key == d.key
+                ][0]
+                assert actual.key == expect.key
+                assert actual.value == expect.value
+                assert actual.memo == expect.memo
+        finally:
+            await async_db_session.rollback()
 
     @pytest.mark.asyncio
     async def test_delete_all(
@@ -159,45 +161,45 @@ class TestGuildEnvironments:
         async_db_session: AsyncSession,
         data2_list: list[GuildEnvironments]
     ):
+        try:
+            target_guild_id = data2_list[0].guild_id
+            other_guild_id = data2_list[2].guild_id
+            target_count = len(
+                [d for d in data2_list if d.guild_id == target_guild_id]
+            )
 
-        target_guild_id = data2_list[0].guild_id
-        other_guild_id = data2_list[2].guild_id
-        target_count = len(
-            [d for d in data2_list if d.guild_id == target_guild_id]
-        )
+            # テストデータの作成
+            for actual in data2_list:
+                async_db_session.add(actual)
+            await async_db_session.commit()
+            for actual in data2_list:
+                async_db_session.refresh(actual)
 
-        # テストデータの作成
-        for actual in data2_list:
-            async_db_session.add(actual)
-        await async_db_session.commit()
-        for actual in data2_list:
-            async_db_session.refresh(actual)
+            results = await GuildEnvironments.select_all(
+                async_db_session,
+                target_guild_id
+            )
+            # テストデータ挿入を確認
+            assert len(results) == target_count
 
-        results = await GuildEnvironments.select_all(
-            async_db_session,
-            target_guild_id
-        )
-        # テストデータ挿入を確認
-        assert len(results) == target_count
+            # テスト対象のメソッドの呼び出し
+            await GuildEnvironments.delete_all(
+                async_db_session,
+                target_guild_id
+            )
 
-        # テスト対象のメソッドの呼び出し
-        await GuildEnvironments.delete_all(
-            async_db_session,
-            target_guild_id
-        )
+            # 対象サーバーのデータが削除されていることを確認
+            results = await GuildEnvironments.select_all(
+                async_db_session,
+                target_guild_id
+            )
+            assert len(results) == 0
 
-        # 対象サーバーのデータが削除されていることを確認
-        results = await GuildEnvironments.select_all(
-            async_db_session,
-            target_guild_id
-        )
-        assert len(results) == 0
-
-        # 他のサーバーのデータは削除されていないことを確認
-        results = await GuildEnvironments.select_all(
-            async_db_session,
-            other_guild_id
-        )
-        assert len(results) >= 0
-
-        await async_db_session.rollback()
+            # 他のサーバーのデータは削除されていないことを確認
+            results = await GuildEnvironments.select_all(
+                async_db_session,
+                other_guild_id
+            )
+            assert len(results) >= 0
+        finally:
+            await async_db_session.rollback()

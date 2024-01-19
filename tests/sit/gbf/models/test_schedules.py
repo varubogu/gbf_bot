@@ -63,42 +63,43 @@ class TestSchedules:
         test_data2: Schedules,
         test_data3: Schedules
     ):
-        # データの作成
-        async_db_session.add(test_data1)
-        async_db_session.add(test_data2)
-        async_db_session.add(test_data3)
-        await async_db_session.commit()
-        await async_db_session.refresh(test_data1)
-        await async_db_session.refresh(test_data2)
-        await async_db_session.refresh(test_data3)
+        try:
+            # データの作成
+            async_db_session.add(test_data1)
+            async_db_session.add(test_data2)
+            async_db_session.add(test_data3)
+            await async_db_session.commit()
+            await async_db_session.refresh(test_data1)
+            await async_db_session.refresh(test_data2)
+            await async_db_session.refresh(test_data3)
 
-        # select_all メソッドのテスト
-        results = await Schedules.select_all(
-            async_db_session
-        )
-        assert len(results) == 3
-        for r in results:
+            # select_all メソッドのテスト
+            results = await Schedules.select_all(
+                async_db_session
+            )
+            assert len(results) == 3
+            for r in results:
 
-            row_id = r.row_id
+                row_id = r.row_id
 
-            if row_id == test_data1.row_id:
-                expect = test_data1
-            elif row_id == test_data2.row_id:
-                expect = test_data2
-            elif row_id == test_data3.row_id:
-                expect = test_data3
-            else:
-                assert False
+                if row_id == test_data1.row_id:
+                    expect = test_data1
+                elif row_id == test_data2.row_id:
+                    expect = test_data2
+                elif row_id == test_data3.row_id:
+                    expect = test_data3
+                else:
+                    assert False
 
-            assert row_id == expect.row_id
-            assert r.parent_schedule_id == expect.parent_schedule_id
-            assert r.parent_schedule_detail_id == expect.parent_schedule_detail_id
-            assert r.schedule_datetime == expect.schedule_datetime
-            assert r.guild_id == expect.guild_id
-            assert r.channel_id == expect.channel_id
-            assert r.message_id == expect.message_id
-
-        await async_db_session.rollback()
+                assert row_id == expect.row_id
+                assert r.parent_schedule_id == expect.parent_schedule_id
+                assert r.parent_schedule_detail_id == expect.parent_schedule_detail_id
+                assert r.schedule_datetime == expect.schedule_datetime
+                assert r.guild_id == expect.guild_id
+                assert r.channel_id == expect.channel_id
+                assert r.message_id == expect.message_id
+        finally:
+            await async_db_session.rollback()
 
     @pytest.mark.asyncio
     async def test_bulk_insert(
@@ -107,16 +108,16 @@ class TestSchedules:
             test_data1,
             test_data2
     ):
+        try:
+            await Schedules.bulk_insert(async_db_session, [test_data1, test_data2])
+            await async_db_session.commit()
+            await async_db_session.refresh(test_data1)
+            await async_db_session.refresh(test_data2)
 
-        await Schedules.bulk_insert(async_db_session, [test_data1, test_data2])
-        await async_db_session.commit()
-        await async_db_session.refresh(test_data1)
-        await async_db_session.refresh(test_data2)
-
-        result = await Schedules.select_all(async_db_session)
-        assert len(result) == 2
-
-        await async_db_session.rollback()
+            result = await Schedules.select_all(async_db_session)
+            assert len(result) == 2
+        finally:
+            await async_db_session.rollback()
 
     @pytest.mark.asyncio
     async def test_truncate(
@@ -124,16 +125,17 @@ class TestSchedules:
             async_db_session: AsyncSession,
             test_data1
     ):
-        async_db_session.add(test_data1)
-        await async_db_session.commit()
-        await async_db_session.refresh(test_data1)
+        try:
+            async_db_session.add(test_data1)
+            await async_db_session.commit()
+            await async_db_session.refresh(test_data1)
 
-        await Schedules.truncate(async_db_session)
+            await Schedules.truncate(async_db_session)
 
-        result = await Schedules.select_all(async_db_session)
-        assert len(result) == 0
-
-        await async_db_session.rollback()
+            result = await Schedules.select_all(async_db_session)
+            assert len(result) == 0
+        finally:
+            await async_db_session.rollback()
 
     @pytest.mark.asyncio
     async def test_select_sinse_last_time(
@@ -144,24 +146,25 @@ class TestSchedules:
             test_data3,
             test_data4
     ):
-        await Schedules.bulk_insert(
-            async_db_session,
-            [test_data1, test_data2, test_data3, test_data4]
-        )
-        await async_db_session.commit()
-        await async_db_session.refresh(test_data1)
-        await async_db_session.refresh(test_data2)
-        await async_db_session.refresh(test_data3)
-        await async_db_session.refresh(test_data4)
+        try:
+            await Schedules.bulk_insert(
+                async_db_session,
+                [test_data1, test_data2, test_data3, test_data4]
+            )
+            await async_db_session.commit()
+            await async_db_session.refresh(test_data1)
+            await async_db_session.refresh(test_data2)
+            await async_db_session.refresh(test_data3)
+            await async_db_session.refresh(test_data4)
 
-        last_time = datetime(2021, 1, 1, 19, 0, 0)
-        now = datetime(2021, 1, 1, 19, 0, 59)
+            last_time = datetime(2021, 1, 1, 19, 0, 0)
+            now = datetime(2021, 1, 1, 19, 0, 59)
 
-        result = await Schedules.select_sinse_last_time(
-            async_db_session, last_time, now
-        )
-        assert len(result) == 2
-        result[0].schedule_datetime == test_data2.schedule_datetime
-        result[1].schedule_datetime == test_data3.schedule_datetime
-
-        await async_db_session.rollback()
+            result = await Schedules.select_sinse_last_time(
+                async_db_session, last_time, now
+            )
+            assert len(result) == 2
+            result[0].schedule_datetime == test_data2.schedule_datetime
+            result[1].schedule_datetime == test_data3.schedule_datetime
+        finally:
+            await async_db_session.rollback()

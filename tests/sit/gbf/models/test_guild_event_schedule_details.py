@@ -43,33 +43,33 @@ class TestGuildEventSchedulesDetails:
         async_db_session: AsyncSession,
         test_data1: GuildEventScheduleDetails
     ):
+        try:
+            # テスト対象のメソッドの呼び出し
+            await test_data1.create(async_db_session)
+            await async_db_session.refresh(test_data1)
 
-        # テスト対象のメソッドの呼び出し
-        await test_data1.create(async_db_session)
-        await async_db_session.refresh(test_data1)
+            # 結果の検証
+            result_data = await async_db_session.execute(
+                select(GuildEventScheduleDetails).filter(and_(
+                    GuildEventScheduleDetails.row_id == test_data1.row_id,
+                    GuildEventScheduleDetails.guild_id == test_data1.guild_id
+                ))
+            )
 
-        # 結果の検証
-        result_data = await async_db_session.execute(
-            select(GuildEventScheduleDetails).filter(and_(
-                GuildEventScheduleDetails.row_id == test_data1.row_id,
-                GuildEventScheduleDetails.guild_id == test_data1.guild_id
-            ))
-        )
+            result = result_data.scalars().first()
 
-        result = result_data.scalars().first()
-
-        assert result is not None
-        assert result.row_id == test_data1.row_id
-        assert result.guild_id == test_data1.guild_id
-        assert result.profile == test_data1.profile
-        assert result.start_day_relative == test_data1.start_day_relative
-        assert result.time == test_data1.time
-        assert result.schedule_name == test_data1.schedule_name
-        assert result.message_id == test_data1.message_id
-        assert result.channel_id == test_data1.channel_id
-        assert result.reactions == test_data1.reactions
-
-        await async_db_session.rollback()
+            assert result is not None
+            assert result.row_id == test_data1.row_id
+            assert result.guild_id == test_data1.guild_id
+            assert result.profile == test_data1.profile
+            assert result.start_day_relative == test_data1.start_day_relative
+            assert result.time == test_data1.time
+            assert result.schedule_name == test_data1.schedule_name
+            assert result.message_id == test_data1.message_id
+            assert result.channel_id == test_data1.channel_id
+            assert result.reactions == test_data1.reactions
+        finally:
+            await async_db_session.rollback()
 
     @pytest.mark.asyncio
     async def test_select_all(
@@ -78,35 +78,36 @@ class TestGuildEventSchedulesDetails:
         test_data1: GuildEventScheduleDetails,
         test_data2: GuildEventScheduleDetails
     ):
-        # データの作成
-        async_db_session.add(test_data1)
-        async_db_session.add(test_data2)
-        await async_db_session.commit()
-        await async_db_session.refresh(test_data1)
-        await async_db_session.refresh(test_data2)
+        try:
+            # データの作成
+            async_db_session.add(test_data1)
+            async_db_session.add(test_data2)
+            await async_db_session.commit()
+            await async_db_session.refresh(test_data1)
+            await async_db_session.refresh(test_data2)
 
-        # select_all メソッドのテスト
-        results = await GuildEventScheduleDetails.select_all(async_db_session)
-        assert len(results) == 2
-        for r in results:
+            # select_all メソッドのテスト
+            results = await GuildEventScheduleDetails.select_all(async_db_session)
+            assert len(results) == 2
+            for r in results:
 
-            row_id_str = r.row_id
+                row_id_str = r.row_id
 
-            if row_id_str == test_data1.row_id:
-                actual = test_data1
-            elif row_id_str == test_data2.row_id:
-                actual = test_data2
-            else:
-                assert False
+                if row_id_str == test_data1.row_id:
+                    actual = test_data1
+                elif row_id_str == test_data2.row_id:
+                    actual = test_data2
+                else:
+                    assert False
 
-            assert row_id_str == actual.row_id
-            assert r.guild_id == actual.guild_id
-            assert r.profile == actual.profile
-            assert r.start_day_relative == actual.start_day_relative
-            assert r.time == actual.time
-            assert r.schedule_name == actual.schedule_name
-            assert r.message_id == actual.message_id
-            assert r.channel_id == actual.channel_id
-            assert r.reactions == actual.reactions
-
-        await async_db_session.rollback()
+                assert row_id_str == actual.row_id
+                assert r.guild_id == actual.guild_id
+                assert r.profile == actual.profile
+                assert r.start_day_relative == actual.start_day_relative
+                assert r.time == actual.time
+                assert r.schedule_name == actual.schedule_name
+                assert r.message_id == actual.message_id
+                assert r.channel_id == actual.channel_id
+                assert r.reactions == actual.reactions
+        finally:
+            await async_db_session.rollback()

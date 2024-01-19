@@ -44,38 +44,40 @@ class TestQuests:
         test_data2: Quests,
         test_data3: Quests
     ):
-        # データの作成
-        async_db_session.add(test_data1)
-        async_db_session.add(test_data2)
-        async_db_session.add(test_data3)
-        await async_db_session.commit()
-        await async_db_session.refresh(test_data1)
-        await async_db_session.refresh(test_data2)
-        await async_db_session.refresh(test_data3)
+        try:
+            # データの作成
+            async_db_session.add(test_data1)
+            async_db_session.add(test_data2)
+            async_db_session.add(test_data3)
+            await async_db_session.commit()
+            await async_db_session.refresh(test_data1)
+            await async_db_session.refresh(test_data2)
+            await async_db_session.refresh(test_data3)
 
-        # select_all メソッドのテスト
-        results = await Quests.select_all(
-            async_db_session
-        )
-        assert len(results) == 3
-        for r in results:
+            # select_all メソッドのテスト
+            results = await Quests.select_all(
+                async_db_session
+            )
+            assert len(results) == 3
+            for r in results:
 
-            if r.target_id == test_data1.target_id and \
-                    r.target_id == test_data1.target_id:
-                expect = test_data1
-            elif r.target_id == test_data2.target_id and \
-                    r.target_id == test_data2.target_id:
-                expect = test_data2
-            elif r.target_id == test_data3.target_id and \
-                    r.target_id == test_data3.target_id:
-                expect = test_data3
-            else:
-                assert False
+                if r.target_id == test_data1.target_id and \
+                        r.target_id == test_data1.target_id:
+                    expect = test_data1
+                elif r.target_id == test_data2.target_id and \
+                        r.target_id == test_data2.target_id:
+                    expect = test_data2
+                elif r.target_id == test_data3.target_id and \
+                        r.target_id == test_data3.target_id:
+                    expect = test_data3
+                else:
+                    assert False
 
-            assert r.target_id == expect.target_id
-            assert r.recruit_count == expect.recruit_count
-            assert r.quest_name == expect.quest_name
-            assert r.use_battle_type == expect.use_battle_type
-            assert r.default_battle_type == expect.default_battle_type
-        await async_db_session.rollback()
+                assert r.target_id == expect.target_id
+                assert r.recruit_count == expect.recruit_count
+                assert r.quest_name == expect.quest_name
+                assert r.use_battle_type == expect.use_battle_type
+                assert r.default_battle_type == expect.default_battle_type
+        finally:
+            await async_db_session.rollback()
 
