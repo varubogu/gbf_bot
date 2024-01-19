@@ -70,8 +70,8 @@ class GuildLastProcessTimes(ModelBase):
                 現在日時、省略時は内部で現在日時を生成する. Defaults to None.
 
         Returns:
-            last_process: 最終実行日時
-            now: 現在日時
+            last_process: 実行前のDBの最終実行日時
+            now: 実行後のDBの最終実行日時
         """
         if now is None:
             now = datetime.now()
