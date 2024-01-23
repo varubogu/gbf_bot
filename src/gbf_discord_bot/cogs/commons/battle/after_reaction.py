@@ -24,36 +24,36 @@ class AfterReaction(commands.Cog):
             return
 
         try:
-
-            async with AsyncSessionLocal() as session:
-                (
-                    (recruitment, battle_type),
-                    message
-                ) = await asyncio.gather(
-                    self.fetch_recruitment(session, paylood),
-                    self.fetch_reaction_message(paylood)
-                )
-
-                if recruitment.recruit_end_message_id is not None:
-                    return
-
-                quest = await Quests.select_single(session, recruitment.target_id)
-
-                reaction_users = await self.get_reaction_users(
-                    message, battle_type.reactions)
-
-                if self.bot.user in reaction_users:
-                    reaction_users.remove(self.bot.user)
-
-                if len(reaction_users) == quest.recruit_count:
-                    mention = ''.join(f"{user.mention}" for user in reaction_users)
-                    end_message = await message.channel.send(
-                        mention + '\nメンバーが揃いました。',
-                        reference=message
+            async with self.db_lock:
+                async with AsyncSessionLocal() as session:
+                    (
+                        (recruitment, battle_type),
+                        message
+                    ) = await asyncio.gather(
+                        self.fetch_recruitment(session, paylood),
+                        self.fetch_reaction_message(paylood)
                     )
-                    recruitment.recruit_end_message_id = end_message.id
-                    session.add(recruitment)
-                    await session.commit()
+
+                    if recruitment.recruit_end_message_id is not None:
+                        return
+
+                    quest = await Quests.select_single(session, recruitment.target_id)
+
+                    reaction_users = await self.get_reaction_users(
+                        message, battle_type.reactions)
+
+                    if self.bot.user in reaction_users:
+                        reaction_users.remove(self.bot.user)
+
+                    if len(reaction_users) == quest.recruit_count:
+                        mention = ''.join(f"{user.mention}" for user in reaction_users)
+                        end_message = await message.channel.send(
+                            mention + '\nメンバーが揃いました。',
+                            reference=message
+                        )
+                        recruitment.recruit_end_message_id = end_message.id
+                        session.add(recruitment)
+                        await session.commit()
         except AbortProcessException:
             # 処理対象外のため正常終了
             pass

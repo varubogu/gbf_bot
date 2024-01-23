@@ -20,14 +20,14 @@ class ScheduleLoader(commands.Cog):
         await interaction.followup.send("スケジュール再読み込み中...")
 
         try:
+            async with self.bot.db_lock:
+                async with AsyncSessionLocal() as session:
+                    register = ScheduleManager()
+                    await register.event_schedule_clear(session)
+                    await register.event_schedule_create(session)
+                    await session.commit()
 
-            async with AsyncSessionLocal() as session:
-                register = ScheduleManager()
-                await register.event_schedule_clear(session)
-                await register.event_schedule_create(session)
-                await session.commit()
-
-            await interaction.followup.send("スケジュール再読み込み完了")
+                await interaction.followup.send("スケジュール再読み込み完了")
         except Exception as e:
             await interaction.followup.send("スケジュール再読み込み失敗")
             print(e)

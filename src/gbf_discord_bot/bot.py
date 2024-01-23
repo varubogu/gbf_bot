@@ -35,6 +35,7 @@ class GbfBot(commands.Bot):
             'cogs.commons.sync.gspread_push',
             # 'cogs.sync.gspread_sync',
         ]
+        self.db_lock = asyncio.Lock()
 
     async def on_ready(self):
         print('gbf_bot is online')

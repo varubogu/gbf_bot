@@ -37,28 +37,47 @@ class GSpreadLoad(commands.Cog):
         await loader.open()
 
         register = DbRegister()
+        db_model = dict()
 
-        async with AsyncSessionLocal() as session:
-            for table_dif in loader.core.table_difinition:
+        for table_dif in loader.core.table_difinition:
 
-                if table_dif.table_io != 'in':
-                    continue
+            if table_dif.table_io != 'in':
+                continue
 
-                await interaction.followup.send(
-                    f'{table_dif.table_name_jp} load...'
-                )
+            await interaction.followup.send(
+                f'{table_dif.table_name_jp} load...'
+            )
 
-                worksheet = loader.core.book.worksheet(table_dif.table_name_jp)
-                data = worksheet.get_all_records()
-                table_model = await loader.convert_table(data, table_dif)
+            worksheet = loader.core.book.worksheet(table_dif.table_name_jp)
+            data = worksheet.get_all_records()
+            table_model = await loader.convert_table(data, table_dif)
 
-                if len(table_model) == 0:
-                    continue
+            if len(table_model) == 0:
+                continue
 
-                await register.regist(session, table_model)
+            db_model[table_dif.table_name_en] = table_model
 
-            env = EnvironmentSingleton()
-            await env.load_db(session)
+        await interaction.followup.send(
+            'table writes...'
+        )
+
+        async with self.bot.db_lock:
+            async with AsyncSessionLocal() as session:
+                for key, table_model in db_model.items():
+                    table_name_jp = [
+                        table_dif.table_name_jp
+                        for table_dif
+                        in loader.core.table_difinition
+                        if table_dif.table_name_en == key
+                    ]
+
+                    await interaction.followup.send(
+                        f'{table_name_jp[0]} write...'
+                    )
+                    await register.regist(session, table_model)
+
+        env = EnvironmentSingleton()
+        await env.load_db(session)
 
 
 async def setup(bot: commands.Bot):

@@ -1,7 +1,6 @@
-import os
 from datetime import datetime
 from discord.ext import commands, tasks
-
+from sqlalchemy.ext.asyncio import AsyncSession
 from gbf.schedules.minute_executor import MinuteScheduleExecutor
 from gbf.models.messages import Messages
 from gbf.models.session import AsyncSessionLocal
@@ -20,41 +19,45 @@ class MinuteSchedule(commands.Cog):
     def cog_unload(self):
         self.loop.cancel()
 
-    @tasks.loop(seconds=60)
+    @tasks.loop(seconds=10)
     async def loop(self):
         now = datetime.now()
-        if self.channel is None:
-            await self.init()
 
-        if self.bot.is_ready():
+        if not self.bot.is_ready():
             return
 
-        async with AsyncSessionLocal() as session:
+        try:
+            async with self.bot.db_lock:
+                async with AsyncSessionLocal() as session:
+                    await self.inner_loop(session, now)
+        except Exception as e:
+            print(f'schedule.loopで例外発生:{e}')
 
-            schedules = await self.executor.fetch_schedules(session, now)
-            message_ids = [schedule.message_id for schedule in schedules]
-            db_messages = await Messages.select_multi(session, message_ids)
+    async def inner_loop(
+            self,
+            session: AsyncSession,
+            now: datetime
+    ):
 
-            for schedule in schedules:
-                db_message: Messages = next(
-                    (m for m in db_messages
-                        if m.message_id == schedule.message_id),
-                    None)
+        schedules = await self.executor.fetch_schedules(session, now)
+        message_ids = [schedule.message_id for schedule in schedules]
+        db_messages = await Messages.select_multi(session, message_ids)
 
-                if db_message is None:
-                    continue
+        for schedule in schedules:
+            db_message: Messages = next(
+                (m for m in db_messages
+                    if m.message_id == schedule.message_id),
+                None)
 
-                channel = await self.bot.fetch_channel(schedule.channel_id)
-                message = await channel.send(db_message.message_jp)
-                if db_message.reactions:
-                    for reaction in db_message.reactions.split(","):
-                        if reaction:
-                            await message.add_reaction(reaction)
+            if db_message is None:
+                continue
 
-    async def init(self):
-        channel_id = os.environ.get('SCHEDULE_CHANNEL_ID', None)
-        self.channel = await self.bot.fetch_channel(channel_id)
-        print(f"「{self.channel.name}」に定期発言開始")
+            channel = await self.bot.fetch_channel(schedule.channel_id)
+            message = await channel.send(db_message.message_jp)
+            if db_message.reactions:
+                for reaction in db_message.reactions.split(","):
+                    if reaction:
+                        await message.add_reaction(reaction)
 
 
 async def setup(bot: commands.Bot):
