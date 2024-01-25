@@ -1,11 +1,12 @@
 import discord
-from discord.ext import commands
 from discord import app_commands
+from discord.ext import commands
 from gbf.environment.environment_singleton import EnvironmentSingleton
-
+from gbf.models.session import AsyncSessionLocal
+from gbf.schedules.manager import ScheduleManager
 from gbf.sync.db.register import DbRegister
 from gbf.sync.gspread.loader import GSpreadLoader
-from gbf.models.session import AsyncSessionLocal
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class GSpreadLoad(commands.Cog):
@@ -76,8 +77,22 @@ class GSpreadLoad(commands.Cog):
                     )
                     await register.regist(session, table_model)
 
+            await self.after(session)
+
+    async def after(
+            self,
+            session: AsyncSession
+    ):
+        # シングルトン再読み込み
         env = EnvironmentSingleton()
         await env.load_db(session)
+
+        # スケジュール再計算
+        register = ScheduleManager()
+        await register.event_schedule_clear(session)
+        await register.event_schedule_create(session)
+        await session.commit()
+
 
 
 async def setup(bot: commands.Bot):
