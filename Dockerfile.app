@@ -36,4 +36,4 @@ FROM base-image AS debug-image
 
 # production image
 FROM base-image AS production-image
-CMD [ "python", "-m", "src.gbf_discord_bot.bot"]
+CMD [ "python", "-u", "-m", "src.gbf_discord_bot.bot"]
