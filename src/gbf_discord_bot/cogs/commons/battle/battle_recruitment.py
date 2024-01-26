@@ -103,7 +103,8 @@ class BattleRecruitmentCog(commands.Cog):
         m = message_define.message_jp
         m = m.replace("{quest_name}", quest.quest_name)
 
-        await interaction.response.send_message(m)
+        # await interaction.response.send_message(m)
+        await interaction.followup.send(m)
         return await interaction.original_response()
 
     async def _add_reaction(self, message, battle_type: BT):
@@ -138,6 +139,8 @@ class BattleRecruitmentCog(commands.Cog):
             battle_type: BT = BT.DEFAULT,
             expiry_date: str = None
     ):
+        await interaction.response.defer()
+
         target = await self._get_quest(quest)
 
         # 初期値の場合は上書き
