@@ -139,25 +139,29 @@ class BattleRecruitmentCog(commands.Cog):
             battle_type: BT = BT.DEFAULT,
             expiry_date: str = None
     ):
-        await interaction.response.defer()
+        try:
+            await interaction.response.defer()
 
-        target = await self._get_quest(quest)
+            target = await self._get_quest(quest)
 
-        # 初期値の場合は上書き
-        if battle_type == BT.DEFAULT:
-            try:
-                battle_type = BT.find(int(target.default_battle_type))
-            except ValueError as e:
-                print(f"battle_recruitmentのbattle_typeの初期値設定部分でエラー：{e}")
-                battle_type = BT.DEFAULT
+            # 初期値の場合は上書き
+            if battle_type == BT.DEFAULT:
+                try:
+                    battle_type = BT.find(int(target.default_battle_type))
+                except ValueError as e:
+                    print(f"battle_recruitmentのbattle_typeの初期値設定部分でエラー：{e}")
+                    battle_type = BT.DEFAULT
 
-        if expiry_date is None:
-            expiry_date = await self._default_expiry_date()
+            if expiry_date is None:
+                expiry_date = await self._default_expiry_date()
 
-        message = await self._send_message(interaction, target, battle_type)
-        await self._add_reaction(message, battle_type)
+            message = await self._send_message(interaction, target, battle_type)
+            await self._add_reaction(message, battle_type)
 
-        await self._regist(message, target, battle_type, expiry_date)
+            await self._regist(message, target, battle_type, expiry_date)
+        except Exception as e:
+            print(e)
+            await interaction.followup.send('エラーが発生しました', ephemeral=True)
 
 
 async def setup(bot: commands.Bot):
