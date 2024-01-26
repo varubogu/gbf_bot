@@ -29,7 +29,7 @@ class BattleRecruitmentCog(commands.Cog):
         self.DEFAULT_TIMEDELTA = timedelta(days=7)
 
     @property
-    def bot(self) -> discord.ext.commands.Bot:
+    def bot(self) -> commands.Bot:
         return self.__bot
 
     async def cog_load(self) -> None:
@@ -84,7 +84,7 @@ class BattleRecruitmentCog(commands.Cog):
             ][0]
         except Exception as e:
             print(f"battle_recruitmentの_send_messageの対象クエスト取得部分でエラー：{e}")
-            return
+            raise
 
     async def _send_message(
             self,
