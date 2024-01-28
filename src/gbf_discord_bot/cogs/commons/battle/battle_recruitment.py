@@ -1,10 +1,12 @@
 
 import asyncio
 from datetime import datetime, timedelta
+from email import message
 import discord
 from discord import Interaction as Interaction
 from discord import app_commands
 from discord.ext import commands
+from gbf.messages.message_text import MessageText
 from gbf.models.messages import Messages
 from gbf.models.quests import Quests
 from gbf.models.quests_alias import QuestsAlias
@@ -98,12 +100,13 @@ class BattleRecruitmentCog(commands.Cog):
             message_id = "MSG00028"
 
         async with AsyncSessionLocal() as session:
-            message_define = await Messages.select_single(session, message_id)
+            m = await MessageText.get(
+                session,
+                interaction.guild_id,
+                message_id
+            )
+        m = await MessageText.replace(m.message_jp, {'quest_name': quest.quest_name})
 
-        m = message_define.message_jp
-        m = m.replace("{quest_name}", quest.quest_name)
-
-        # await interaction.response.send_message(m)
         await interaction.followup.send(m)
         return await interaction.original_response()
 
