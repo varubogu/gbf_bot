@@ -15,3 +15,4 @@ oauth2client
 # test
 pytest
 pytest-asyncio
+pytest-mock
