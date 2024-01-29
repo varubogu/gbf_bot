@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+
 from sqlalchemy import BigInteger, Column, DateTime, Integer, String, and_
 from sqlalchemy.future import select
 
@@ -155,14 +156,14 @@ class GuildLastProcessTimes(ModelBase):
             last.execute_time = datetime.now() - timedelta(minutes=1)
             last.memo = "最終スケジュール実行日時"
 
-        elif process_type == LastProcessType.SPREDSHEET_LOAD:
+        elif process_type == LastProcessType.SPREADSHEET_LOAD:
             last = GuildLastProcessTimes()
             last.guild_id = guild_id
             last.process_type = process_type.value
             last.execute_time = None
             last.memo = "最終Googleスプレッドシート読み込み日時"
 
-        elif process_type == LastProcessType.SPREDSHEET_PUSH:
+        elif process_type == LastProcessType.SPREADSHEET_PUSH:
             last = GuildLastProcessTimes()
             last.guild_id = guild_id
             last.process_type = process_type.value

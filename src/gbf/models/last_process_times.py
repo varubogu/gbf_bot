@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
+
 from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.future import select
+
 from gbf.enums.last_process_type import LastProcessType
 from gbf.models.model_base import ModelBase
 from gbf.models.table_scopes import TableScopes
@@ -131,13 +133,13 @@ class LastProcessTimes(ModelBase):
             last.execute_time = datetime.now() - timedelta(minutes=1)
             last.memo = "最終スケジュール実行日時"
 
-        elif process_type == LastProcessType.SPREDSHEET_LOAD:
+        elif process_type == LastProcessType.SPREADSHEET_LOAD:
             last = LastProcessTimes()
             last.process_type = process_type.value
             last.execute_time = None
             last.memo = "最終Googleスプレッドシート読み込み日時"
 
-        elif process_type == LastProcessType.SPREDSHEET_PUSH:
+        elif process_type == LastProcessType.SPREADSHEET_PUSH:
             last = LastProcessTimes()
             last.process_type = process_type.value
             last.execute_time = None
