@@ -5,7 +5,7 @@ from gbf.models.schedules import Schedules
 
 
 class MinuteScheduleExecutor:
-    async def fetch_schedules(self, session, now: datetime) -> [Schedules]:
+    async def fetch_schedules(self, session, now: datetime) -> list[Schedules]:
         (last, _now) = await LastProcessTimes.select_and_update(
             session,
             LastProcessType.SCHEDULE,

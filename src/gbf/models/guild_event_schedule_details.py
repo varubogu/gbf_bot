@@ -32,6 +32,13 @@ class GuildEventScheduleDetails(ModelBase):
         await session.commit()
 
     @classmethod
-    async def select_all(cls, session):
+    async def select_all(cls, session) -> list['GuildEventScheduleDetails']:
+        """
+        ギルドイベントスケジュールの詳細を全て取得する
+        Args:
+            session (Session): DB接続セッション
+        Returns:
+            list[GuildEventScheduleDetails]: ギルドイベントスケジュール詳細のリスト
+        """
         result = await session.execute(select(cls))
         return result.scalars().all()

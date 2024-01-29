@@ -21,13 +21,33 @@ class Messages(ModelBase):
 
     @classmethod
     async def select_single(cls, session, message_id: str) -> 'Messages':
+        """
+        単一のメッセージIDに基づいてメッセージを取得する
+
+        Args:
+            session (Session): DB接続セッション
+            message_id (str): 選択するメッセージのID
+
+        Returns:
+            Messages: 指定されたメッセージIDに一致するメッセージオブジェクト
+        """
         result = await session.execute(
             select(cls).filter(cls.message_id == message_id)
         )
         return result.scalars().first()
 
     @classmethod
-    async def select_multi(cls, session, message_ids: [str]) -> ['Messages']:
+    async def select_multi(cls, session, message_ids: list[str]) -> list['Messages']:
+        """
+        複数のメッセージIDに基づいてメッセージを取得する
+
+        Args:
+            session (Session): DB接続セッション
+            message_ids (list[str]): 選択するメッセージのIDのリスト
+
+        Returns:
+            list[Messages]: 指定されたメッセージIDに一致するメッセージオブジェクトのリスト
+        """
         result = await session.execute(
             select(cls).filter(cls.message_id.in_(message_ids))
         )

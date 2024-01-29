@@ -40,7 +40,15 @@ class GuildEventSchedules(ModelBase):
         await session.commit()
 
     @classmethod
-    async def select_all(cls, session, guild_id: int):
+    async def select_all(cls, session, guild_id: int) -> list['GuildEventSchedules']:
+        """
+        ギルドイベントスケジュールを全て取得する
+        Args:
+            session (Session): DB接続セッション
+            guild_id (int): ギルドID
+        Returns:
+            list[GuildEventSchedules]: ギルドイベントスケジュールのリスト
+        """
         result = await session.execute(
             select(cls).filter(cls.guild_id == guild_id)
         )

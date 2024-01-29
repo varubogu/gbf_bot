@@ -1,5 +1,5 @@
 
-from sqlalchemy import Column, Integer, BigInteger
+from sqlalchemy import Column, Integer, BigInteger, and_
 from sqlalchemy.future import select
 from gbf.models.model_base import ModelBase
 from gbf.models.table_scopes import TableScopes
@@ -23,11 +23,22 @@ class GuildChannels(ModelBase):
     async def select_where_channel_type(
         cls,
         session,
+        guild_id,
         channel_type: int
-    ):
+    ) -> list['GuildChannels']:
+        """
+        チャンネルタイプに基づいてギルドチャンネルを取得します
+        Args:
+            session (Session): DB接続セッション
+            guild_id (int): サーバーID
+            channel_type (int): チャンネルタイプ
+        Returns:
+            list[GuildChannels]: チャンネルタイプに一致するギルドチャンネルのリスト
+        """
         result = await session.execute(
-            select(cls).filter(
-                GuildChannels.channel_type == channel_type
-            )
+            select(cls).filter(and_(
+                    GuildChannels.channel_type == channel_type,
+                    GuildChannels.guild_id == guild_id
+            ))
         )
         return result.scalars().all()

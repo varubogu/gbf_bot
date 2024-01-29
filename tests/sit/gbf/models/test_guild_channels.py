@@ -40,6 +40,7 @@ class TestGuildChannels:
             # select_all メソッドのテスト
             results1 = await GuildChannels.select_where_channel_type(
                 async_db_session,
+                test_data1.guild_id,
                 test_data1.channel_type
             )
             assert len(results1) == 1
@@ -47,6 +48,7 @@ class TestGuildChannels:
 
             results2 = await GuildChannels.select_where_channel_type(
                 async_db_session,
+                test_data2.guild_id,
                 test_data2.channel_type
             )
             assert len(results2) == 1

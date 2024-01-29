@@ -31,7 +31,16 @@ class QuestsAlias(ModelBase):
     async def select_all(
         cls,
         session,
-    ) -> ['QuestsAlias']:
+    ) -> list['QuestsAlias']:
+        """
+        すべてのクエスト別名情報を取得する
+
+        Args:
+            session (Session): DB接続セッション
+
+        Returns:
+            list[QuestsAlias]: すべてのクエスト別名情報のリスト
+        """
         result = await session.execute(
             select(cls)
         )

@@ -40,8 +40,8 @@ class GuildMessages(ModelBase):
         cls,
         session,
         guild_id: int,
-        message_ids: [str]
-    ) -> ['GuildMessages']:
+        message_ids: list[str]
+    ) -> list['GuildMessages']:
         result = await session.execute(
             select(cls).filter(and_(
                 cls.guild_id == guild_id,

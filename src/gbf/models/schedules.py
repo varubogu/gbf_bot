@@ -34,17 +34,44 @@ class Schedules(ModelBase):
 
     @classmethod
     async def bulk_insert(cls, session, schedules):
+        """
+        複数のスケジュール情報を一括で挿入する
+
+        Args:
+            session (Session): DB接続セッション
+            schedules (list[Schedules]): 挿入するスケジュール情報のリスト
+        """
         session.add_all(schedules)
 
     @classmethod
     async def truncate(cls, session):
+        """
+        テーブルのデータを全て削除する
+
+        Args:
+            session (Session): DB接続セッション
+        """
         await session.execute(text('TRUNCATE schedules'))
         await session.commit()
 
     @classmethod
     async def select_sinse_last_time(
-            cls, session, last_time: datetime, now: datetime
-    ) -> ['Schedules']:
+            cls,
+            session,
+            last_time: datetime,
+            now: datetime
+    ) -> list['Schedules']:
+        """
+        指定された日時の以降のスケジュール情報を取得する
+
+        Args:
+            session (Session): DB接続セッション
+            last_time (datetime): 指定された日時
+            now (datetime): 現在の日時
+        
+        Returns:
+            list['Schedules']: 指定された日時以降のスケジュール情報のリスト
+        """
         result = await session.execute(
             select(Schedules).filter(
                 and_(
@@ -56,7 +83,16 @@ class Schedules(ModelBase):
         return result.scalars().all()
 
     @classmethod
-    async def select_all(cls, session) -> ['Schedules']:
+    async def select_all(cls, session) -> list['Schedules']:
+        """
+        全てのスケジュール情報を取得する
+
+        Args:
+            session (Session): DB接続セッション
+        
+        Returns:
+            list['Schedules']: 全てのスケジュール情報のリスト
+        """
         result = await session.execute(
             select(Schedules)
         )

@@ -1,5 +1,6 @@
 import asyncio
 import re
+from sqlalchemy.ext.asyncio import AsyncSession
 from gbf import models
 
 from gbf.utils.exception.environment_notfound_exception \
@@ -13,28 +14,68 @@ class EnvironmentSingleton:
     _variables: dict = {}
 
     def __new__(cls):
+        """EnvironmentSingletonの新しいインスタンスを生成する
+
+        このクラスはシングルトンパターンを使用しており、_instanceがNoneの場合のみ新しいインスタンスを生成し、
+        それ以外の場合は既存のインスタンスを返します。
+
+        Returns:
+            EnvironmentSingleton: EnvironmentSingletonクラスのインスタンス
+        """
         if cls._instance is None:
             cls._instance = super(EnvironmentSingleton, cls).__new__(cls)
         return cls._instance
 
-    async def set(self, key, value):
+    async def set(self, key: str, value: str):
+        """
+        環境変数を設定します。
+
+        Args:
+            key (str): 環境変数のキー
+            value (str): 環境変数の値
+        """
         async with self._lock:
             self._variables[key] = value
 
-    async def get(self, key, default=None):
+    async def get(self, key: str, default: str | None = None) -> str:
+        """
+        環境変数を取得します。
+
+        Args:
+            key (str): 環境変数のキー
+            default (str, optional): キーが存在しない場合のデフォルト値。デフォルトはNone。
+
+        Returns:
+            str: 環境変数の値。キーが存在しない場合はデフォルト値。
+        """
         async with self._lock:
             return self._variables.get(key, default)
 
-    async def delete(self, key):
+    async def delete(self, key: str):
+        """
+        環境変数を削除します。
+
+        Args:
+            key (str): 削除する環境変数のキー
+        """
         async with self._lock:
             if key in self._variables:
                 del self._variables[key]
 
     async def clear(self):
+        """
+        すべての環境変数をクリアします。
+        """
         async with self._lock:
             self._variables.clear()
 
-    async def load_db(self, session):
+    async def load_db(self, session: AsyncSession):
+        """
+        データベースから環境変数を読み込みます。
+
+        Args:
+            session (AsyncSession): SQLAlchemyの非同期セッションオブジェクト。
+        """
         async with self._lock:
             self._variables.clear()
 

@@ -27,7 +27,17 @@ class Quests(ModelBase):
         cls,
         session,
         target_id
-    ) -> ['Quests']:
+    ) -> list['Quests']:
+        """
+        特定のクエスト情報を取得する
+
+        Args:
+            session (Session): DB接続セッション
+            target_id (Integer): ターゲットID
+
+        Returns:
+            Quests: クエスト情報
+        """
         result = await session.execute(
             select(cls).filter(Quests.target_id == target_id)
         )
@@ -38,7 +48,16 @@ class Quests(ModelBase):
     async def select_all(
         cls,
         session
-    ) -> ['Quests']:
+    ) -> list['Quests']:
+        """
+        すべてのクエスト情報を取得する
+
+        Args:
+            session (Session): DB接続セッション
+
+        Returns:
+            list[Quests]: すべてのクエスト情報のリスト
+        """
         result = await session.execute(
             select(cls)
         )

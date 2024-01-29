@@ -62,7 +62,7 @@ class GuildEnvironments(ModelBase):
         session,
         guild_id: int,
         keys: str
-    ) -> ['GuildEnvironments']:
+    ) -> list['GuildEnvironments']:
         """
         環境変数を一括取得する
         Args:
@@ -82,7 +82,7 @@ class GuildEnvironments(ModelBase):
         return result.scalars().all()
 
     @classmethod
-    async def select_all(cls, session, guild_id: int) -> ['GuildEnvironments']:
+    async def select_all(cls, session, guild_id: int) -> list['GuildEnvironments']:
         """
         環境変数を一括取得する
         Args:

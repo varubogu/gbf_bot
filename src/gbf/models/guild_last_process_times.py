@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from typing import Tuple
 
 from sqlalchemy import BigInteger, Column, DateTime, Integer, String, and_
 from sqlalchemy.future import select
@@ -59,8 +60,8 @@ class GuildLastProcessTimes(ModelBase):
             session,
             guild_id: int,
             process_type: LastProcessType,
-            now: datetime = None
-    ) -> (datetime, datetime):
+            now: datetime | None = None
+    ) -> Tuple[datetime, datetime]:
         """最終日時を取得し、現在日時に更新する
 
         Args:

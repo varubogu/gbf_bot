@@ -34,10 +34,25 @@ class EventSchedules(ModelBase):
     )
 
     async def create(self, session):
+        """イベントスケジュールを作成する
+
+        Args:
+            session (Session): DB接続セッション
+
+        Raises:
+            SQLAlchemyError: DB操作でエラーが発生した場合に発生する例外
+        """
         session.add(self)
         await session.commit()
 
     @classmethod
-    async def select_all(cls, session):
+    async def select_all(cls, session) -> list['EventSchedules']:
+        """
+        全てのイベントスケジュールを取得する
+        Args:
+            session (Session): DB接続セッション
+        Returns:
+            list[EventSchedules]: イベントスケジュールのリスト
+        """
         result = await session.execute(select(cls))
         return result.scalars().all()

@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from typing import Tuple
 
 from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.future import select
@@ -51,8 +52,8 @@ class LastProcessTimes(ModelBase):
             cls,
             session,
             process_type: LastProcessType,
-            now: datetime = None
-    ) -> (datetime, datetime):
+            now: datetime | None = None
+    ) -> Tuple[datetime, datetime]:
         """最終日時を取得し、現在日時に更新する
 
         Args:
@@ -118,7 +119,7 @@ class LastProcessTimes(ModelBase):
     @classmethod
     async def make(cls, process_type: LastProcessType) -> 'LastProcessTimes':
 
-        """データを作成する
+        """データを作成する（登録はしない）
 
         Args:
             process_type (LastProcessType): 実行種類
