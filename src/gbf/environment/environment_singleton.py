@@ -10,11 +10,11 @@ class EnvironmentSingleton:
 
     _instance: 'EnvironmentSingleton' = None
     _lock = asyncio.Lock()
+    _variables: dict = {}
 
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(EnvironmentSingleton, cls).__new__(cls)
-            cls._instance._variables: dict = {}
         return cls._instance
 
     async def set(self, key, value):
