@@ -34,7 +34,7 @@
 						"source.fixAll.ruff": true,
 						"source.organizeImports.ruff": true
 					},
-					"editor.wordBasedSuggestions": false,
+					"editor.wordBasedSuggestions": "allDocuments",
 					"bracketLens.mode": "manual"
 				},
 				"[markdown]": {
