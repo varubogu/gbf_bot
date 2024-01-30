@@ -33,7 +33,6 @@ class GbfBot(commands.Bot):
             'cogs.commons.sync.environ_load',
             'cogs.commons.sync.gspread_load',
             'cogs.commons.sync.gspread_push',
-            # 'cogs.sync.gspread_sync',
         ]
         self.db_lock = asyncio.Lock()
 
