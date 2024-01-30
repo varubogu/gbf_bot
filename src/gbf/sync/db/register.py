@@ -8,7 +8,7 @@ class DbRegister:
     async def regist(
             self,
             session: AsyncSession,
-            table: [ModelBase]
+            table: list[ModelBase]
     ):
         if not table:
             return

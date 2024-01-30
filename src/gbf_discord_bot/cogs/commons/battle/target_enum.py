@@ -17,7 +17,7 @@ class Target(Enum):
             recruit_count: int,
             quest_name: str,
             quest_alias: str,
-            use_battle_type: [int]
+            use_battle_type: list[int]
     ):
         self.__target_id = target_id
         self.__recruit_count = recruit_count
@@ -42,7 +42,7 @@ class Target(Enum):
         return self.__quest_alias
 
     @property
-    def use_battle_type(self) -> [int]:
+    def use_battle_type(self) -> list[int]:
         return self.__use_battle_type
 
     @classmethod

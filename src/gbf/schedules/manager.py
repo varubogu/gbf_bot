@@ -47,11 +47,11 @@ class ScheduleManager:
 
     async def calc_schedule(
             self,
-            all_schedules: [EventSchedules],
-            all_details: [EventScheduleDetails],
-            all_guild_details: [GuildEventScheduleDetails],
-            notification_channels: [GuildChannels]
-    ) -> [Schedules]:
+            all_schedules: list[EventSchedules],
+            all_details: list[EventScheduleDetails],
+            all_guild_details: list[GuildEventScheduleDetails],
+            notification_channels: list[GuildChannels]
+    ) -> list[Schedules]:
         """スケジュール計算
 
         Args:
@@ -61,7 +61,7 @@ class ScheduleManager:
             notification_channels (_type_): スケジュール詳細で使うサーバーの通知先チャンネル
         """
 
-        results: [Schedules] = []
+        results: list[Schedules] = []
 
         for schedule in all_schedules:
 
@@ -93,14 +93,14 @@ class ScheduleManager:
     async def filter_details(
             self,
             schedule: EventSchedules,
-            details: [EventScheduleDetails]
+            details: list[EventScheduleDetails]
     ):
         return [d for d in details if d.profile == schedule.profile]
 
     async def filter_guild_details(
             self,
             schedule: EventSchedules,
-            details: [GuildEventScheduleDetails]
+            details: list[GuildEventScheduleDetails]
     ):
         return [d for d in details if d.profile == schedule.profile]
 
@@ -109,7 +109,7 @@ class ScheduleManager:
             schedule,
             details,
             notification_channels
-    ) -> [Schedules]:
+    ) -> list[Schedules]:
         """_summary_
 
         Args:
@@ -142,7 +142,7 @@ class ScheduleManager:
             self,
             schedule: EventSchedules,
             guild_details: GuildEventScheduleDetails
-    ) -> [Schedules]:
+    ) -> list[Schedules]:
         """イベントスケジュールに紐づくギルド毎のスケジュール詳細を作成する
 
         Args:

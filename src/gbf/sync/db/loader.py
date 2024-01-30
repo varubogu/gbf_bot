@@ -9,7 +9,7 @@ class DbLoader():
             self,
             session: AsyncSession,
             table_cls: ModelBase
-    ) -> [Row]:
+    ) -> list[Row]:
         result = await session.execute(select(table_cls))
         data = result.fetchall()
         return data

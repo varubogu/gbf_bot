@@ -37,7 +37,7 @@ class ScheduleCalculator():
             self.start_day_relative = guild_detail.start_day_relative
             self.time = guild_detail.time
 
-    async def calculate_times(self) -> [datetime]:
+    async def calculate_times(self) -> list[datetime]:
         """日時を計算する
 
         Returns:
@@ -56,7 +56,7 @@ class ScheduleCalculator():
             end_at: datetime,
             start_day_relative: str,
             time: str
-    ) -> [datetime]:
+    ) -> list[datetime]:
         """条件に従ってスケジュール日時を計算する
 
         Args:

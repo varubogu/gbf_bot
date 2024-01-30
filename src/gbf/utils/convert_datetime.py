@@ -2,7 +2,7 @@ from datetime import datetime
 import re
 
 
-async def convert_datetime(date_str: str):
+async def convert_datetime(date_str: str) -> datetime | None:
     if not date_str:
         return None
 

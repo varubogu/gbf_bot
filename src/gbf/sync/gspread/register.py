@@ -23,7 +23,7 @@ class GSpreadRegister:
     async def regist(
             self,
             sheet: gspread.Worksheet,
-            data: [Row],
+            data: list[Row],
             data_cls: ModelBase
     ):
 
