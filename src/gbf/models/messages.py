@@ -1,5 +1,7 @@
+from typing import Sequence
 from sqlalchemy import Column, String
 from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from gbf.models.model_base import ModelBase
 from gbf.models.table_scopes import TableScopes
 from gbf.models.table_types import TableType
@@ -20,7 +22,11 @@ class Messages(ModelBase):
     memo = Column(String)
 
     @classmethod
-    async def select_single(cls, session, message_id: str) -> 'Messages':
+    async def select_single(
+            cls,
+            session: AsyncSession,
+            message_id: str
+    ) -> 'Messages':
         """
         単一のメッセージIDに基づいてメッセージを取得する
 
@@ -37,7 +43,11 @@ class Messages(ModelBase):
         return result.scalars().first()
 
     @classmethod
-    async def select_multi(cls, session, message_ids: list[str]) -> list['Messages']:
+    async def select_multi(
+            cls,
+            session: AsyncSession,
+            message_ids: list[str]
+    ) -> Sequence['Messages']:
         """
         複数のメッセージIDに基づいてメッセージを取得する
 

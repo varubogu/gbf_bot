@@ -112,7 +112,7 @@ class ScheduleCalculator():
             start_at: datetime,
             end_at: datetime,
             time: str
-    ) -> [datetime]:
+    ) -> list[datetime]:
         """全日程の日時を作成する
 
         Args:
@@ -144,7 +144,7 @@ class ScheduleCalculator():
             self,
             start_at: datetime,
             time: str
-    ) -> [datetime]:
+    ) -> list[datetime]:
         """開始日を計算する
 
         Args:
@@ -161,7 +161,7 @@ class ScheduleCalculator():
             self,
             end_at: datetime,
             time: str
-    ) -> [datetime]:
+    ) -> list[datetime]:
         """終了日を計算する
 
         Args:
@@ -179,7 +179,7 @@ class ScheduleCalculator():
             start_at: datetime,
             time: str,
             matched: re.Match[str]
-    ) -> [datetime]:
+    ) -> list[datetime]:
         """開始日終了日の範囲を計算する
 
         Args:
@@ -207,7 +207,7 @@ class ScheduleCalculator():
             start_at: datetime,
             start_day_relative: str,
             time: str
-    ) -> [datetime]:
+    ) -> list[datetime]:
         """該当日時を計算する
 
         Args:

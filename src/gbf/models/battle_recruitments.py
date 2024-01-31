@@ -5,6 +5,7 @@ from sqlalchemy \
     import UUID, Column, DateTime, BigInteger, Integer, \
     String, UniqueConstraint, and_
 from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from gbf.models.model_base import ModelBase
 from gbf.models.table_types import TableType
 from gbf.models.table_scopes import TableScopes
@@ -47,18 +48,18 @@ class BattleRecruitments(ModelBase):
         ),
     )
 
-    async def create(self, session):
+    async def create(self, session: AsyncSession):
 
         session.add(self)
         await session.commit()
 
     @classmethod
     async def select_single(
-        cls,
-        session,
-        guild_id: int,
-        channel_id: int,
-        message_id: int
+            cls,
+            session: AsyncSession,
+            guild_id: int,
+            channel_id: int,
+            message_id: int
     ) -> 'BattleRecruitments':
         """マルチバトル募集情報を検索する
         Args:
@@ -84,11 +85,11 @@ class BattleRecruitments(ModelBase):
 
     @classmethod
     async def select_single_row_lock(
-        cls,
-        session,
-        guild_id: int,
-        channel_id: int,
-        message_id: int
+            cls,
+            session: AsyncSession,
+            guild_id: int,
+            channel_id: int,
+            message_id: int
     ) -> 'BattleRecruitments':
         """マルチバトル募集情報を検索する
         Args:

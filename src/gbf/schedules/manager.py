@@ -1,4 +1,6 @@
 from datetime import datetime
+from typing import Sequence
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from gbf.models.event_schedule_details import EventScheduleDetails
 from gbf.models.event_schedules import EventSchedules
@@ -13,7 +15,7 @@ class ScheduleManager:
     スケジュール管理クラス
     """
 
-    async def event_schedule_clear(self, session):
+    async def event_schedule_clear(self, session: AsyncSession):
         """スケジュールを全て削除する
 
         Args:
@@ -21,7 +23,7 @@ class ScheduleManager:
         """
         await Schedules.truncate(session)
 
-    async def event_schedule_create(self, session):
+    async def event_schedule_create(self, session: AsyncSession):
         """スケジュール生成
 
         Args:
@@ -93,22 +95,22 @@ class ScheduleManager:
     async def filter_details(
             self,
             schedule: EventSchedules,
-            details: list[EventScheduleDetails]
+            details: Sequence[EventScheduleDetails]
     ):
         return [d for d in details if d.profile == schedule.profile]
 
     async def filter_guild_details(
             self,
             schedule: EventSchedules,
-            details: list[GuildEventScheduleDetails]
+            details: Sequence[GuildEventScheduleDetails]
     ):
         return [d for d in details if d.profile == schedule.profile]
 
     async def common_details(
             self,
-            schedule,
-            details,
-            notification_channels
+            schedule: EventSchedules,
+            details: list[EventScheduleDetails],
+            notification_channels: Sequence[GuildChannels]
     ) -> list[Schedules]:
         """_summary_
 
@@ -118,9 +120,9 @@ class ScheduleManager:
             notification_channels (_type_): 通知先チャンネル一覧
 
         Returns:
-            [Schedules]: イベントスケジュールに紐づくギルド毎のスケジュール詳細リスト
+            list[Schedules]: イベントスケジュールに紐づくギルド毎のスケジュール詳細リスト
         """
-        results = []
+        results: list[Schedules] = []
 
         # 全サーバー共通のスケジュール詳細
         for detail in details:
@@ -141,7 +143,7 @@ class ScheduleManager:
     async def guild_details(
             self,
             schedule: EventSchedules,
-            guild_details: GuildEventScheduleDetails
+            guild_details: list[GuildEventScheduleDetails]
     ) -> list[Schedules]:
         """イベントスケジュールに紐づくギルド毎のスケジュール詳細を作成する
 
@@ -150,10 +152,10 @@ class ScheduleManager:
             guild_details (GuildEventSchedulesDetails): サーバー毎のスケジュール詳細
 
         Returns:
-            [Schedules]: イベントスケジュールに紐づくギルド毎のスケジュール詳細リスト
+            list[Schedules]: イベントスケジュールに紐づくギルド毎のスケジュール詳細リスト
         """
 
-        results = []
+        results: list[Schedules] = []
 
         for detail in guild_details:
             calculator = ScheduleCalculator(schedule, guild_detail=detail)

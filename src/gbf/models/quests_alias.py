@@ -1,5 +1,7 @@
 
+from typing import Sequence
 from sqlalchemy import Column, Integer, String, UniqueConstraint, select
+from sqlalchemy.ext.asyncio import AsyncSession
 from gbf.models.model_base import ModelBase
 from gbf.models.table_scopes import TableScopes
 
@@ -30,8 +32,8 @@ class QuestsAlias(ModelBase):
     @classmethod
     async def select_all(
         cls,
-        session,
-    ) -> list['QuestsAlias']:
+        session: AsyncSession,
+    ) -> Sequence['QuestsAlias']:
         """
         すべてのクエスト別名情報を取得する
 

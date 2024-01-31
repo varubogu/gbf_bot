@@ -1,5 +1,7 @@
+from typing import Sequence
 from sqlalchemy import BigInteger, Column, String, and_
 from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from gbf.models.model_base import ModelBase
 from gbf.models.table_scopes import TableScopes
 from gbf.models.table_types import TableType
@@ -23,7 +25,7 @@ class GuildMessages(ModelBase):
     @classmethod
     async def select_single(
         cls,
-        session,
+        session: AsyncSession,
         guild_id: int,
         message_id: str
     ) -> 'GuildMessages':
@@ -38,10 +40,10 @@ class GuildMessages(ModelBase):
     @classmethod
     async def select_multi(
         cls,
-        session,
+        session: AsyncSession,
         guild_id: int,
         message_ids: list[str]
-    ) -> list['GuildMessages']:
+    ) -> Sequence['GuildMessages']:
         result = await session.execute(
             select(cls).filter(and_(
                 cls.guild_id == guild_id,

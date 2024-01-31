@@ -3,6 +3,7 @@ from typing import Tuple
 
 from sqlalchemy import BigInteger, Column, DateTime, Integer, String, and_
 from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from gbf.enums.last_process_type import LastProcessType
 from gbf.models.model_base import ModelBase
@@ -28,7 +29,7 @@ class GuildLastProcessTimes(ModelBase):
     @classmethod
     async def select_single(
             cls,
-            session,
+            session: AsyncSession,
             guild_id: int,
             process_type: LastProcessType
     ) -> 'GuildLastProcessTimes':
@@ -57,7 +58,7 @@ class GuildLastProcessTimes(ModelBase):
     @classmethod
     async def select_and_update(
             cls,
-            session,
+            session: AsyncSession,
             guild_id: int,
             process_type: LastProcessType,
             now: datetime | None = None
@@ -88,7 +89,7 @@ class GuildLastProcessTimes(ModelBase):
     @classmethod
     async def select_or_create(
             cls,
-            session,
+            session: AsyncSession,
             guild_id: int,
             process_type: LastProcessType
     ) -> 'GuildLastProcessTimes':
@@ -113,7 +114,7 @@ class GuildLastProcessTimes(ModelBase):
     @classmethod
     async def create(
             cls,
-            session,
+            session: AsyncSession,
             guild_id: int,
             process_type: LastProcessType
     ) -> 'GuildLastProcessTimes':

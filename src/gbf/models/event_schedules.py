@@ -1,8 +1,10 @@
+from typing import Sequence
 import uuid
 from sqlalchemy \
     import UUID, Column, UniqueConstraint, \
     DateTime, BigInteger, Integer, String
 from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from gbf.models.model_base import ModelBase
 from gbf.models.table_scopes import TableScopes
 from gbf.models.table_types import TableType
@@ -33,7 +35,7 @@ class EventSchedules(ModelBase):
         ),
     )
 
-    async def create(self, session):
+    async def create(self, session: AsyncSession):
         """イベントスケジュールを作成する
 
         Args:
@@ -46,7 +48,10 @@ class EventSchedules(ModelBase):
         await session.commit()
 
     @classmethod
-    async def select_all(cls, session) -> list['EventSchedules']:
+    async def select_all(
+            cls,
+            session: AsyncSession
+    ) -> Sequence['EventSchedules']:
         """
         全てのイベントスケジュールを取得する
         Args:

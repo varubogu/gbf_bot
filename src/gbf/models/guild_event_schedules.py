@@ -1,8 +1,10 @@
+from typing import Sequence
 import uuid
 from sqlalchemy \
     import UUID, Column, UniqueConstraint, \
     DateTime, BigInteger, Integer, String
 from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from gbf.models.model_base import ModelBase
 from gbf.models.table_scopes import TableScopes
 from gbf.models.table_types import TableType
@@ -35,7 +37,7 @@ class GuildEventSchedules(ModelBase):
         ),
     )
 
-    async def create(self, session):
+    async def create(self, session: AsyncSession):
         session.add(self)
         await session.commit()
 

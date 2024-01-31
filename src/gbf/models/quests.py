@@ -1,7 +1,8 @@
 
-from sqlalchemy import Column, Integer, select
+from typing import Sequence
+from sqlalchemy import Column, Integer, String, select
+from sqlalchemy.ext.asyncio import AsyncSession
 from gbf.models.model_base import ModelBase
-from sqlalchemy import String
 from gbf.models.table_scopes import TableScopes
 
 from gbf.models.table_types import TableType
@@ -25,8 +26,8 @@ class Quests(ModelBase):
     @classmethod
     async def select_single(
         cls,
-        session,
-        target_id
+        session: AsyncSession,
+        target_id: int
     ) -> list['Quests']:
         """
         特定のクエスト情報を取得する
@@ -47,8 +48,8 @@ class Quests(ModelBase):
     @classmethod
     async def select_all(
         cls,
-        session
-    ) -> list['Quests']:
+        session: AsyncSession
+    ) -> Sequence['Quests']:
         """
         すべてのクエスト情報を取得する
 

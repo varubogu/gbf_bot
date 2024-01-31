@@ -11,7 +11,7 @@ class MessageText:
             session: AsyncSession,
             guild_id: int,
             message_id: str,
-            param_dict: dict
+            param_dict: dict[str, str]
     ):
         """
         ギルドID、メッセージID、およびパラメータ辞書を指定して、置換されたメッセージを取得します。
@@ -67,7 +67,7 @@ class MessageText:
     async def replace(
             cls,
             message: str,
-            param_dict: dict
+            param_dict: dict[str, str]
     ):
         """
         メッセージ文字列内のプレースホルダーを辞書の値で置換します。

@@ -11,7 +11,7 @@ class EnvironmentSingleton:
 
     _instance: 'EnvironmentSingleton' = None
     _lock = asyncio.Lock()
-    _variables: dict = {}
+    _variables: dict[str, str] = {}
 
     def __new__(cls):
         """EnvironmentSingletonの新しいインスタンスを生成する
@@ -37,7 +37,7 @@ class EnvironmentSingleton:
         async with self._lock:
             self._variables[key] = value
 
-    async def get(self, key: str, default: str | None = None) -> str:
+    async def get(self, key: str, default: str = None) -> str:
         """
         環境変数を取得します。
 
@@ -92,7 +92,7 @@ class EnvironmentSingleton:
         Raises:
             EnvironmentException: _description_
         """
-        err_keys = []
+        err_keys: list[str] = []
         async with self._lock:
             matches = await self.find_env_keys(text)
             for match in matches:

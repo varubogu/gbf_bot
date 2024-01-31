@@ -1,6 +1,8 @@
 
+from typing import Sequence
 from sqlalchemy import Column, Integer, BigInteger, and_
 from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from gbf.models.model_base import ModelBase
 from gbf.models.table_scopes import TableScopes
 from gbf.models.table_types import TableType
@@ -22,10 +24,10 @@ class GuildChannels(ModelBase):
     @classmethod
     async def select_where_channel_type(
         cls,
-        session,
-        guild_id,
+        session: AsyncSession,
+        guild_id: int,
         channel_type: int
-    ) -> list['GuildChannels']:
+    ) -> Sequence['GuildChannels']:
         """
         チャンネルタイプに基づいてギルドチャンネルを取得します
         Args:

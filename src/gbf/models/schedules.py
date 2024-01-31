@@ -1,7 +1,9 @@
 from datetime import datetime
+from typing import Sequence
 import uuid
 from sqlalchemy import UUID, BigInteger, Column, DateTime, String, and_, text
 from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from gbf.models.model_base import ModelBase
 from gbf.models.table_scopes import TableScopes
 from gbf.models.table_types import TableType
@@ -26,14 +28,18 @@ class Schedules(ModelBase):
     channel_id = Column(BigInteger)
     message_id = Column(String)
 
-    async def insert(self, session):
+    async def insert(self, session: AsyncSession):
         session.add(self)
 
-    async def delete(self, session):
+    async def delete(self, session: AsyncSession):
         await session.delete(self)
 
     @classmethod
-    async def bulk_insert(cls, session, schedules):
+    async def bulk_insert(
+        cls,
+        session: AsyncSession,
+        schedules: list['Schedules']
+    ):
         """
         複数のスケジュール情報を一括で挿入する
 
@@ -44,7 +50,7 @@ class Schedules(ModelBase):
         session.add_all(schedules)
 
     @classmethod
-    async def truncate(cls, session):
+    async def truncate(cls, session: AsyncSession):
         """
         テーブルのデータを全て削除する
 
@@ -57,10 +63,10 @@ class Schedules(ModelBase):
     @classmethod
     async def select_sinse_last_time(
             cls,
-            session,
+            session: AsyncSession,
             last_time: datetime,
             now: datetime
-    ) -> list['Schedules']:
+    ) -> Sequence['Schedules']:
         """
         指定された日時の以降のスケジュール情報を取得する
 
@@ -83,7 +89,10 @@ class Schedules(ModelBase):
         return result.scalars().all()
 
     @classmethod
-    async def select_all(cls, session) -> list['Schedules']:
+    async def select_all(
+        cls,
+        session: AsyncSession
+    ) -> Sequence['Schedules']:
         """
         全てのスケジュール情報を取得する
 

@@ -1,5 +1,6 @@
 
 import asyncio
+from typing import Tuple
 import discord
 from sqlalchemy.ext.asyncio import AsyncSession
 from discord.ext import commands
@@ -24,7 +25,7 @@ class AfterReaction(commands.Cog):
             return
 
         try:
-            async with self.db_lock:
+            async with self.bot.db_lock:
                 async with AsyncSessionLocal() as session:
                     (
                         (recruitment, battle_type),
@@ -64,7 +65,7 @@ class AfterReaction(commands.Cog):
             self,
             session: AsyncSession,
             paylood: discord.RawReactionActionEvent
-    ) -> (BattleRecruitments, BattleTypeEnum):
+    ) -> Tuple[BattleRecruitments, BattleTypeEnum]:
 
         recruitment = await BattleRecruitments.select_single_row_lock(
             session,
@@ -85,7 +86,7 @@ class AfterReaction(commands.Cog):
             self,
             paylood: discord.RawReactionActionEvent
     ):
-        channel = await self.bot.fetch_channel(paylood.channel_id)
+        channel: discord.TextChannel = await self.bot.fetch_channel(paylood.channel_id)
         message = await channel.fetch_message(paylood.message_id)
         if message.author != self.bot.user:
             raise AbortProcessException()
@@ -95,7 +96,7 @@ class AfterReaction(commands.Cog):
             self,
             message: discord.Message,
             reactions: list[str]
-    ) -> [discord.Member]:
+    ) -> list[discord.Member]:
         """リアクション集計
 
         Args:
@@ -105,7 +106,7 @@ class AfterReaction(commands.Cog):
         Returns:
             [discord.Member]: 集計結果
         """
-        reaction_users = []
+        reaction_users: list[discord.User | discord.Member] = []
         for r in message.reactions:
             if r.emoji in reactions:
                 async for user in r.users():

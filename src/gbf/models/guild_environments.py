@@ -1,7 +1,9 @@
 
 from datetime import datetime, timedelta
+from typing import Sequence
 from sqlalchemy import BigInteger, Column, String, and_, delete
 from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from gbf.models.model_base import ModelBase
 from gbf.models.table_scopes import TableScopes
 from gbf.models.table_types import TableType
@@ -30,7 +32,7 @@ class GuildEnvironments(ModelBase):
     @classmethod
     async def select_single(
         cls,
-        session,
+        session: AsyncSession,
         guild_id: int,
         key: str
     ) -> 'GuildEnvironments':
@@ -59,10 +61,10 @@ class GuildEnvironments(ModelBase):
     @classmethod
     async def select_multi(
         cls,
-        session,
+        session: AsyncSession,
         guild_id: int,
         keys: str
-    ) -> list['GuildEnvironments']:
+    ) -> Sequence['GuildEnvironments']:
         """
         環境変数を一括取得する
         Args:
@@ -82,7 +84,11 @@ class GuildEnvironments(ModelBase):
         return result.scalars().all()
 
     @classmethod
-    async def select_all(cls, session, guild_id: int) -> list['GuildEnvironments']:
+    async def select_all(
+        cls,
+        session: AsyncSession,
+        guild_id: int
+    ) -> Sequence['GuildEnvironments']:
         """
         環境変数を一括取得する
         Args:
@@ -98,7 +104,11 @@ class GuildEnvironments(ModelBase):
         return result.scalars().all()
 
     @classmethod
-    async def delete_all(cls, session, guild_id: int) -> None:
+    async def delete_all(
+        cls,
+        session: AsyncSession,
+        guild_id: int
+    ) -> None:
         """
         環境変数を全て削除する
 

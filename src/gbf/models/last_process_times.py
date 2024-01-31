@@ -3,6 +3,7 @@ from typing import Tuple
 
 from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from gbf.enums.last_process_type import LastProcessType
 from gbf.models.model_base import ModelBase
@@ -27,7 +28,7 @@ class LastProcessTimes(ModelBase):
     @classmethod
     async def select_single(
             cls,
-            session,
+            session: AsyncSession,
             process_type: LastProcessType
     ) -> 'LastProcessTimes':
         """
@@ -50,7 +51,7 @@ class LastProcessTimes(ModelBase):
     @classmethod
     async def select_and_update(
             cls,
-            session,
+            session: AsyncSession,
             process_type: LastProcessType,
             now: datetime | None = None
     ) -> Tuple[datetime, datetime]:
@@ -77,7 +78,7 @@ class LastProcessTimes(ModelBase):
     @classmethod
     async def select_or_create(
         cls,
-        session,
+        session: AsyncSession,
         process_type: LastProcessType
     ) -> 'LastProcessTimes':
         """データを検索して返す
@@ -99,7 +100,9 @@ class LastProcessTimes(ModelBase):
 
     @classmethod
     async def create(
-            cls, session, process_type: LastProcessType
+            cls,
+            session: AsyncSession,
+            process_type: LastProcessType
     ) -> 'LastProcessTimes':
 
         """データを新規登録する

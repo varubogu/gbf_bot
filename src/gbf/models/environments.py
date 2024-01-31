@@ -1,7 +1,9 @@
 
 from datetime import datetime, timedelta
+from typing import Sequence
 from sqlalchemy import Column, String, text
 from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from gbf.models.model_base import ModelBase
 from gbf.models.table_scopes import TableScopes
 from gbf.models.table_types import TableType
@@ -27,7 +29,11 @@ class Environments(ModelBase):
     memo = Column(String)
 
     @classmethod
-    async def select_single(cls, session, key: str) -> 'Environments':
+    async def select_single(
+        cls,
+        session: AsyncSession,
+        key: str
+    ) -> 'Environments':
         """
         環境変数を取得する
         Args:
@@ -47,7 +53,11 @@ class Environments(ModelBase):
         return environment
 
     @classmethod
-    async def select_multi(cls, session, keys: [str]) -> ['Environments']:
+    async def select_multi(
+        cls,
+        session: AsyncSession,
+        keys: list[str]
+    ) -> Sequence['Environments']:
         """
         環境変数を一括取得する
 
@@ -58,7 +68,7 @@ class Environments(ModelBase):
         return result.scalars().all()
 
     @classmethod
-    async def select_all(cls, session) -> ['Environments']:
+    async def select_all(cls, session: AsyncSession) -> Sequence['Environments']:
         """
         環境変数を一括取得する
 
@@ -69,7 +79,7 @@ class Environments(ModelBase):
         return result.scalars().all()
 
     @classmethod
-    async def truncate(cls, session) -> None:
+    async def truncate(cls, session: AsyncSession) -> None:
         """
         環境変数を全て削除する
 
