@@ -13,10 +13,10 @@ class MinuteSchedule(commands.Cog):
         self.channel = None
         self.executor = MinuteScheduleExecutor()
 
-    def cog_load(self):
+    async def cog_load(self):
         self.loop.start()
 
-    def cog_unload(self):
+    async def cog_unload(self):
         self.loop.cancel()
 
     @tasks.loop(seconds=10)
