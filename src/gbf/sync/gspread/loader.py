@@ -21,13 +21,13 @@ class GSpreadLoader():
     async def convert_table(
             self,
             data: list[dict[str, Any]],
-            table_difinition: GSpreadTableDefinition
+            table_definition: GSpreadTableDefinition
     ) -> list[ModelBase]:
         """スプレッドシートから読み込んだシートデータをテーブルデータに変換する
 
         Args:
             data (list[dict[str, Any]]): スプレッドシートから読み込んだシートデータ
-            table_difinition (GSpreadTableDefinition): テーブル定義情報
+            table_definition (GSpreadTableDefinition): テーブル定義情報
 
         Returns:
             list[ModelBase]: テーブルデータ変換後のデータ
@@ -40,7 +40,7 @@ class GSpreadLoader():
 
         rows = []
 
-        table_cls = table_difinition.table_cls
+        table_cls = table_definition.table_cls
         columns = await self.get_columns_dict(table_cls)
 
         for row in data:
@@ -68,7 +68,7 @@ class GSpreadLoader():
         Args:
             row (dict[str, Any]): スプレッドシートの行情報
             columns_dict (dict[str, Column]): 列名と列定義の辞書
-            table_difinition (GSpreadTableDefinition): テーブル定義情報
+            table_definition (GSpreadTableDefinition): テーブル定義情報
         """
 
         invalid_columns = [
@@ -89,7 +89,7 @@ class GSpreadLoader():
         Args:
             row (dict[str, Any]): スプレッドシートの行情報
             columns_dict (dict[str, Column]): 列名と列定義の辞書
-            table_difinition (GSpreadTableDefinition): テーブル定義情報
+            table_definition (GSpreadTableDefinition): テーブル定義情報
 
         Returns:
             ModelBase: テーブル定義オブジェクト

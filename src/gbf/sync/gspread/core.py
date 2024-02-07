@@ -1,8 +1,8 @@
 import os
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
 
+import gspread
 from gbf.sync.gspread.table_definition import GSpreadTableDefinition
+from oauth2client.service_account import ServiceAccountCredentials
 
 
 class GSpreadCore():
@@ -15,7 +15,7 @@ class GSpreadCore():
         # このクラスで生成するもの
         self._gc: gspread.Client = None
         self.book: gspread.Spreadsheet = None
-        self.table_difinition: list[GSpreadTableDefinition] = None
+        self.table_definition: list[GSpreadTableDefinition] = None
 
     async def open(self):
         await self._book_open()
@@ -48,6 +48,6 @@ class GSpreadCore():
         table_definition_sheet = self.book.worksheet(definition_sheet_name)
         table_definitions = table_definition_sheet.get_all_records()
 
-        self.table_difinition = [
+        self.table_definition = [
             GSpreadTableDefinition(table_metadata=m) for m in table_definitions
         ]

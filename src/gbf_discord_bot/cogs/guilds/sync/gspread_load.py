@@ -1,13 +1,12 @@
 import discord
-from discord.ext import commands
 from discord import app_commands
-from sqlalchemy.ext.asyncio import AsyncSession
+from discord.ext import commands
 from gbf.environment.environment_singleton import EnvironmentSingleton
+from gbf.models.session import AsyncSessionLocal
 from gbf.schedules.manager import ScheduleManager
-
 from gbf.sync.db.register import DbRegister
 from gbf.sync.gspread.loader import GSpreadLoader
-from gbf.models.session import AsyncSessionLocal
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class GSpreadLoad(commands.Cog):
@@ -41,7 +40,7 @@ class GSpreadLoad(commands.Cog):
         register = DbRegister()
         db_model = dict()
 
-        for table_dif in loader.core.table_difinition:
+        for table_dif in loader.core.table_definition:
 
             if table_dif.table_io != 'in':
                 continue
@@ -69,7 +68,7 @@ class GSpreadLoad(commands.Cog):
                     table_name_jp = [
                         table_dif.table_name_jp
                         for table_dif
-                        in loader.core.table_difinition
+                        in loader.core.table_definition
                         if table_dif.table_name_en == key
                     ]
 

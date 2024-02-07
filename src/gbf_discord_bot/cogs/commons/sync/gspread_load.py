@@ -40,7 +40,7 @@ class GSpreadLoad(commands.Cog):
         register = DbRegister()
         db_model = dict()
 
-        for table_dif in loader.core.table_difinition:
+        for table_dif in loader.core.table_definition:
 
             if table_dif.table_io != 'in':
                 continue
@@ -68,7 +68,7 @@ class GSpreadLoad(commands.Cog):
                     table_name_jp = [
                         table_dif.table_name_jp
                         for table_dif
-                        in loader.core.table_difinition
+                        in loader.core.table_definition
                         if table_dif.table_name_en == key
                     ]
 

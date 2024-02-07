@@ -1,10 +1,9 @@
 import discord
-from discord.ext import commands
 from discord import app_commands
-
+from discord.ext import commands
+from gbf.models.session import AsyncSessionLocal
 from gbf.sync.db.loader import DbLoader
 from gbf.sync.gspread.register import GSpreadRegister
-from gbf.models.session import AsyncSessionLocal
 
 
 class GSpreadPush(commands.Cog):
@@ -37,7 +36,7 @@ class GSpreadPush(commands.Cog):
         await register.open()
 
         async with AsyncSessionLocal() as session:
-            for table_dif in register.core.table_difinition:
+            for table_dif in register.core.table_definition:
                 if table_dif.table_io != 'out':
                     continue
 
