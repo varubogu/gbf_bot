@@ -94,6 +94,5 @@ class GSpreadLoad(commands.Cog):
         await session.commit()
 
 
-
 async def setup(bot: commands.Bot):
     await bot.add_cog(GSpreadLoad(bot))
