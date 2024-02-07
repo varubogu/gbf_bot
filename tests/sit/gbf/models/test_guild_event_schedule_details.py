@@ -87,7 +87,7 @@ class TestGuildEventSchedulesDetails:
             await async_db_session.refresh(test_data2)
 
             # select_all メソッドのテスト
-            results = await GuildEventScheduleDetails.select_all(async_db_session)
+            results = await GuildEventScheduleDetails.select_global_all(async_db_session)
             assert len(results) == 2
             for r in results:
 
