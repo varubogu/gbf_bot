@@ -22,6 +22,24 @@ class GuildChannels(ModelBase):
     channel_type = Column(Integer)
 
     @classmethod
+    async def select_global_all(
+        cls,
+        session: AsyncSession
+    ) -> Sequence['GuildChannels']:
+        """
+        ギルドチャンネルを全て取得します
+        Args:
+            session (Session): DB接続セッション
+        Returns:
+            list[GuildChannels]: チャンネルタイプに一致するギルドチャンネルのリスト
+        """
+        result = await session.execute(
+            select(cls)
+        )
+        return result.scalars().all()
+
+
+    @classmethod
     async def select_where_channel_type(
         cls,
         session: AsyncSession,
@@ -41,6 +59,27 @@ class GuildChannels(ModelBase):
             select(cls).filter(and_(
                     GuildChannels.channel_type == channel_type,
                     GuildChannels.guild_id == guild_id
+            ))
+        )
+        return result.scalars().all()
+
+    @classmethod
+    async def select_global_where_channel_type(
+        cls,
+        session: AsyncSession,
+        channel_type: int
+    ) -> Sequence['GuildChannels']:
+        """
+        チャンネルタイプに基づいてギルドチャンネルを取得します
+        Args:
+            session (Session): DB接続セッション
+            channel_type (int): チャンネルタイプ
+        Returns:
+            list[GuildChannels]: チャンネルタイプに一致するギルドチャンネルのリスト
+        """
+        result = await session.execute(
+            select(cls).filter(and_(
+                    GuildChannels.channel_type == channel_type
             ))
         )
         return result.scalars().all()

@@ -28,14 +28,13 @@ class ScheduleCalculator():
         self.start_at: datetime = schedule.start_at
         self.end_at: datetime = schedule.end_at
         self.start_day_relative: str = None
-        self.start_day_relative: str = None
 
         if detail:
-            self.start_day_relative = detail.start_day_relative
-            self.time = detail.time
+            self.start_day_relative: str = detail.start_day_relative
+            self.time: str = detail.time
         elif guild_detail:
-            self.start_day_relative = guild_detail.start_day_relative
-            self.time = guild_detail.time
+            self.start_day_relative: str = guild_detail.start_day_relative
+            self.time: str = guild_detail.time
 
     async def calculate_times(self) -> list[datetime]:
         """日時を計算する

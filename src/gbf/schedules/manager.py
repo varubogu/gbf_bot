@@ -1,13 +1,14 @@
 from datetime import datetime
 from typing import Sequence
-from sqlalchemy.ext.asyncio import AsyncSession
-
+from gbf.enums.channel_type import ChannelType
 from gbf.models.event_schedule_details import EventScheduleDetails
 from gbf.models.event_schedules import EventSchedules
 from gbf.models.guild_channels import GuildChannels
 from gbf.models.guild_event_schedule_details import GuildEventScheduleDetails
+from gbf.models.guild_event_schedules import GuildEventSchedules
 from gbf.models.schedules import Schedules
 from gbf.schedules.calculator import ScheduleCalculator
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class ScheduleManager:
@@ -31,28 +32,32 @@ class ScheduleManager:
         """
 
         # 必要なデータを全取得
-        schedules = await EventSchedules.select_all(session)
-        details = await EventScheduleDetails.select_all(session)
-        guild_details = await GuildEventScheduleDetails.select_all(session)
-        notifications = await GuildChannels.select_where_channel_type(
-            session, 3
+        global_schedules = await EventSchedules.select_all(session)
+        global_details = await EventScheduleDetails.select_all(session)
+        guild_schedules = await GuildEventSchedules.select_global_all(session)
+        guild_details = await GuildEventScheduleDetails.select_global_all(session)
+        guild_notifications = await GuildChannels.select_global_where_channel_type(
+            session,
+            ChannelType.NOTIFICATION.value
         )
 
         registration_schedules = await self.calc_schedule(
-            schedules,
-            details,
+            global_schedules,
+            global_details,
+            guild_schedules,
             guild_details,
-            notifications
+            guild_notifications
         )
 
         await Schedules.bulk_insert(session, registration_schedules)
 
     async def calc_schedule(
             self,
-            all_schedules: list[EventSchedules],
-            all_details: list[EventScheduleDetails],
-            all_guild_details: list[GuildEventScheduleDetails],
-            notification_channels: list[GuildChannels]
+            global_schedules_all: Sequence[EventSchedules],
+            global_details_all: Sequence[EventScheduleDetails],
+            guild_schedules_all: Sequence[GuildEventSchedules],
+            guild_details_all: Sequence[GuildEventScheduleDetails],
+            notification_channels: Sequence[GuildChannels]
     ) -> list[Schedules]:
         """スケジュール計算
 
@@ -65,51 +70,60 @@ class ScheduleManager:
 
         results: list[Schedules] = []
 
-        for schedule in all_schedules:
+        # 全サーバー共通イベント
+        for schedule in global_schedules_all:
 
-            # 全サーバー共通のスケジュール詳細
+            # globalイベント＋globalイベント詳細計算
             details = await self.filter_details(
                 schedule,
-                all_details
+                global_details_all
             )
-            common_details_result = await self.common_details(
+            global_details_result = await self.global_calc(
                 schedule,
                 details,
                 notification_channels
             )
-            results.extend(common_details_result)
 
-            # サーバー毎のスケジュール詳細
-            guild_details = await self.filter_guild_details(
+            results.extend(global_details_result)
+
+            # globalイベント＋guildイベント詳細計算
+            guild_details = await self.filter_details(
                 schedule,
-                all_guild_details
+                guild_details_all
             )
-            common_details_result = await self.guild_details(
+            global_details_result = await self.guild_calc(
                 schedule,
                 guild_details
             )
-            results.extend(common_details_result)
+            results.extend(global_details_result)
+
+        for guild_schedule in guild_schedules_all:
+            # guildイベント＋guildイベント詳細計算
+            guild_details_all = await self.filter_details(
+                guild_schedule,
+                guild_details_all
+            )
+            global_details_result = await self.guild_calc(
+                guild_schedule,
+                guild_details_all
+            )
+            results.extend(global_details_result)
+
 
         return results
 
     async def filter_details(
             self,
-            schedule: EventSchedules,
-            details: Sequence[EventScheduleDetails]
-    ):
+            schedule: EventSchedules | GuildEventSchedules,
+            details: Sequence[EventScheduleDetails | GuildEventScheduleDetails]
+    ) -> Sequence[EventScheduleDetails]:
         return [d for d in details if d.profile == schedule.profile]
 
-    async def filter_guild_details(
-            self,
-            schedule: EventSchedules,
-            details: Sequence[GuildEventScheduleDetails]
-    ):
-        return [d for d in details if d.profile == schedule.profile]
 
-    async def common_details(
+    async def global_calc(
             self,
             schedule: EventSchedules,
-            details: list[EventScheduleDetails],
+            details: Sequence[EventScheduleDetails],
             notification_channels: Sequence[GuildChannels]
     ) -> list[Schedules]:
         """_summary_
@@ -124,14 +138,13 @@ class ScheduleManager:
         """
         results: list[Schedules] = []
 
-        # 全サーバー共通のスケジュール詳細
         for detail in details:
             calculator = ScheduleCalculator(schedule, detail=detail)
             times = await calculator.calculate_times()
 
             for time in times:
                 for notification_channel in notification_channels:
-                    regist_schedule = await self.create_common_schedule(
+                    regist_schedule = await self.create_global_schedule(
                         schedule,
                         detail,
                         time,
@@ -140,10 +153,10 @@ class ScheduleManager:
                     results.append(regist_schedule)
         return results
 
-    async def guild_details(
+    async def guild_calc(
             self,
             schedule: EventSchedules,
-            guild_details: list[GuildEventScheduleDetails]
+            guild_details: Sequence[GuildEventScheduleDetails]
     ) -> list[Schedules]:
         """イベントスケジュールに紐づくギルド毎のスケジュール詳細を作成する
 
@@ -169,7 +182,7 @@ class ScheduleManager:
                 results.append(regist_schedule)
         return results
 
-    async def create_common_schedule(
+    async def create_global_schedule(
             self,
             schedule: EventSchedules,
             detail: EventScheduleDetails,
@@ -198,7 +211,7 @@ class ScheduleManager:
 
     async def create_guild_schedule(
             self,
-            schedule: EventSchedules,
+            schedule: EventSchedules | GuildEventSchedules,
             detail: GuildEventScheduleDetails,
             time: datetime
     ):

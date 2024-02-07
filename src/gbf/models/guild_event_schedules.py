@@ -1,10 +1,18 @@
-from typing import Sequence
 import uuid
-from sqlalchemy \
-    import UUID, Column, UniqueConstraint, \
-    DateTime, BigInteger, Integer, String
-from sqlalchemy.future import select
+from typing import Sequence
+
+from sqlalchemy import (
+    UUID,
+    BigInteger,
+    Column,
+    DateTime,
+    Integer,
+    String,
+    UniqueConstraint,
+)
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+
 from gbf.models.model_base import ModelBase
 from gbf.models.table_scopes import TableScopes
 from gbf.models.table_types import TableType
@@ -42,7 +50,11 @@ class GuildEventSchedules(ModelBase):
         await session.commit()
 
     @classmethod
-    async def select_all(cls, session, guild_id: int) -> list['GuildEventSchedules']:
+    async def select_all(
+        cls,
+        session: AsyncSession,
+        guild_id: int
+    ) -> Sequence['GuildEventSchedules']:
         """
         ギルドイベントスケジュールを全て取得する
         Args:
@@ -53,5 +65,23 @@ class GuildEventSchedules(ModelBase):
         """
         result = await session.execute(
             select(cls).filter(cls.guild_id == guild_id)
+        )
+        return result.scalars().all()
+
+    @classmethod
+    async def select_global_all(
+        cls,
+        session: AsyncSession
+    ) -> Sequence['GuildEventSchedules']:
+        """
+        ギルドイベントスケジュールを全て取得する
+        Args:
+            session (Session): DB接続セッション
+            guild_id (int): ギルドID
+        Returns:
+            list[GuildEventSchedules]: ギルドイベントスケジュールのリスト
+        """
+        result = await session.execute(
+            select(cls)
         )
         return result.scalars().all()

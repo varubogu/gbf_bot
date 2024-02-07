@@ -1,9 +1,9 @@
-from typing import Sequence
 import uuid
+from typing import Sequence
 
 from sqlalchemy import UUID, BigInteger, Column, String
-from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 
 from gbf.models.model_base import ModelBase
 from gbf.models.table_scopes import TableScopes
@@ -34,7 +34,7 @@ class GuildEventScheduleDetails(ModelBase):
         await session.commit()
 
     @classmethod
-    async def select_all(
+    async def select_global_all(
         cls,
         session: AsyncSession
     ) -> Sequence['GuildEventScheduleDetails']:
