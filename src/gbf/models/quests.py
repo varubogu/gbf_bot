@@ -17,11 +17,16 @@ class Quests(ModelBase):
     __tablename__ = 'quests'
     __tabletype__ = TableType.Reference
     __tablescope__ = TableScopes.All
-    target_id = Column(Integer, primary_key=True)
-    recruit_count = Column(Integer)
-    quest_name = Column(String)
-    use_battle_type = Column(String)
-    default_battle_type = Column(String)
+    __table_args__ = (
+        {'comment': 'クエスト情報'}
+    )
+    
+    target_id = Column(Integer, primary_key=True, comment="クエストID")
+    recruit_count = Column(Integer, comment="募集人数")
+    quest_name = Column(String, comment="クエスト名")
+    use_battle_type = Column(String, comment="使用可能な戦術ID")
+    default_battle_type = Column(String, comment="通常の戦術ID")
+
 
     @classmethod
     async def select_single(

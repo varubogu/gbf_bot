@@ -17,17 +17,19 @@ class QuestsAlias(ModelBase):
     __tablename__ = 'quests_alias'
     __tabletype__ = TableType.Reference
     __tablescope__ = TableScopes.All
-    target_id = Column(Integer, primary_key=True)
-    target_alias_id = Column(Integer, primary_key=True)
-    alias = Column(String)
-    alias_kana_small = Column(String)
-
     __table_args__ = (
         UniqueConstraint(
             'alias',
             name='unique_quests_alias'
         ),
+        {'comment': 'クエスト別名情報'}
     )
+
+    target_id = Column(Integer, primary_key=True, comment="クエストID")
+    target_alias_id = Column(Integer, primary_key=True, comment="クエスト別名ID")
+    alias = Column(String, comment="クエスト別名")
+    alias_kana_small = Column(String, comment="クエスト別名半角カナ")
+
 
     @classmethod
     async def select_all(

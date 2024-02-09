@@ -16,10 +16,14 @@ class Elements(ModelBase):
     __tablename__ = 'elements'
     __tabletype__ = TableType.Reference
     __tablescope__ = TableScopes.All
-    element_id = Column(Integer, primary_key=True)
-    stamp = Column(String)
-    name_jp = Column(String)
-    name_en = Column(String)
+    __table_args__ = (
+        {'comment': '属性定義'}
+    )
+
+    element_id = Column(Integer, primary_key=True, comment="属性ID")
+    stamp = Column(String, comment="属性スタンプ")
+    name_jp = Column(String, comment="属性名（日本語）")
+    name_en = Column(String, comment="属性名（英語）")
 
     @classmethod
     async def select(cls, session: AsyncSession, element_id: int) -> 'Elements':

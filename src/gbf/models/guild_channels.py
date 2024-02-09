@@ -17,9 +17,14 @@ class GuildChannels(ModelBase):
     __tablename__ = 'guild_channels'
     __tabletype__ = TableType.Reference
     __tablescope__ = TableScopes.Guild
-    guild_id = Column(BigInteger, primary_key=True)
-    channel_id = Column(BigInteger, primary_key=True)
-    channel_type = Column(Integer)
+    __table_args__ = (
+        {'comment': 'サーバーチャンネル'}
+    )
+    
+    guild_id = Column(BigInteger, primary_key=True, comment="サーバーID")
+    channel_id = Column(BigInteger, primary_key=True, comment="チャンネルID")
+    channel_type = Column(Integer, comment="チャンネル種類ID")
+
 
     @classmethod
     async def select_global_all(

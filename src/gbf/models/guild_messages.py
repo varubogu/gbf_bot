@@ -8,7 +8,7 @@ from gbf.models.table_types import TableType
 
 
 class GuildMessages(ModelBase):
-    """メッセージ定義
+    """サーバー毎のメッセージ定義
 
     Args:
         Base (_type_): _description_
@@ -16,11 +16,16 @@ class GuildMessages(ModelBase):
     __tablename__ = 'guild_messages'
     __tabletype__ = TableType.Reference
     __tablescope__ = TableScopes.Guild
-    guild_id = Column(BigInteger, primary_key=True)
-    message_id = Column(String, primary_key=True)
-    message_jp = Column(String)
-    reactions = Column(String)
-    memo = Column(String)
+    __table_args__ = (
+        {'comment': 'サーバー毎のメッセージ定義'}
+    )
+    
+    guild_id = Column(BigInteger, primary_key=True, comment="サーバーID")
+    message_id = Column(String, primary_key=True, comment="メッセージ定義ID")
+    message_jp = Column(String, comment="日本語のメッセージ")
+    reactions = Column(String, comment="メッセージに付与するリアクション")
+    memo = Column(String, comment="メモ")
+
 
     @classmethod
     async def select_single(

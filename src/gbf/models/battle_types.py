@@ -8,7 +8,7 @@ from gbf.models.table_types import TableType
 
 
 class BattleTypes(ModelBase):
-    """マルチ募集種類
+    """マルチバトル戦術
 
     Args:
         Base (_type_): _description_
@@ -16,6 +16,10 @@ class BattleTypes(ModelBase):
     __tablename__ = 'battle_types'
     __tabletype__ = TableType.Reference
     __tablescope__ = TableScopes.All
-    type_id = Column(Integer, primary_key=True)
-    name = Column(String)
-    reactions = Column(String)
+    __table_args__ = (
+        {'comment': 'マルチバトル戦術'}
+    )
+
+    type_id = Column(Integer, primary_key=True, comment="戦術ID")
+    name = Column(String, comment="戦術名")
+    reactions = Column(String, comment="戦術に応じたリアクション")

@@ -16,10 +16,15 @@ class Messages(ModelBase):
     __tablename__ = 'messages'
     __tabletype__ = TableType.Reference
     __tablescope__ = TableScopes.All
-    message_id = Column(String, primary_key=True)
-    message_jp = Column(String)
-    reactions = Column(String)
-    memo = Column(String)
+    __table_args__ = (
+        {'comment': 'メッセージ定義'}
+    )
+    
+    message_id = Column(String, primary_key=True, comment="メッセージ定義ID")
+    message_jp = Column(String, comment="日本語のメッセージ")
+    reactions = Column(String, comment="メッセージに付与するリアクション")
+    memo = Column(String, comment="メモ")
+
 
     @classmethod
     async def select_single(

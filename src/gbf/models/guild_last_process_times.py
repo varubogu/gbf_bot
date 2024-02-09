@@ -12,7 +12,7 @@ from gbf.models.table_types import TableType
 
 
 class GuildLastProcessTimes(ModelBase):
-    """(guild)最終実行日時
+    """サーバー毎の処理最終実行日時
 
     Args:
         Base (_type_): _description_
@@ -20,11 +20,15 @@ class GuildLastProcessTimes(ModelBase):
     __tablename__ = 'guild_last_process_times'
     __tabletype__ = TableType.History
     __tablescope__ = TableScopes.Guild
+    __table_args__ = (
+        {'comment': 'サーバー毎の処理最終実行日時'}
+    )
 
-    guild_id = Column(BigInteger, primary_key=True)
-    process_type = Column(Integer, primary_key=True)
-    execute_time = Column(DateTime, nullable=True)
-    memo = Column(String)
+    guild_id = Column(BigInteger, primary_key=True, comment="サーバーID")
+    process_type = Column(Integer, primary_key=True, comment="処理種類")
+    execute_time = Column(DateTime, nullable=True, comment="処理実行日時")
+    memo = Column(String, comment="メモ")
+
 
     @classmethod
     async def select_single(

@@ -18,15 +18,20 @@ class Schedules(ModelBase):
     __tablename__ = 'schedules'
     __tabletype__ = TableType.Transaction
     __tablescope__ = TableScopes.All
-    row_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    __table_args__ = (
+        {'comment': 'スケジュール情報'}
+    )
+    
+    row_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, comment="行ID")
     parent_schedule_id = Column(
-        UUID(as_uuid=True), nullable=True, default=None)
+        UUID(as_uuid=True), nullable=True, default=None, comment="作成元のイベントスケジュールテーブルの行ID")
     parent_schedule_detail_id = Column(
-        UUID(as_uuid=True), nullable=True, default=None)
-    schedule_datetime = Column(DateTime)
-    guild_id = Column(BigInteger)
-    channel_id = Column(BigInteger)
-    message_id = Column(String)
+        UUID(as_uuid=True), nullable=True, default=None, comment="作成元のイベント期間内詳細スケジュールテーブルの行ID")
+    schedule_datetime = Column(DateTime, comment="スケジュール日時")
+    guild_id = Column(BigInteger, comment="サーバーID")
+    channel_id = Column(BigInteger, comment="チャンネルID")
+    message_id = Column(String, comment="メッセージテーブルのメッセージID")
+
 
     async def insert(self, session: AsyncSession):
         session.add(self)

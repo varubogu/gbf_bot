@@ -24,9 +24,14 @@ class Environments(ModelBase):
     __tablename__ = 'environments'
     __tabletype__ = TableType.Reference
     __tablescope__ = TableScopes.All
-    key = Column(String, primary_key=True)
-    value = Column(String)
-    memo = Column(String)
+    __table_args__ = (
+        {'comment': '環境変数'}
+    )
+    
+    key = Column(String, primary_key=True, comment="環境変数のキー")
+    value = Column(String, comment="環境変数の値")
+    memo = Column(String, comment="メモ")
+
 
     @classmethod
     async def select_single(

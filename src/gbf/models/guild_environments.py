@@ -16,7 +16,7 @@ async def default_expiry_date():
 
 
 class GuildEnvironments(ModelBase):
-    """環境変数
+    """サーバー毎の環境変数
 
     Args:
         Base (_type_): _description_
@@ -24,10 +24,15 @@ class GuildEnvironments(ModelBase):
     __tablename__ = 'guild_environments'
     __tabletype__ = TableType.Reference
     __tablescope__ = TableScopes.Guild
-    guild_id = Column(BigInteger, primary_key=True)
-    key = Column(String, primary_key=True)
-    value = Column(String)
-    memo = Column(String)
+    __table_args__ = (
+        {'comment': 'サーバー毎の環境変数'}
+    )
+    
+    guild_id = Column(BigInteger, primary_key=True, comment="サーバーID")
+    key = Column(String, primary_key=True, comment="環境変数のキー")
+    value = Column(String, comment="環境変数の値")
+    memo = Column(String, comment="メモ")
+
 
     @classmethod
     async def select_single(

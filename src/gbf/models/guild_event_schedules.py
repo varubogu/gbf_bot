@@ -19,7 +19,7 @@ from gbf.models.table_types import TableType
 
 
 class GuildEventSchedules(ModelBase):
-    """イベントスケジュール情報
+    """サーバー毎のイベントスケジュール情報
 
     Args:
         Base (_type_): _description_
@@ -27,15 +27,6 @@ class GuildEventSchedules(ModelBase):
     __tablename__ = 'guild_event_schedules'
     __tabletype__ = TableType.Reference
     __tablescope__ = TableScopes.Guild
-    row_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    guild_id = Column(BigInteger, primary_key=True)
-    event_type = Column(String)
-    event_count = Column(BigInteger)
-    profile = Column(String)
-    weak_attribute = Column(Integer)
-    start_at = Column(DateTime)
-    end_at = Column(DateTime)
-
     __table_args__ = (
         UniqueConstraint(
             'event_type',
@@ -43,7 +34,19 @@ class GuildEventSchedules(ModelBase):
             'guild_id',
             name='unique_guild_event'
         ),
+        {'comment': 'サーバー毎のイベントスケジュール情報'}
     )
+    
+    row_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, comment="行ID")
+    guild_id = Column(BigInteger, primary_key=True, comment="サーバーID")
+    event_type = Column(String, comment="イベント種類")
+    event_count = Column(BigInteger, comment="イベント開催回数")
+    profile = Column(String, comment="(guild)イベントスケジュール詳細との紐づけプロファイル")
+    weak_attribute = Column(Integer, comment="有利属性")
+    start_at = Column(DateTime, comment="開始日")
+    end_at = Column(DateTime, comment="終了日")
+
+
 
     async def create(self, session: AsyncSession):
         session.add(self)

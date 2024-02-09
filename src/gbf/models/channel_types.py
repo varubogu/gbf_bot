@@ -16,6 +16,10 @@ class ChannelTypes(ModelBase):
     __tablename__ = 'channel_types'
     __tabletype__ = TableType.Reference
     __tablescope__ = TableScopes.All
-    channel_type = Column(Integer, primary_key=True)
-    channel_type_name = Column(String)
-    memo = Column(String)
+    __table_args__ = (
+        {'comment': 'チャンネル種類'}
+    )
+
+    channel_type = Column(Integer, primary_key=True, comment="チャンネル種類ID")
+    channel_type_name = Column(String, comment="チャンネル種類名")
+    memo = Column(String, comment="メモ")
