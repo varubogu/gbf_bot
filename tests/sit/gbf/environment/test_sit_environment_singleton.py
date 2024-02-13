@@ -5,14 +5,14 @@ from gbf.environment.environment_singleton import EnvironmentSingleton
 from gbf.models.environments import Environments
 
 
-class TestIntegrationEnvironmentSingleton:
+class TestSitEnvironmentSingleton:
 
     @pytest_asyncio.fixture
     async def env_singleton(self):
         return EnvironmentSingleton()
 
     @pytest.mark.asyncio
-    async def test_environment_eval(
+    async def test_load_db(
             self,
             env_singleton: EnvironmentSingleton,
             async_db_session: AsyncSession
