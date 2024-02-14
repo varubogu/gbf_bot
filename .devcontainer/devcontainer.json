@@ -10,7 +10,6 @@
 	},
 	"postCreateCommand": "pip install --no-cache-dir -r requirements.test.txt",
 	"containerEnv": {
-		"TZ": "Asia/Tokyo",
 		"PYTHONPATH": "${containerWorkspaceFolder}/src",
 		"SOURCE_FOLDER": "${containerWorkspaceFolder}/src",
 		"CONFIG_FOLDER": "${containerWorkspaceFolder}/config",
