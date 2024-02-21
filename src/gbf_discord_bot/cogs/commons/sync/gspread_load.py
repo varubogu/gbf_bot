@@ -46,7 +46,8 @@ class GSpreadLoad(commands.Cog):
                 continue
 
             await interaction.followup.send(
-                f'{table_dif.table_name_jp} load...'
+                f'{table_dif.table_name_jp} load...',
+                ephemeral=True
             )
 
             worksheet = loader.core.book.worksheet(table_dif.table_name_jp)
@@ -73,7 +74,8 @@ class GSpreadLoad(commands.Cog):
                     ]
 
                     await interaction.followup.send(
-                        f'{table_name_jp[0]} write...'
+                        f'{table_name_jp[0]} write...',
+                        ephemeral=True
                     )
                     await register.regist(session, table_model)
 

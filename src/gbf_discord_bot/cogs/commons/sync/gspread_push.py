@@ -41,7 +41,8 @@ class GSpreadPush(commands.Cog):
                     continue
 
                 await interaction.followup.send(
-                    f'{table_dif.table_name_jp} push...'
+                    f'{table_dif.table_name_jp} push...',
+                    ephemeral=True
                 )
 
                 table_cls = table_dif.table_cls
