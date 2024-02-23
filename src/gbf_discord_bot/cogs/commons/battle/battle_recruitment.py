@@ -1,7 +1,6 @@
 
 import asyncio
 from datetime import datetime, timedelta
-from email import message
 import discord
 from discord import Interaction as Interaction
 from discord import app_commands
