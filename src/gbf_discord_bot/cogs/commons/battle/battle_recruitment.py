@@ -6,7 +6,6 @@ from discord import Interaction as Interaction
 from discord import app_commands
 from discord.ext import commands
 from gbf.messages.message_text import MessageText
-from gbf.models.messages import Messages
 from gbf.models.quests import Quests
 from gbf.models.quests_alias import QuestsAlias
 
