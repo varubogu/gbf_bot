@@ -4,6 +4,7 @@ from typing import Tuple
 import discord
 from sqlalchemy.ext.asyncio import AsyncSession
 from discord.ext import commands
+from gbf.messages.message_text import MessageText
 from gbf.models.session import AsyncSessionLocal
 from gbf.models.battle_recruitments import BattleRecruitments
 from gbf.models.quests import Quests
@@ -47,9 +48,16 @@ class AfterReaction(commands.Cog):
                         reaction_users.remove(self.bot.user)
 
                     if len(reaction_users) == quest.recruit_count:
-                        mention = ''.join(f"{user.mention}" for user in reaction_users)
+
+                        complete_message = await MessageText.get(
+                            session,
+                            paylood.guild_id,
+                            "MSG00032"
+                        )
+
+                        mention = ' '.join(f"{user.mention}" for user in reaction_users)
                         end_message = await message.channel.send(
-                            mention + '\nメンバーが揃いました。',
+                            mention + '\n' + complete_message.message_jp,
                             reference=message
                         )
                         recruitment.recruit_end_message_id = end_message.id
