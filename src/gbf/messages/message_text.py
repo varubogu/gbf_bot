@@ -37,7 +37,7 @@ class MessageText:
     async def get(
             cls,
             session: AsyncSession,
-            guild_id: int,
+            guild_id: int | None,
             message_id: str
             ) -> Messages | GuildMessages:
         """
@@ -54,10 +54,10 @@ class MessageText:
         Returns:
             str: 取得したメッセージの文字列。
         """
-        
-        m = await GuildMessages.select_single(session, guild_id, message_id)
-        if m is not None:
-            return m
+        if guild_id is not None:
+            m = await GuildMessages.select_single(session, guild_id, message_id)
+            if m is not None:
+                return m
         m = await Messages.select_single(session, message_id)
         if m is not None:
             return m
