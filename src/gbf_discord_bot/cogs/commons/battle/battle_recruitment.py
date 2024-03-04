@@ -11,6 +11,7 @@ from gbf.models.quests_alias import QuestsAlias
 
 from gbf.models.session import AsyncSessionLocal
 from gbf.models.battle_recruitments import BattleRecruitments
+from gbf.utils.convert_datetime import convert_recruit_datetime
 from gbf_discord_bot.cogs.commons.battle.battle_type \
     import BattleTypeEnum as BT
 
@@ -103,7 +104,10 @@ class BattleRecruitmentCog(commands.Cog):
                 interaction.guild_id,
                 message_id
             )
-        m = await MessageText.replace(m.message_jp, {'quest_name': quest.quest_name})
+        m = await MessageText.replace(
+            str(m.message_jp),
+            {'quest_name': str(quest.quest_name)}
+        )
 
         await interaction.followup.send(m)
         return await interaction.original_response()
@@ -123,7 +127,7 @@ class BattleRecruitmentCog(commands.Cog):
         record.guild_id = message.guild.id
         record.channel_id = message.channel.id
         record.message_id = message.id
-        record.expiry_date = _expiry_date or self._default_expiry_date()
+        record.expiry_date = _expiry_date
         record.target_id = quest.target_id
         record.battle_type_id = battle_type.type_value
 
@@ -154,15 +158,23 @@ class BattleRecruitmentCog(commands.Cog):
                     battle_type = BT.DEFAULT
 
             if expiry_date is None:
-                expiry_date = await self._default_expiry_date()
+                expiry_date_datetime = await self._default_expiry_date()
+            else:
+                try:
+                    expiry_date_datetime = await convert_recruit_datetime(expiry_date)
+                except Exception:
+                    raise ValueError('expiry_dateが日時として認識できません')
 
             message = await self._send_message(interaction, target, battle_type)
             await self._add_reaction(message, battle_type)
 
-            await self._regist(message, target, battle_type, expiry_date)
+            await self._regist(message, target, battle_type, expiry_date_datetime)
+        except ValueError as e:
+            print(e)
+            await interaction.followup.send(f'エラーが発生しました {e}', ephemeral=True)
         except Exception as e:
             print(e)
-            await interaction.followup.send('エラーが発生しました', ephemeral=True)
+            await interaction.followup.send('不明なエラーが発生しました', ephemeral=True)
 
 
 async def setup(bot: commands.Bot):
