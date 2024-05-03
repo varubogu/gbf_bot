@@ -29,6 +29,13 @@ async def test_convert_datetime():
     actual = await convert_datetime("2022-01-01 12:00")
     assert actual == datetime(2022, 1, 1, 12, 0)
 
+    actual = await convert_datetime("1/3 12:00")
+    assert actual == datetime(now.year, 1, 3, 12, 0)
+
+    # 全角スペースは動作対象外とする
+    # actual = await convert_datetime("1/3　12:00")
+    # assert actual == datetime(now.year, 1, 3, 12, 0)
+
     # empty系
 
     # none

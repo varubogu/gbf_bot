@@ -48,7 +48,11 @@ class BattleRecruitmentCog(commands.Cog):
         }
 
     async def _default_expiry_date(self) -> datetime:
-        return datetime.now() + self.DEFAULT_TIMEDELTA
+        # return datetime.now() + self.DEFAULT_TIMEDELTA
+
+        now = datetime.now()
+        now = now.replace(hour=21, minute=0, second=0, microsecond=0)
+        return now
 
     async def _quest_autocompolete(
             self,
@@ -91,7 +95,8 @@ class BattleRecruitmentCog(commands.Cog):
             self,
             interaction: Interaction,
             quest: Quests,
-            battle_type: BT
+            battle_type: BT,
+            event_date: datetime = None
     ):
         if battle_type == BT.ALL_ELEMENT:
             message_id = "MSG00029"
@@ -108,6 +113,8 @@ class BattleRecruitmentCog(commands.Cog):
             str(m.message_jp),
             {'quest_name': str(quest.quest_name)}
         )
+        if event_date is not None:
+            m += f"\n開催日時：{event_date.strftime('%m/%d %H:%M')}"
 
         await interaction.followup.send(m)
         return await interaction.original_response()
@@ -121,13 +128,13 @@ class BattleRecruitmentCog(commands.Cog):
             message: discord.Message,
             quest: Quests,
             battle_type: BT = None,
-            _expiry_date: datetime = None
+            _event_date: datetime = None
     ):
         record = BattleRecruitments()
         record.guild_id = message.guild.id
         record.channel_id = message.channel.id
         record.message_id = message.id
-        record.expiry_date = _expiry_date
+        record.expiry_date = _event_date
         record.target_id = quest.target_id
         record.battle_type_id = battle_type.type_value
 
@@ -142,7 +149,7 @@ class BattleRecruitmentCog(commands.Cog):
             interaction: Interaction,
             quest: str,
             battle_type: BT = BT.DEFAULT,
-            expiry_date: str = None
+            event_date: str = None
     ):
         try:
             await interaction.response.defer()
@@ -157,18 +164,18 @@ class BattleRecruitmentCog(commands.Cog):
                     print(f"battle_recruitmentのbattle_typeの初期値設定部分でエラー：{e}")
                     battle_type = BT.DEFAULT
 
-            if expiry_date is None:
-                expiry_date_datetime = await self._default_expiry_date()
+            if event_date is None:
+                event_date_datetime = await self._default_expiry_date()
             else:
                 try:
-                    expiry_date_datetime = await convert_recruit_datetime(expiry_date)
+                    event_date_datetime = await convert_recruit_datetime(event_date)
                 except Exception:
                     raise ValueError('expiry_dateが日時として認識できません')
 
-            message = await self._send_message(interaction, target, battle_type)
+            message = await self._send_message(interaction, target, battle_type, event_date_datetime)
             await self._add_reaction(message, battle_type)
 
-            await self._regist(message, target, battle_type, expiry_date_datetime)
+            await self._regist(message, target, battle_type, event_date_datetime)
         except ValueError as e:
             print(e)
             await interaction.followup.send(f'エラーが発生しました {e}', ephemeral=True)
