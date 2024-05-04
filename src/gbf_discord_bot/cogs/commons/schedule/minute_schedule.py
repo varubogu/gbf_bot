@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from gbf.schedules.minute_executor import MinuteScheduleExecutor
 from gbf.models.messages import Messages
 from gbf.models.session import AsyncSessionLocal
+from gbf_discord_bot.cogs.commons.battle.after_reaction import AfterReaction
 
 
 class MinuteSchedule(commands.Cog):
@@ -52,7 +53,18 @@ class MinuteSchedule(commands.Cog):
                 continue
 
             channel = await self.bot.fetch_channel(schedule.channel_id)
-            message = await channel.send(db_message.message_jp)
+
+            mention = ''
+            # マルチ募集に紐づくリアクション者を取得
+            if len(schedule.children) > 0:
+                mid = schedule.children[0].message_id
+                original_message = await channel.fetch_message(mid)
+                reaction_users = await AfterReaction.get_reaction_users(original_message)
+                if self.bot.user in reaction_users:
+                    reaction_users.remove(self.bot.user)
+                mention = ' '.join(f"{user.mention}" for user in reaction_users) + '\n'
+
+            message = await channel.send(mention + db_message.message_jp)
             if db_message.reactions:
                 for reaction in db_message.reactions.split(","):
                     if reaction:

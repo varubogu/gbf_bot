@@ -1,6 +1,8 @@
 from datetime import datetime
-from typing import Sequence
+from typing import Sequence, Tuple
 from gbf.enums.channel_type import ChannelType
+from gbf.models.battle_recruitment_schedules import BattleRecruitmentSchedules
+from gbf.models.battle_recruitments import BattleRecruitments
 from gbf.models.event_schedule_details import EventScheduleDetails
 from gbf.models.event_schedules import EventSchedules
 from gbf.models.guild_channels import GuildChannels
@@ -40,6 +42,7 @@ class ScheduleManager:
             session,
             ChannelType.NOTIFICATION.value
         )
+        guild_recruitments = await BattleRecruitments.select_global_all(session)
 
         registration_schedules = await self.calc_schedule(
             global_schedules,
@@ -49,7 +52,16 @@ class ScheduleManager:
             guild_notifications
         )
 
+        # マルチ募集のスケジュール
+        (rec_s, rec_brs) = await self.convert_global_recruitments(guild_recruitments)
+        registration_schedules += rec_s
+
+        # スケジュール一括登録
         await Schedules.bulk_insert(session, registration_schedules)
+
+        # スケジュールのマルチ募集情報一括登録
+        await BattleRecruitmentSchedules.bulk_insert(session, rec_brs)
+
 
     async def calc_schedule(
             self,
@@ -232,3 +244,34 @@ class ScheduleManager:
         s.channel_id = detail.channel_id
         s.message_id = detail.message_id
         return s
+
+    async def convert_global_recruitments(
+            self,
+            guild_recruitments: Sequence[BattleRecruitments]
+    ) -> Tuple[list[Schedules], list[BattleRecruitmentSchedules]]:
+
+        result: list[Schedules] = []
+        result_brs: list[BattleRecruitmentSchedules] = []
+
+        for recruitment in guild_recruitments:
+            (s, brs) = await self.convert_global_recruitment(recruitment)
+            result.append(s)
+            result_brs.append(brs)
+
+        return (result, result_brs)
+
+    async def convert_global_recruitment(
+            self,
+            recruitment: BattleRecruitments
+    ) -> Tuple[Schedules, BattleRecruitmentSchedules]:
+        s = Schedules()
+        s.parent_schedule_id = None
+        s.parent_schedule_detail_id = None
+        s.schedule_datetime = recruitment.expiry_date
+        s.guild_id = recruitment.guild_id
+        s.channel_id = recruitment.channel_id
+        s.message_id = "MSG00033"
+
+        brs = BattleRecruitmentSchedules(parent=s)
+        brs.message_id = recruitment.message_id
+        return (s, brs)

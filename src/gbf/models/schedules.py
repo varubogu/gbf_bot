@@ -4,6 +4,8 @@ import uuid
 from sqlalchemy import UUID, BigInteger, Column, DateTime, String, and_, text
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import relationship, selectinload
+from gbf.models.battle_recruitment_schedules import BattleRecruitmentSchedules
 from gbf.models.model_base import ModelBase
 from gbf.models.table_scopes import TableScopes
 from gbf.models.table_types import TableType
@@ -31,6 +33,8 @@ class Schedules(ModelBase):
     guild_id = Column(BigInteger, comment="サーバーID")
     channel_id = Column(BigInteger, comment="チャンネルID")
     message_id = Column(String, comment="メッセージテーブルのメッセージID")
+
+    children = relationship("BattleRecruitmentSchedules", back_populates="parent")
 
 
     async def insert(self, session: AsyncSession):
@@ -62,7 +66,7 @@ class Schedules(ModelBase):
         Args:
             session (Session): DB接続セッション
         """
-        await session.execute(text('TRUNCATE schedules'))
+        await session.execute(text(f'TRUNCATE {cls.__tablename__}, {BattleRecruitmentSchedules.__tablename__}'))
         await session.commit()
 
     @classmethod
@@ -89,7 +93,7 @@ class Schedules(ModelBase):
                     last_time < Schedules.schedule_datetime,
                     Schedules.schedule_datetime <= now
                 )
-            )
+            ).options(selectinload(Schedules.children))
         )
         return result.scalars().all()
 

@@ -6,11 +6,13 @@ from discord import Interaction as Interaction
 from discord import app_commands
 from discord.ext import commands
 from gbf.messages.message_text import MessageText
+from gbf.models.battle_recruitment_schedules import BattleRecruitmentSchedules
 from gbf.models.quests import Quests
 from gbf.models.quests_alias import QuestsAlias
 
 from gbf.models.session import AsyncSessionLocal
 from gbf.models.battle_recruitments import BattleRecruitments
+from gbf.schedules.manager import ScheduleManager
 from gbf.utils.convert_datetime import convert_recruit_datetime
 from gbf_discord_bot.cogs.commons.battle.battle_type \
     import BattleTypeEnum as BT
@@ -130,17 +132,23 @@ class BattleRecruitmentCog(commands.Cog):
             battle_type: BT = None,
             _event_date: datetime = None
     ):
-        record = BattleRecruitments()
-        record.guild_id = message.guild.id
-        record.channel_id = message.channel.id
-        record.message_id = message.id
-        record.expiry_date = _event_date
-        record.target_id = quest.target_id
-        record.battle_type_id = battle_type.type_value
+        recruitment = BattleRecruitments()
+        recruitment.guild_id = message.guild.id
+        recruitment.channel_id = message.channel.id
+        recruitment.message_id = message.id
+        recruitment.expiry_date = _event_date
+        recruitment.target_id = quest.target_id
+        recruitment.battle_type_id = battle_type.type_value
+
+        sm = ScheduleManager()
+        (schedule, rs) = await sm.convert_global_recruitment(recruitment)
 
         async with AsyncSessionLocal() as session:
-            session.add(record)
+            session.add(recruitment)
+            session.add(schedule)
+            session.add(rs)
             await session.commit()
+
 
     @app_commands.command(name="recruit", description="マルチバトルを募集します")
     @app_commands.autocomplete(quest=_quest_autocompolete)
@@ -170,7 +178,7 @@ class BattleRecruitmentCog(commands.Cog):
                 try:
                     event_date_datetime = await convert_recruit_datetime(event_date)
                 except Exception:
-                    raise ValueError('expiry_dateが日時として認識できません')
+                    raise ValueError('event_dateが日時として認識できません')
 
             message = await self._send_message(interaction, target, battle_type, event_date_datetime)
             await self._add_reaction(message, battle_type)

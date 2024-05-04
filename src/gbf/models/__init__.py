@@ -2,6 +2,7 @@
 from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlalchemy.ext.asyncio import AsyncConnection
 
+from gbf.models.battle_recruitment_schedules import BattleRecruitmentSchedules
 from gbf.models.battle_recruitments import BattleRecruitments
 from gbf.models.battle_types import BattleTypes
 from gbf.models.channel_types import ChannelTypes
@@ -49,6 +50,7 @@ def get_metadata():
 class TableNameMapping:
 
     __CLASSES__ = [
+            BattleRecruitmentSchedules,
             BattleRecruitments,
             BattleTypes,
             ChannelTypes,

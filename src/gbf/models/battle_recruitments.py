@@ -1,5 +1,6 @@
 
 from datetime import datetime, timedelta
+from typing import Sequence
 import uuid
 from sqlalchemy \
     import UUID, Column, DateTime, BigInteger, Integer, \
@@ -115,3 +116,21 @@ class BattleRecruitments(ModelBase):
 
         return result.scalars().first()
 
+    @classmethod
+    async def select_global_all(
+            cls,
+            session: AsyncSession,
+    ) -> Sequence['BattleRecruitments']:
+        """マルチバトル募集情報を一括取得する
+        Args:
+            session (Session): DB接続
+            guild_id (int): 検索対象のサーバーID
+
+        Returns:
+            list[BattleRecruitments]: 一括取得結果
+        """
+        result = await session.execute(
+            select(cls)
+        )
+
+        return result.scalars().all()

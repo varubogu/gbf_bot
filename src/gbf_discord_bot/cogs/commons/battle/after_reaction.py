@@ -41,7 +41,7 @@ class AfterReaction(commands.Cog):
 
                     quest = await Quests.select_single(session, recruitment.target_id)
 
-                    reaction_users = await self.get_reaction_users(
+                    reaction_users = await AfterReaction.get_reaction_users(
                         message, battle_type.reactions)
 
                     if self.bot.user in reaction_users:
@@ -100,10 +100,11 @@ class AfterReaction(commands.Cog):
             raise AbortProcessException()
         return message
 
+    @classmethod
     async def get_reaction_users(
-            self,
+            cls,
             message: discord.Message,
-            reactions: list[str]
+            reactions: list[str] | None = None
     ) -> list[discord.Member]:
         """リアクション集計
 
@@ -116,7 +117,7 @@ class AfterReaction(commands.Cog):
         """
         reaction_users: list[discord.User | discord.Member] = []
         for r in message.reactions:
-            if r.emoji in reactions:
+            if reactions is None or r.emoji in reactions:
                 async for user in r.users():
                     reaction_users.append(user)
 
