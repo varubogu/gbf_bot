@@ -47,7 +47,7 @@ class AfterReaction(commands.Cog):
                     if self.bot.user in reaction_users:
                         reaction_users.remove(self.bot.user)
 
-                    # 
+                    # 参加者一覧を作成
                     embed = message.embeds[0]
                     embed.clear_fields()
                     for reaction in message.reactions:
@@ -61,7 +61,6 @@ class AfterReaction(commands.Cog):
                         if user_name == '':
                             user_name = '無し'
                         embed.add_field(name=reaction.emoji, value=user_name)
-
                     await message.edit(embed=embed)
 
                     # 全員集まった場合
