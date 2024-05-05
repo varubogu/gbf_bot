@@ -1,12 +1,11 @@
 
 import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime
 import discord
 from discord import Interaction as Interaction
 from discord import app_commands
 from discord.ext import commands
 from gbf.messages.message_text import MessageText
-from gbf.models.battle_recruitment_schedules import BattleRecruitmentSchedules
 from gbf.models.quests import Quests
 from gbf.models.quests_alias import QuestsAlias
 
