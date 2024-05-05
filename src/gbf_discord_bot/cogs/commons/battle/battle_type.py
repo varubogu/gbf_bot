@@ -17,7 +17,7 @@ class BattleTypeEnum(Enum):
     def __init__(
             self,
             value: int,
-            reactions: [str]
+            reactions: list[str]
     ):
         super().__init__(value)
         self.__type_value = value
