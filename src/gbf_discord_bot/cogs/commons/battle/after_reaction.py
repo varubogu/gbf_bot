@@ -47,6 +47,24 @@ class AfterReaction(commands.Cog):
                     if self.bot.user in reaction_users:
                         reaction_users.remove(self.bot.user)
 
+                    # 
+                    embed = message.embeds[0]
+                    embed.clear_fields()
+                    for reaction in message.reactions:
+                        user_name = ''
+                        async for reaction_user in reaction.users():
+                            if self.bot.user == reaction_user:
+                                continue
+                            if user_name != '':
+                                user_name += '  '
+                            user_name += reaction_user.mention
+                        if user_name == '':
+                            user_name = '無し'
+                        embed.add_field(name=reaction.emoji, value=user_name)
+
+                    await message.edit(embed=embed)
+
+                    # 全員集まった場合
                     if len(reaction_users) == quest.recruit_count:
 
                         complete_message = await MessageText.get(

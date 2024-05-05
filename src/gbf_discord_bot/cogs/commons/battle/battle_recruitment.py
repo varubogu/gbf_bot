@@ -52,7 +52,7 @@ class BattleRecruitmentCog(commands.Cog):
         now = now.replace(hour=21, minute=0, second=0, microsecond=0)
         return now
 
-    async def _quest_autocompolete(
+    async def _quest_autocomplete(
             self,
             interaction: Interaction,
             current: str
@@ -114,7 +114,10 @@ class BattleRecruitmentCog(commands.Cog):
         if event_date is not None:
             m += f"\n開催日時：{event_date.strftime('%m/%d %H:%M')}"
 
-        await interaction.followup.send(m)
+        embed = discord.Embed(title='参加者一覧', description='')
+        embed.add_field(name="", value="現在参加者はいません。")
+
+        await interaction.followup.send(m, embed=embed)
         return await interaction.original_response()
 
     async def _add_reaction(self, message, battle_type: BT):
@@ -147,7 +150,7 @@ class BattleRecruitmentCog(commands.Cog):
 
 
     @app_commands.command(name="recruit", description="マルチバトルを募集します")
-    @app_commands.autocomplete(quest=_quest_autocompolete)
+    @app_commands.autocomplete(quest=_quest_autocomplete)
     async def recruitment(
             self,
             interaction: Interaction,
