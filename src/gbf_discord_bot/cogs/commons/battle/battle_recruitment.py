@@ -29,7 +29,6 @@ class BattleRecruitmentCog(commands.Cog):
         self.quests = None
         self.quest_aliases = None
         self.choices = None
-        self.DEFAULT_TIMEDELTA = timedelta(days=7)
 
     @property
     def bot(self) -> commands.Bot:
@@ -50,8 +49,6 @@ class BattleRecruitmentCog(commands.Cog):
         }
 
     async def _default_expiry_date(self) -> datetime:
-        # return datetime.now() + self.DEFAULT_TIMEDELTA
-
         now = datetime.now()
         now = now.replace(hour=21, minute=0, second=0, microsecond=0)
         return now
