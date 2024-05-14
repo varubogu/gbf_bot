@@ -33,7 +33,7 @@ class Quests(ModelBase):
         cls,
         session: AsyncSession,
         target_id: int
-    ) -> list['Quests']:
+    ) -> 'Quests':
         """
         特定のクエスト情報を取得する
 
