@@ -1,6 +1,7 @@
 
 import asyncio
 from datetime import datetime
+from typing import Optional
 import discord
 from discord import Interaction as Interaction
 from discord import app_commands
@@ -150,13 +151,18 @@ class BattleRecruitmentCog(commands.Cog):
 
 
     @app_commands.command(name="recruit", description="マルチバトルを募集します")
+    @app_commands.describe(
+        quest="募集するクエスト",
+        battle_type="クエストの攻略方法",
+        event_date="クエスト開始日時(月/日 時:分)"
+    )
     @app_commands.autocomplete(quest=_quest_autocomplete)
     async def recruitment(
             self,
             interaction: Interaction,
             quest: str,
             battle_type: BT = BT.DEFAULT,
-            event_date: str = None
+            event_date: Optional[str] = None
     ):
         try:
             await interaction.response.defer()
