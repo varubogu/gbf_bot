@@ -5,6 +5,7 @@ from gbf.schedules.minute_executor import MinuteScheduleExecutor
 from gbf.models.messages import Messages
 from gbf.models.session import AsyncSessionLocal
 from gbf_discord_bot.cogs.commons.battle.after_reaction import AfterReaction
+from gbf_discord_bot.utils.reaction_util import ReactionUtil
 
 
 class MinuteSchedule(commands.Cog):
@@ -59,7 +60,13 @@ class MinuteSchedule(commands.Cog):
             if len(schedule.children) > 0:
                 mid = schedule.children[0].message_id
                 original_message = await channel.fetch_message(mid)
-                reaction_users = await AfterReaction.get_reaction_users(original_message)
+                # Botユーザーは除外してリアクションとユーザーの一覧を取得
+                reactions = await ReactionUtil.get_reaction_users(
+                    original_message,
+                    lambda user: user == self.bot.user
+                )
+
+                reaction_users = await AfterReaction.get_reaction_users(reactions)
                 if self.bot.user in reaction_users:
                     reaction_users.remove(self.bot.user)
                 mention = ' '.join(f"{user.mention}" for user in reaction_users) + '\n'
