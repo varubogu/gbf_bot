@@ -12,7 +12,10 @@ load_dotenv(override=True, dotenv_path=dotenv_filepath)
 # 自分の Bot のアクセストークン
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
 
-intents = discord.Intents.all()
+intents = discord.Intents.none()
+intents.guild_messages = True
+intents.guild_reactions = True
+intents.guilds = True
 
 
 class GbfBot(commands.Bot):
