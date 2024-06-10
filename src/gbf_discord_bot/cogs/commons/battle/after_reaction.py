@@ -23,6 +23,20 @@ class AfterReaction(commands.Cog):
             self,
             paylood: discord.RawReactionActionEvent
     ):
+        await self.reaction_calc(paylood)
+
+
+    @commands.Cog.listener()
+    async def on_raw_reaction_remove(
+            self,
+            paylood: discord.RawReactionActionEvent
+    ):
+        await self.reaction_calc(paylood)
+
+    async def reaction_calc(
+            self,
+            paylood: discord.RawReactionActionEvent
+    ):
         if paylood.user_id == self.bot.user.id:
             return
 
