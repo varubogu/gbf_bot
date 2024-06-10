@@ -45,8 +45,6 @@ services:
     env_file:
       - ./config/.env.timezone
       - ./config/.env.db.production
-    ports:
-      - 5432:5432
     networks:
       - app_network
     healthcheck:
