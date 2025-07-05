@@ -10,6 +10,18 @@
 	"features": {
 		"ghcr.io/devcontainers/features/docker-in-docker": "latest",
 		"ghcr.io/devcontainers/features/python": "latest"
+	},
+	"postCreateCommand": "pip install --no-cache-dir -r requirements.test.txt",
+	"containerEnv": {
+		"PYTHONPATH": "${containerWorkspaceFolder}/src:${containerWorkspaceFolder}/src/gbf:${containerWorkspaceFolder}/src/gbf_discord_bot",
+		"SOURCE_FOLDER": "${containerWorkspaceFolder}/src",
+		"SOURCE_GBF_FOLDER": "${containerWorkspaceFolder}/src/gbf",
+		"SOURCE_BOT_FOLDER": "${containerWorkspaceFolder}/src/gbf_discord_bot",
+		"CONFIG_FOLDER": "${containerWorkspaceFolder}/config",
+		"DBHOST": "127.0.0.1",
+		"DBUSER": "postgres",
+		"DBPASSWORD": "postgres",
+		"DBDATABASE": "postgres"
 	}
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

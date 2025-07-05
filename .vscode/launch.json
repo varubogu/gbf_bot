@@ -6,10 +6,10 @@
     "configurations": [
         {
             "name": "Bot起動",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
-            "cwd": "${workspaceFolder}/src/gbf_discord_bot",
-            "module": "bot",
+            "cwd": "${workspaceFolder}/src",
+            "module": "gbf_discord_bot.bot",
             "justMyCode": true
         }
     ]
