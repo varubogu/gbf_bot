@@ -27,7 +27,6 @@ class GbfBot(commands.Bot):
         )
 
         self.INITIAL_EXTENSIONS = [
-            'cogs.sample',
             'cogs.commons.battle.after_reaction',
             'cogs.commons.battle.battle_recruitment',
             'cogs.commons.manager.reload_cog',
