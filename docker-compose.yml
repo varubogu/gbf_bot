@@ -8,7 +8,7 @@ services:
       context: .
       dockerfile: Dockerfile.app
       target: production-image
-    # restart: unless-stopped
+    restart: always
     env_file:
       - ./config/.env
       - ./config/.env.timezone
