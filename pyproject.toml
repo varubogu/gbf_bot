@@ -1,0 +1,45 @@
+[project]
+name = "gbf-bot"
+version = "0.1.0"
+description = "グラブルbot"
+requires-python = ">=3.13"
+license = "MIT"
+license-files = "LICENSE"
+dependencies = [
+    "discord.py",
+    "python-dotenv",
+    "asyncpg",
+    "sqlalchemy",
+    "gspread",
+    "oauth2client",
+]
+
+[project.scripts]
+gbf-bot = "gbf_discord_bot.bot:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+
+# NOTE: The following [tool.uv] sections are uv-specific. Some IDEs may show a warning due to missing schema support.
+# They are valid for uv and can be safely ignored.
+[tool.uv]
+dev-dependencies = [
+    "pytest",
+    "pytest-asyncio",
+    "pytest-mock",
+]
+
+[tool.uv.scripts]
+bot = "python -m gbf_discord_bot.bot"
+test = "pytest -q"
